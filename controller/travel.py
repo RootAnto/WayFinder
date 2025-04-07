@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database.db import SessionLocal
 from models.pydantic_models import Travel
 
-# Router trip
+# Router travel
 router = APIRouter(
     prefix="/travel",
     tags=["travel"],
