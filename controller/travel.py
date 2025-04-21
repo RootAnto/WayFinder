@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, FastAPI
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
 from amadeus import Client, ResponseError
 import os
-from models.pydantic_models import FlightSegment, FlightItinerary, FlightPrice,FlightOffer,FlightSearchQuery,FlightSearchResponse
+from models.pydantic_models import FlightSegment, FlightItinerary, FlightPrice,FlightOffer,FlightSearchQuery,FlightSearchResponse,HotelAddress,HotelGeoCode,Hotel,HotelSearchQuery,HotelSearchResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 router = APIRouter()
 
@@ -101,8 +102,65 @@ def process_flight_offers(offers: list) -> list[FlightOffer]:
     return processed_offers
 
 
+
+
+@router.post("/buscarHotel", response_model=HotelSearchResponse)
+async def search_hotels(query: HotelSearchQuery):
+    try:
+        params = {
+            'cityCode': query.city_code.upper(),
+            'checkInDate': query.check_in_date,
+            'checkOutDate': query.check_out_date,
+            'adults': query.adults,
+            'radius': query.radius,
+            'radiusUnit': query.radius_unit,
+            'hotelSource': query.hotel_source,
+            'paymentPolicy': query.payment_policy,
+            'includeClosed': query.include_closed,
+            'bestRateOnly': query.best_rate_only,
+            'view': query.view,
+            'sort': query.sort
+        }
+
+        response = amadeus.shopping.hotel_offers_search.get(**params)
+
+        hotels_data = response.data
+
+        hotels = []
+        for hotel_entry in hotels_data:
+            hotel_info = hotel_entry['hotel']
+            hotels.append(Hotel(
+                hotelId=hotel_info.get('hotelId'),
+                name=hotel_info.get('name'),
+                address=hotel_info.get('address'),
+                geoCode=hotel_info.get('geoCode'),
+                rating=hotel_info.get('rating'),
+                amenities=hotel_info.get('amenities')
+            ))
+
+        return HotelSearchResponse(
+            success=True,
+            hotels=hotels,
+            count=len(hotels),
+            currency=hotels_data[0]['offers'][0]['price']['currency'] if hotels_data else 'EUR'
+        )
+
+    except ResponseError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error en la API de Amadeus: {str(error)}"
+        )
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error interno al buscar hoteles: {str(error)}"
+        )
+
+
 @router.post("/buscarViaje", response_model=FlightSearchResponse)
 async def search_flights(query: FlightSearchQuery):
+    
+
     """
     Busca vuelos disponibles usando la API de Amadeus según los parámetros proporcionados.
     
@@ -119,7 +177,6 @@ async def search_flights(query: FlightSearchQuery):
     - max_results: Máximo número de resultados (1-50)
     """
     try:
-        
         params = {
             'originLocationCode': query.origin.upper(),
             'destinationLocationCode': query.destination.upper(),
@@ -142,7 +199,9 @@ async def search_flights(query: FlightSearchQuery):
         
 
         processed_offers = process_flight_offers(response.data)
-        
+        processed_offers = [FlightOffer(**offer) for offer in processed_offers]
+
+        print(processed_offers)
         return FlightSearchResponse(
             success=True,
             offers=processed_offers,
@@ -160,3 +219,13 @@ async def search_flights(query: FlightSearchQuery):
             status_code=500,
             detail=f"Error interno al buscar vuelos: {str(error)}"
         )
+    
+
+
+
+
+
+
+
+
+
