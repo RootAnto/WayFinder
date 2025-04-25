@@ -162,7 +162,7 @@ async def search_hotels(query: HotelSearchQuery):
 
 @router.post("/buscarViaje", response_model=FlightSearchResponse)
 async def search_flights(query: FlightSearchQuery):
-    
+
 
     """
     Busca vuelos disponibles usando la API de Amadeus según los parámetros proporcionados.
@@ -180,10 +180,6 @@ async def search_flights(query: FlightSearchQuery):
     - max_results: Máximo número de resultados (1-50)
     """
     try:
-<<<<<<< HEAD
-=======
-
->>>>>>> 7524803da4bda6d3dbb0abbaf4fdbe0406b447e3
         params = {
             'originLocationCode': query.origin.upper(),
             'destinationLocationCode': query.destination.upper(),
@@ -194,7 +190,6 @@ async def search_flights(query: FlightSearchQuery):
             'max': min(query.max_results, 50)
         }
 
-
         if query.return_date:
             params['returnDate'] = query.return_date
         if query.travel_class:
@@ -204,18 +199,8 @@ async def search_flights(query: FlightSearchQuery):
 
         response = amadeus.shopping.flight_offers_search.get(**params)
 
-
         processed_offers = process_flight_offers(response.data)
-<<<<<<< HEAD
-        #processed_offers = [FlightOffer(**offer) for offer in processed_offers]
 
-        print(processed_offers)
-
-
-        
-=======
-
->>>>>>> 7524803da4bda6d3dbb0abbaf4fdbe0406b447e3
         return FlightSearchResponse(
             success=True,
             offers=processed_offers,
@@ -233,7 +218,8 @@ async def search_flights(query: FlightSearchQuery):
             status_code=500,
             detail=f"Error interno al buscar vuelos: {str(error)}"
         )
-    
+
+
 
 
 
