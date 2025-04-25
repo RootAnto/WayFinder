@@ -7,14 +7,17 @@ import os
 from models.pydantic_models import FlightSegment, FlightItinerary, FlightPrice,FlightOffer,FlightSearchQuery,FlightSearchResponse,HotelAddress,HotelGeoCode,Hotel,HotelSearchQuery,HotelSearchResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-router = APIRouter()
-
-amadeus = Client(
-    client_id= 'TQuma09ZE8fjGSmGMZFfJcIBjiVwJXNi',
-    client_secret='X0wgECJpBVvsrhmo'
+# Router travel
+router = APIRouter(
+    prefix="/travel",
+    tags=["travel"],
+    responses={404: {"description": "Not found"}},
 )
 
-
+amadeus = Client(
+    client_id='TQuma09ZE8fjGSmGMZFfJcIBjiVwJXNi',
+    client_secret='X0wgECJpBVvsrhmo'
+)
 
 def format_duration(duration_str: str) -> str:
     """Formatea la duración PT7H46M a 7h 46m"""
@@ -29,13 +32,13 @@ def format_date(date_str: str) -> str:
 
 def process_flight_offers(offers: list) -> list[FlightOffer]:
     processed_offers = []
-    
+
     for offer in offers:
-        
+
         outbound = offer['itineraries'][0]
         return_trip = offer['itineraries'][1] if len(offer['itineraries']) > 1 else None
 
-        
+
         outbound_segments = []
         for segment in outbound['segments']:
             outbound_segments.append({
@@ -54,8 +57,8 @@ def process_flight_offers(offers: list) -> list[FlightOffer]:
                 'duration': format_duration(segment['duration']),
                 'aircraft': segment['aircraft']['code']
             })
-        
-        
+
+
         return_segments = []
         if return_trip:
             for segment in return_trip['segments']:
@@ -75,10 +78,10 @@ def process_flight_offers(offers: list) -> list[FlightOffer]:
                     'duration': format_duration(segment['duration']),
                     'aircraft': segment['aircraft']['code']
                 })
-        
-        
+
+
         cabin = offer['travelerPricings'][0]['fareDetailsBySegment'][0]['cabin']
-        
+
         processed_offers.append(FlightOffer(
             id=offer['id'],
             price=FlightPrice(
@@ -98,7 +101,7 @@ def process_flight_offers(offers: list) -> list[FlightOffer]:
             airline=offer['validatingAirlineCodes'][0],
             remaining_seats=offer['numberOfBookableSeats']
         ))
-    
+
     return processed_offers
 
 
@@ -163,7 +166,7 @@ async def search_flights(query: FlightSearchQuery):
 
     """
     Busca vuelos disponibles usando la API de Amadeus según los parámetros proporcionados.
-    
+
     Parámetros:
     - origin: Código IATA del aeropuerto de origen (3 letras)
     - destination: Código IATA del aeropuerto de destino (3 letras)
@@ -177,6 +180,10 @@ async def search_flights(query: FlightSearchQuery):
     - max_results: Máximo número de resultados (1-50)
     """
     try:
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7524803da4bda6d3dbb0abbaf4fdbe0406b447e3
         params = {
             'originLocationCode': query.origin.upper(),
             'destinationLocationCode': query.destination.upper(),
@@ -184,9 +191,9 @@ async def search_flights(query: FlightSearchQuery):
             'adults': query.adults,
             'children': query.children,
             'infants': query.infants,
-            'max': min(query.max_results, 50)  
+            'max': min(query.max_results, 50)
         }
-        
+
 
         if query.return_date:
             params['returnDate'] = query.return_date
@@ -196,22 +203,26 @@ async def search_flights(query: FlightSearchQuery):
             params['nonStop'] = 'true'
 
         response = amadeus.shopping.flight_offers_search.get(**params)
-        
+
 
         processed_offers = process_flight_offers(response.data)
+<<<<<<< HEAD
         #processed_offers = [FlightOffer(**offer) for offer in processed_offers]
 
         print(processed_offers)
 
 
         
+=======
+
+>>>>>>> 7524803da4bda6d3dbb0abbaf4fdbe0406b447e3
         return FlightSearchResponse(
             success=True,
             offers=processed_offers,
             count=len(processed_offers),
             currency=processed_offers[0].price.currency if processed_offers else 'EUR'
         )
-        
+
     except ResponseError as error:
         raise HTTPException(
             status_code=400,

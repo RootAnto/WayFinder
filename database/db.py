@@ -25,7 +25,9 @@ cursor.close()
 db_connection.close()
 
 # Connection string for SQLAlchemy (using the standard 'mysql' dialect)
-SQLALCHEMY_DATABASE_URL = "mysql://root:@localhost:3306/wayfinder_db"
+
+SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://root:@localhost:3306/wayfinder_db"
+
 
 # Configure SQLAlchemy
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
