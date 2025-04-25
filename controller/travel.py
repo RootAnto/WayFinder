@@ -199,9 +199,12 @@ async def search_flights(query: FlightSearchQuery):
         
 
         processed_offers = process_flight_offers(response.data)
-        processed_offers = [FlightOffer(**offer) for offer in processed_offers]
+        #processed_offers = [FlightOffer(**offer) for offer in processed_offers]
 
         print(processed_offers)
+
+
+        
         return FlightSearchResponse(
             success=True,
             offers=processed_offers,

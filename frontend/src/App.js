@@ -46,7 +46,7 @@ function App() {
       max_results: 5
     };
     
-    fetch("http://localhost:8000/buscarViaje", {
+    fetch("http://localhost:8001/buscarViaje", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
