@@ -30,13 +30,13 @@ function App() {
   };
 
 
-  
-  
 
- 
+
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const data = {
       origin: searchParams.from,
       destination: searchParams.to,
@@ -45,7 +45,7 @@ function App() {
       adults: 1,
       max_results: 5
     };
-    
+
     fetch("http://localhost:8001/buscarViaje", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -62,34 +62,34 @@ function App() {
       console.error("Error al obtener los vuelos:", err);
       setMensaje("Hubo un error al obtener los vuelos. Por favor, intenta nuevamente.");
     });
-    
+
   };
-  
+
 
   return (
     <div className="app">
       <Header />
-      
+
       <main className="main-content">
         <div className="container">
           <h1>Millones de vuelos baratos. Tu eligues tu proximo destino.</h1>
           <br/>
-          
-          <SearchForm 
+
+          <SearchForm
             searchParams={searchParams}
             onInputChange={handleInputChange}
             onSubmit={handleSubmit}
           />
-          
+
           <ServicesSection />
-          
+
           {resultados.length > 0 && (
             <div className="flight-results">
               <h3>Vuelos disponibles</h3>
               <ul>
                 {resultados.map((vuelo, index) => (
                   <li key={index}>
-                    <strong>Desde:</strong> {vuelo.itineraries[0].segments[0].departure.iataCode} - 
+                    <strong>Desde:</strong> {vuelo.itineraries[0].segments[0].departure.iataCode} -
                     <strong>Hasta:</strong> {vuelo.itineraries[0].segments.slice(-1)[0].arrival.iataCode} <br />
                     <strong>Precio:</strong> {vuelo.price.total} EUR
                   </li>
@@ -100,7 +100,7 @@ function App() {
 
         </div>
       </main>
-      
+
       <Footer />
     </div>
   );
@@ -132,48 +132,48 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
       <div className="form-row">
         <div className="form-group">
           <label>Desde</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="from"
             value={searchParams.from}
             onChange={onInputChange}
           />
         </div>
-        
+
         <div className="form-group">
           <label>A</label>
-          <input 
-            type="text" 
+          <input
+            type="text"
             name="to"
             value={searchParams.to}
             onChange={onInputChange}
-            placeholder="País, ciudad o aeropuerto..." 
+            placeholder="País, ciudad o aeropuerto..."
           />
         </div>
-        
+
         <div className="form-group">
           <label>Ida</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             name="departure"
             value={searchParams.departure}
             onChange={onInputChange}
           />
         </div>
-        
+
         <div className="form-group">
           <label>Vuelta</label>
-          <input 
-            type="date" 
+          <input
+            type="date"
             name="return"
             value={searchParams.return}
             onChange={onInputChange}
           />
         </div>
-        
+
         <div className="form-group">
           <label>Viajeros y clase de cabina</label>
-          <select 
+          <select
             name="passengers"
             value={searchParams.passengers}
             onChange={onInputChange}
@@ -185,41 +185,41 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
           </select>
         </div>
       </div>
-      
+
       <div className="form-row">
         <div className="checkbox-group">
-          <input 
-            type="checkbox" 
-            id="nearby-airports-from" 
+          <input
+            type="checkbox"
+            id="nearby-airports-from"
             name="nearbyFrom"
             checked={searchParams.nearbyFrom}
             onChange={onInputChange}
           />
           <label htmlFor="nearby-airports-from">Añade aeropuertos cercanos</label>
         </div>
-        
+
         <div className="checkbox-group">
-          <input 
-            type="checkbox" 
-            id="nearby-airports-to" 
+          <input
+            type="checkbox"
+            id="nearby-airports-to"
             name="nearbyTo"
             checked={searchParams.nearbyTo}
             onChange={onInputChange}
           />
           <label htmlFor="nearby-airports-to">Añade aeropuertos cercanos</label>
         </div>
-        
+
         <div className="checkbox-group">
-          <input 
-            type="checkbox" 
-            id="direct-flights" 
+          <input
+            type="checkbox"
+            id="direct-flights"
             name="directOnly"
             checked={searchParams.directOnly}
             onChange={onInputChange}
           />
           <label htmlFor="direct-flights">Vuelos directos</label>
         </div>
-        
+
         <div style={{flexGrow: 1, textAlign: 'right'}}>
           <button type="submit" className="search-button">Buscar vuelos</button>
         </div>
@@ -231,13 +231,13 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
 const ServicesSection = () => (
   <>
     <hr className="divider" />
-    
+
     <div className="options-section">
       <a href="#" className="option-link">Hoteles</a>
       <a href="#" className="option-link">Alquiler de coches</a>
       <a href="#" className="option-link">Explora cualquier lugar</a>
     </div>
-    
+
     <hr className="divider" />
   </>
 );
@@ -255,7 +255,7 @@ const Footer = () => (
             <li><a href="#">Blog</a></li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Asistencia</h4>
           <ul>
@@ -265,7 +265,7 @@ const Footer = () => (
             <li><a href="#">Términos y condiciones</a></li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Recursos</h4>
           <ul>
@@ -275,7 +275,7 @@ const Footer = () => (
             <li><a href="#">Mapa del sitio</a></li>
           </ul>
         </div>
-        
+
         <div className="footer-column">
           <h4>Suscríbete</h4>
           <p>Recibe ofertas exclusivas en tu correo</p>
@@ -290,7 +290,7 @@ const Footer = () => (
           </div>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
         <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
       </div>
