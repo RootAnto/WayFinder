@@ -2,6 +2,7 @@
 from fastapi import FastAPI
 import uvicorn
 from controller.travel import router as viajes_router
+from controller.fb import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -17,7 +18,8 @@ app.add_middleware(
 )
 
 
-# Include the travel router
+# Include the travel 
+app.include_router(auth_router)
 app.include_router(viajes_router)
 
 if __name__ == "__main__":
