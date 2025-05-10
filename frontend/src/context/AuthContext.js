@@ -6,40 +6,51 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Efecto para cargar el usuario al iniciar y mantener persistencia 
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-          const parsedUser = JSON.parse(storedUser);
-          
-          setCurrentUser(parsedUser);
+    // Verificar sesión al cargar
+    useEffect(() => {
+      const verifySession = async () => {
+        try {
+          const storedSession = localStorage.getItem('session');
+          if (storedSession) {
+            const { user, expiresAt } = JSON.parse(storedSession);
+            
+            if (Date.now() < expiresAt) {
+              setCurrentUser(user);
+            } else {
+              localStorage.removeItem('session');
+            }
+          }
+        } catch (error) {
+          console.error('Error verifying session:', error);
+          localStorage.removeItem('session');
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error('Error al cargar usuario:', error);
-        localStorage.removeItem('user'); // Limpiar datos corruptos
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadUser();
-  }, []);
+      };
+  
+      verifySession();
+  
+      // Verificar expiración cada 30 segundos
+      const interval = setInterval(verifySession, 30000);
+      return () => clearInterval(interval);
+    }, []);
 
   const login = async (email, password) => {
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/auth/login', {
-        email,
-        password
-      });
+      const response = await axios.post('http://localhost:8000/auth/login', {email, password});
 
+      const sessionData = {
+        user: response.data,
+        expiresAt: new Date().getTime() + (60 * 1000) // 1min
+      };
+      
+      localStorage.setItem('session', JSON.stringify(sessionData));
       setCurrentUser(response.data);
-      localStorage.setItem('user', JSON.stringify(response.data));
+
       return response.data;
     } catch (error) {
       console.error('Login error:', error.response?.data);
