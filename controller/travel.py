@@ -11,7 +11,7 @@ amadeus = Client(
 )
 
 @router.post("/flight-search", response_model=FlightSearchResponse)
-async def search_flights(query: FlightSearchQuery):
+async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
     try:
         params = {
             "originLocationCode": query.originLocationCode,
