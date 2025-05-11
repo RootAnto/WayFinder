@@ -38,9 +38,9 @@ class FlightSearchResponse(BaseModel):
 
 # Modelo para los parámetros de búsqueda
 class FlightSearchQuery(BaseModel):
-    originLocationCode: str
-    destinationLocationCode: str
-    departureDate: str  # YYYY-MM-DD
-    returnDate: Optional[str] = None
-    adults: int
+    originLocationCode: str = 'MAD'
+    destinationLocationCode: str = 'NYC'
+    departureDate: str = '2025-06-15'
+    returnDate: Optional[str] = '2025-06-25'
+    adults: int = 1
     max: Optional[int] = 5

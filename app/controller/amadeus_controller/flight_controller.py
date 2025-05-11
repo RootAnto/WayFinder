@@ -1,17 +1,30 @@
 from fastapi import APIRouter, HTTPException
 from amadeus import Client, ResponseError
-from models.pydantic_models import FlightSearchQuery, FlightSearchResponse, FlightOffer, FlightPrice, FlightItinerary, FlightSegment
-from typing import List
-
-router = APIRouter()
+from models.pydantics_models.flight_pydantic_models import (
+        FlightSearchQuery,
+        FlightSearchResponse,
+        FlightOffer,
+        FlightPrice,
+        FlightItinerary,
+        FlightSegment
+    )
 
 amadeus = Client(
     client_id='GIsfA7oZrgp2EvhFPAOxZec3BNbb3glg',
     client_secret='0Bf6uymrGEPfB2Vr'
 )
 
+router = APIRouter(
+    tags=["Flights"],
+     responses={
+        200: {"description": "Request completed successfully"},
+        400: {"description": "Bad request due to invalid parameters"},
+        500: {"description": "Internal server error"},
+    },
+)
+
 @router.post("/flight-search", response_model=FlightSearchResponse)
-async def search_flights(query: FlightSearchQuery):
+async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
     try:
         params = {
             "originLocationCode": query.originLocationCode,
