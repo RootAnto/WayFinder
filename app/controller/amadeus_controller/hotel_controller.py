@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from amadeus import Client, ResponseError
-from models.pydantics_models.hotel_pydantic_model import (
+from models.amadeus_pydantic.hotel import (
     HotelSearchQuery,
     HotelSearchResponse,
     HotelInfo

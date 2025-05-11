@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException
 from amadeus import Client, ResponseError
 from datetime import datetime
 import random
-from models.pydantics_models.trip_pydantic_nodel import TripSearchQuery, TripSearchResponse, TripCostSummary
-from models.pydantics_models.hotel_pydantic_model import HotelInfo
-from models.pydantics_models.vehicle_pydantic_model import VehicleInfo
-from models.pydantics_models.flight_pydantic_models import FlightOffer, FlightSegment, FlightItinerary, FlightPrice
+from models.amadeus_pydantic.trip_suggested import TripSearchQuery, TripSearchResponse, TripCostSummary
+from models.amadeus_pydantic.hotel import HotelInfo
+from models.amadeus_pydantic.vehicle import VehicleInfo
+from models.amadeus_pydantic.flight import FlightOffer, FlightSegment, FlightItinerary, FlightPrice
 
 amadeus = Client(
     client_id='GIsfA7oZrgp2EvhFPAOxZec3BNbb3glg',

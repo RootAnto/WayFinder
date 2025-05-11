@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from typing import List, Optional
-from models.pydantics_models.flight_pydantic_models import FlightOffer
-from models.pydantics_models.hotel_pydantic_model import HotelInfo
-from models.pydantics_models.vehicle_pydantic_model import VehicleInfo
+from models.amadeus_pydantic.flight import FlightOffer
+from models.amadeus_pydantic.hotel import HotelInfo
+from models.amadeus_pydantic.vehicle import VehicleInfo
 
 
 class TripSearchQuery(BaseModel):
