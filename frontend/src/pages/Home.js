@@ -48,7 +48,7 @@ function App() {
       max_results: 5
     };
 
-    fetch("http://localhost:8001/buscarViaje", {
+    fetch("http://localhost:8000/buscarViaje", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -114,7 +114,20 @@ function App() {
 }
 
 const Header = () => {
-  const { currentUser, logout } = useAuth(); 
+  const { currentUser, logout } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  //cuando clicke fuera se cierra
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isMenuOpen && !e.target.closest('.user-menu-container')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
 
   return (
     <header className="header">
@@ -129,10 +142,29 @@ const Header = () => {
         </nav>
         <div className="auth-buttons">
           {currentUser ? (
-            <>
-              <span className="user-welcome">Hola, {currentUser.nombre}</span>
-              <button onClick={logout} className="logout-btn">Cerrar sesión</button>
-            </>
+            <div className="user-menu-container">
+              <button 
+                className="user-menu-trigger"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <span className="user-avatar">
+                  {currentUser.nombre.charAt(0).toUpperCase()}
+                </span>
+                <span className="user-welcome">{currentUser.nombre}</span>
+                <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
+              </button>
+              
+              {isMenuOpen && (
+                <div className="user-dropdown">
+                  <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
+                    Mi perfil
+                  </Link>
+                  <button className="logout-btn" onClick={logout}>
+                    Cerrar sesión
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               <Link to="/login" className="login-btn">Iniciar sesión</Link>
@@ -241,7 +273,8 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
         </div>
 
         <div style={{flexGrow: 1, textAlign: 'right'}}>
-          <button type="submit" className="search-button">Buscar vuelos</button>
+          {/* <button type="submit" className="search-button">Buscar vuelos</button> */}
+          <Link to="/FlightResults" className="search-button">Buscar vuelos</Link>
         </div>
       </div>
     </form>

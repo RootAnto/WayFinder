@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
 
       const sessionData = {
         user: response.data,
-        expiresAt: new Date().getTime() + (60 * 1000) // 1min
+        expiresAt: new Date().getTime() + (60 * 60 * 1000) // 1 hora
       };
       
       localStorage.setItem('session', JSON.stringify(sessionData));
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setCurrentUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem('session');
     navigate('/login');
   };
 

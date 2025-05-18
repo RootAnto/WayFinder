@@ -60,27 +60,19 @@
     opacity: 0.8;
   }
   
-  .auth-buttons {
-    display: flex;
-    gap: 10px;
-  }
-  
-  .login-btn, .register-btn, .logout-btn {
+  .login-btn, .register-btn {
     padding: 8px 16px;
     border-radius: 4px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s;
     text-decoration: none;
-  }
-  
-  .login-btn, .register-btn, .logout-btn {
     background: white;
     border: 1px solid white;
     color: #003580;
   }
-  
-  .login-btn:hover, .register-btn:hover, .logout-btn:hover {
+
+  .login-btn:hover, .register-btn:hover {
     opacity: 0.9;
   }
 
@@ -101,6 +93,95 @@
     gap: 10px;
   }
   
+  /* Menú de usuario desplegable */
+  .user-menu-container {
+    position: relative;
+  }
+
+  .user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.3s;
+  }
+
+  .user-menu-trigger:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    background-color: #0071c2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+
+  .dropdown-arrow {
+    font-size: 10px;
+    transition: transform 0.3s;
+    margin-left: 5px;
+  }
+
+  .dropdown-arrow.open {
+    transform: rotate(180deg);
+  }
+
+  .user-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    min-width: 180px;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .user-dropdown a {
+    text-decoration: none;
+    display: block;
+  }
+
+
+  .logout-btn, .perfil  {
+    width: 100%;
+    text-align: left;
+    font-size: 15px;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    color: #003580;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+  }
+
+  .logout-btn:hover, .perfil:hover {
+    background-color: #f0f0f0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cerrar menú al hacer clic fuera */
+  body.user-menu-open {
+    overflow: hidden;
+  }
+
   /* Main content */
   .main-content {
     flex: 1;

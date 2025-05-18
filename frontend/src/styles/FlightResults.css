@@ -1,0 +1,379 @@
+/* Estilos generales */
+.flight-results-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.results-container {
+  flex: 1;
+  overflow-y: auto; /* Hace que solo esta área sea desplazable */
+  max-height: calc(100vh - 483px); /* Ajusta según la altura de tu header/footer */
+  padding: 20px 0;
+}
+
+.flights-list {
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: 10px; /* Espacio para el scroll */
+}
+
+/* Opcional: estilo personalizado para el scroll */
+.flights-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.flights-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.flights-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.flights-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  padding: 15px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.breadcrumb a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* Filtros */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.filter-btn {
+  padding: 10px 15px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.filter-btn:hover {
+  border-color: #0066cc;
+}
+
+.filter-btn.active {
+  background: #0066cc;
+  color: white;
+  border-color: #0066cc;
+}
+
+.filter-btn i {
+  font-size: 12px;
+}
+
+/* Resumen de búsqueda */
+.search-summary {
+  margin: 20px 0 30px;
+}
+
+.search-summary h2 {
+  color: #003580;
+  margin-bottom: 5px;
+}
+
+.search-summary p {
+  color: #666;
+}
+
+/* Listado de vuelos */
+.flights-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.flight-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.flight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.flight-header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.airline-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  margin-right: 10px;
+}
+
+.airline-name {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.flight-price {
+  font-weight: bold;
+  font-size: 18px;
+  color: #003580;
+}
+
+.flight-details {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+}
+
+.time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.time {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.airport {
+  font-size: 14px;
+  color: #003580;
+  font-weight: 500;
+}
+
+.date {
+  font-size: 12px;
+  color: #666;
+}
+
+.duration-block {
+  flex-grow: 1;
+  padding: 0 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.duration-line {
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+  position: relative;
+  margin: 10px 0;
+}
+
+.duration-line::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0066cc;
+}
+
+.duration-line::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0066cc;
+}
+
+.duration {
+  position: absolute;
+  top: -15px;
+  background: white;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.stops {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.flight-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  background: #f9f9f9;
+}
+
+.baggage-info {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.baggage-info i {
+  color: #0066cc;
+}
+
+.select-btn {
+  padding: 8px 20px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.select-btn:hover {
+  background: #e64a19;
+}
+
+/* Footer */
+  .footer {
+    background-color: #003580;
+    color: white;
+    padding: 40px 0 20px;
+    margin-top: auto;
+  }
+  
+  .footer-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin-bottom: 30px;
+  }
+  
+  .footer-column {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .footer-column h4 {
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .footer-column ul {
+    list-style: none;
+  }
+  
+  .footer-column li {
+    margin-bottom: 10px;
+  }
+  
+  .footer-column a {
+    color: #ddd;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  
+  .footer-column a:hover {
+    color: white;
+  }
+  
+  .newsletter-form {
+    display: flex;
+    margin: 15px 0;
+  }
+  
+  .newsletter-form input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px 0 0 4px;
+  }
+  
+  .newsletter-form button {
+    padding: 10px 15px;
+    background-color: #0071c2;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+  }
+  
+  .social-links {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+  }
+  
+  .social-links a {
+    color: white;
+  }
+  
+  .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ddd;
+    font-size: 14px;
+  }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filters {
+    flex-wrap: wrap;
+  }
+  
+  .flight-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .duration-block {
+    width: 100%;
+    padding: 15px 0;
+  }
+  
+  .duration-line {
+    margin: 5px 0;
+  }
+}

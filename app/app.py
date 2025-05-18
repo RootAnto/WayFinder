@@ -7,6 +7,7 @@ from controller.amadeus_controller.vehicle_controller import router as vehicle_r
 from controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
 from controller.trips_tickets import router as trips_tickets_route
 from controller.user_controller import router as user_controller_route
+from controller.fb import router as auth_router
 
 app = FastAPI()
 
@@ -20,6 +21,7 @@ app.add_middleware(
 )
 
 # Include routes
+app.include_router(auth_router)
 app.include_router(fligth_router)
 app.include_router(hotel_router)
 app.include_router(vehicle_router)
