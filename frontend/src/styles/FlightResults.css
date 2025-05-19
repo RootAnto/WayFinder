@@ -58,6 +58,34 @@
   text-decoration: underline;
 }
 
+.results-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0 25px;
+  border-bottom: 1px solid #eee;
+}
+
+.results-navigation .nav-link {
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
+  margin-right: 5px;
+  transition: all 0.3s;
+}
+
+.results-navigation .nav-link.active {
+  color: #003580;
+  border-bottom: 3px solid #003580;
+}
+
+.results-navigation .nav-link:hover {
+  color: #0066cc;
+}
+
 /* Filtros */
 .filters {
   display: flex;
@@ -130,6 +158,7 @@
 
 .flight-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
   border-bottom: 1px solid #eee;
@@ -240,7 +269,7 @@
 
 .flight-footer {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
   align-items: center;
   padding: 15px 20px;
   border-top: 1px solid #eee;
@@ -272,6 +301,194 @@
 
 .select-btn:hover {
   background: #e64a19;
+}
+
+/* Listado de hoteles */
+.hotels-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.hotel-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.hotel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.hotel-image {
+  height: 180px;
+  overflow: hidden;
+}
+
+.hotel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.hotel-card:hover .hotel-image img {
+  transform: scale(1.05);
+}
+
+.hotel-info {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.hotel-info h3 {
+  margin: 0 0 10px;
+  color: #003580;
+  font-size: 18px;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.location i {
+  color: #0066cc;
+}
+
+.price {
+  margin-top: auto;
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff5722;
+}
+
+.price span {
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+}
+
+.hotel-card .select-btn {
+  margin: 15px;
+  width: calc(100% - 30px);
+}
+
+/* Listado de vehículos */
+.vehicles-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.vehicle-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.vehicle-image {
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+}
+
+.vehicle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.vehicle-card:hover .vehicle-image img {
+  transform: scale(1.05);
+}
+
+.vehicle-type-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 53, 128, 0.9);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-transform: capitalize;
+}
+
+.vehicle-info {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+.vehicle-info h3 {
+  margin: 0 0 5px;
+  color: #003580;
+  font-size: 18px;
+}
+
+.vehicle-info h3 span {
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+}
+
+.vehicle-price {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ff5722;
+  margin: 10px 0;
+}
+
+.vehicle-price span {
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+}
+
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.features span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  color: #333;
+  background: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.vehicle-card .select-btn {
+  margin: 0 15px 15px;
+  width: calc(100% - 30px);
 }
 
 /* Footer */

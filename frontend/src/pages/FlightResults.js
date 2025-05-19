@@ -1,124 +1,165 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/FlightResults.css';
 
 function FlightResults() {
   const { currentUser } = useAuth();
-  const [activeFilter, setActiveFilter] = useState('cheapest');
+  const [activeTab, setActiveTab] = useState('flights');
+  const location = useLocation();
   
-  // Datos de ejemplo de vuelos
-  const [flights, setFlights] = useState([
-    {
-      id: 1,
-      airline: 'Iberia',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Iberia_logo.svg/1200px-Iberia_logo.svg.png',
-      departure: {
-        time: '08:30',
-        airport: 'MAD',
-        date: 'Lun 15 Jun'
-      },
-      arrival: {
-        time: '10:15',
-        airport: 'BCN',
-        date: 'Lun 15 Jun'
-      },
-      duration: '1h 45m',
-      stops: 'Directo',
-      price: 89,
-      baggage: 'Incluida'
+  // Extraer datos de location.state o usar valores por defecto
+  const { 
+    searchParams = {
+      from: 'MAD',
+      to: 'NYC',
+      departure: '2025-06-15',
+      return: '2025-06-25',
+      passengers: '1 Adulto, Turista'
     },
-    {
-      id: 2,
-      airline: 'Vueling',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Vueling_logo.svg/1200px-Vueling_logo.svg.png',
-      departure: {
-        time: '12:45',
-        airport: 'MAD',
-        date: 'Lun 15 Jun'
-      },
-      arrival: {
-        time: '14:30',
-        airport: 'BCN',
-        date: 'Lun 15 Jun'
-      },
-      duration: '1h 45m',
-      stops: 'Directo',
-      price: 65,
-      baggage: 'Incluida'
-    },
-    {
-      id: 3,
-      airline: 'Air Europa',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Air_Europa_logo.svg/1200px-Air_Europa_logo.svg.png',
-      departure: {
-        time: '18:20',
-        airport: 'MAD',
-        date: 'Lun 15 Jun'
-      },
-      arrival: {
-        time: '20:05',
-        airport: 'BCN',
-        date: 'Lun 15 Jun'
-      },
-      duration: '1h 45m',
-      stops: 'Directo',
-      price: 78,
-      baggage: 'Incluida'
-    },
-    {
-      id: 4,
-      airline: 'Ryanair',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Ryanair_logo_2013.svg/1200px-Ryanair_logo_2013.svg.png',
-      departure: {
-        time: '07:15',
-        airport: 'MAD',
-        date: 'Lun 15 Jun'
-      },
-      arrival: {
-        time: '09:30',
-        airport: 'BCN',
-        date: 'Lun 15 Jun'
-      },
-      duration: '2h 15m',
-      stops: 'Directo',
-      price: 45,
-      baggage: 'No incluida'
-    },
-    {
-      id: 5,
-      airline: 'Iberia',
-      logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/Iberia_logo.svg/1200px-Iberia_logo.svg.png',
-      departure: {
-        time: '21:00',
-        airport: 'MAD',
-        date: 'Lun 15 Jun'
-      },
-      arrival: {
-        time: '22:45',
-        airport: 'BCN',
-        date: 'Lun 15 Jun'
-      },
-      duration: '1h 45m',
-      stops: 'Directo',
-      price: 95,
-      baggage: 'Incluida'
-    }
-  ]);
+    flightResults = [],
+    hotelResults = [],
+    vehicleResults = []
+  } = location.state || {};
 
-  // Filtrar vuelos según la opción seleccionada
-  const filteredFlights = [...flights].sort((a, b) => {
-    if (activeFilter === 'cheapest') return a.price - b.price;
-    if (activeFilter === 'expensive') return b.price - a.price;
-    if (activeFilter === 'fastest') {
-      const durationA = parseInt(a.duration);
-      const durationB = parseInt(b.duration);
-      return durationA - durationB;
-    }
-    return 0;
+  // Estado para los datos mostrados
+  const [flights, setFlights] = useState(flightResults);
+  const [hotels, setHotels] = useState(hotelResults.data || hotelResults);
+  const [vehicles, setVehicles] = useState(vehicleResults.data || vehicleResults);
+  
+  const [loading, setLoading] = useState({
+    flights: false,
+    hotels: false,
+    vehicles: false
   });
+  const [error, setError] = useState(null);
 
-    const { logout } = useAuth();
+  // Verificar estructura de datos al montar el componente
+    useEffect(() => {
+      console.log('Datos recibidos:', {
+        flightResults,
+        hotelResults: hotelResults.data || hotelResults,
+        vehicleResults: vehicleResults.data || vehicleResults
+      });
+    }, []);
+
+  // Función para formatear fechas
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    return new Date(dateStr).toLocaleDateString('es-ES', options);
+  };
+
+  // Función para formatear horas
+  const formatTime = (dateTimeStr) => {
+    if (!dateTimeStr) return '';
+    return new Date(dateTimeStr).toLocaleTimeString('es-ES', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
+  // Función para formatear duración
+  const formatDuration = (duration) => {
+    if (!duration) return '';
+    return duration.replace('PT', '').replace('H', 'h ').replace('M', 'm').trim();
+  };
+
+  // Función para cargar datos de vuelos
+  const fetchFlights = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/flight-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          originLocationCode: searchParams.from,
+          destinationLocationCode: searchParams.to,
+          departureDate: searchParams.departure,
+          returnDate: searchParams.return,
+          adults: 1,
+          max: 5
+        })
+      });
+
+      if (!response.ok) throw new Error('Error al cargar vuelos');
+      const data = await response.json();
+      setFlights(data.offers || []);
+    } catch (err) {
+      setError(`Error en vuelos: ${err.message}`);
+    } finally {
+      setLoading(prev => ({ ...prev, flights: false }));
+    }
+  };
+
+  // Función para cargar datos de hoteles
+  const fetchHotels = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/hotel-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cityCode: searchParams.to, // Usamos el destino del cliente
+          radius: 10,
+          checkInDate: searchParams.departure,
+          checkOutDate: searchParams.return || searchParams.departure,
+          limit: 10,
+          defaultPrice: 100
+        })
+      });
+
+      if (!response.ok) throw new Error('Error al cargar hoteles');
+      const data = await response.json();
+      setHotels(data.data || []);
+    } catch (err) {
+      setError(`Error en hoteles: ${err.message}`);
+    } finally {
+      setLoading(prev => ({ ...prev, hotels: false }));
+    }
+  };
+
+  // Función para cargar datos de vehículos
+  const fetchVehicles = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/vehicle-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          location: searchParams.to, // Usamos el destino del cliente
+          pickUpDate: searchParams.departure,
+          dropOffDate: searchParams.return || searchParams.departure,
+          vehicleType: "economy",
+          limit: 10,
+          defaultPrice: 50
+        })
+      });
+
+      if (!response.ok) throw new Error('Error al cargar vehículos');
+      const data = await response.json();
+      setVehicles(data.data || []);
+    } catch (err) {
+      setError(`Error en vehículos: ${err.message}`);
+    } finally {
+      setLoading(prev => ({ ...prev, vehicles: false }));
+    }
+  };
+
+  // Cargar datos cuando cambia la pestaña activa
+  useEffect(() => {
+    if (activeTab === 'flights' && flights.length === 0) {
+      setLoading(prev => ({ ...prev, flights: true }));
+      fetchFlights();
+    }
+    if (activeTab === 'hotels' && hotels.length === 0) {
+      setLoading(prev => ({ ...prev, hotels: true }));
+      fetchHotels();
+    }
+    if (activeTab === 'vehicles' && vehicles.length === 0) {
+      setLoading(prev => ({ ...prev, vehicles: true }));
+      fetchVehicles();
+    }
+  }, [activeTab]);
+
+  const { logout } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     //cuando clicke fuera se cierra
@@ -135,134 +176,220 @@ function FlightResults() {
 
   return (
     <div className="flight-results-app">
-      {/* Header (puedes reutilizar el mismo de tu Home) */}
       <header className="header">
-      <div className="container">
-        <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>VuelaBarato</Link></div>
-        <nav className="nav">
-          <a href="#" className="nav-link">Inicio</a>
-          <a href="#" className="nav-link">Vuelos</a>
-          <a href="#" className="nav-link">Hoteles</a>
-          <a href="#" className="nav-link">Ofertas</a>
-          <a href="#" className="nav-link">Contacto</a>
-        </nav>
-        <div className="auth-buttons">
-          {currentUser ? (
-            <div className="user-menu-container">
-              <button 
-                className="user-menu-trigger"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <span className="user-avatar">
-                  {currentUser.nombre.charAt(0).toUpperCase()}
-                </span>
-                <span className="user-welcome">{currentUser.nombre}</span>
-                <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
-              </button>
-              
-              {isMenuOpen && (
-                <div className="user-dropdown">
-                  <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
-                    Mi perfil
-                  </Link>
-                  <button className="logout-btn" onClick={logout}>
-                    Cerrar sesión
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="login-btn">Iniciar sesión</Link>
-              <Link to="/Register" className="register-btn">Registrarse</Link>
-            </>
-          )}
+        <div className="container">
+          <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>VuelaBarato</Link></div>
+          <nav className="nav">
+            <a href="/" className="nav-link">Inicio</a>
+            <a href="#" className="nav-link">Vuelos</a>
+            <a href="#" className="nav-link">Hoteles</a>
+            <a href="#" className="nav-link">Ofertas</a>
+            <a href="#" className="nav-link">Contacto</a>
+          </nav>
+          <div className="auth-buttons">
+            {currentUser ? (
+              <div className="user-menu-container">
+                <button 
+                  className="user-menu-trigger"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
+                  <span className="user-avatar">
+                    {currentUser.nombre.charAt(0).toUpperCase()}
+                  </span>
+                  <span className="user-welcome">{currentUser.nombre}</span>
+                  <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
+                </button>
+                
+                {isMenuOpen && (
+                  <div className="user-dropdown">
+                    <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
+                      Mi perfil
+                    </Link>
+                    <button className="logout-btn" onClick={logout}>
+                      Cerrar sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link to="/login" className="login-btn">Iniciar sesión</Link>
+                <Link to="/Register" className="register-btn">Registrarse</Link>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-    </header>
-
-      {/* Contenido principal */}
+      </header>
+      
       <main className="results-container">
         <div className="container">
           {/* Breadcrumb */}
           <div className="breadcrumb">
             <Link to="/">Inicio</Link> &gt; <span>Resultados de vuelos</span>
           </div>
-
-          {/* Filtros */}
-          <div className="filters">
+          
+          {/* Navegación entre secciones */}
+          <div className="results-navigation">
             <button 
-              className={`filter-btn ${activeFilter === 'cheapest' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('cheapest')}
+              className={`nav-link ${activeTab === 'flights' ? 'active' : ''}`}
+              onClick={() => setActiveTab('flights')}
             >
-              <i className="fas fa-euro-sign"></i> Más baratos
+              Vuelos ({flights.length})
             </button>
             <button 
-              className={`filter-btn ${activeFilter === 'expensive' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('expensive')}
+              className={`nav-link ${activeTab === 'hotels' ? 'active' : ''}`}
+              onClick={() => setActiveTab('hotels')}
             >
-              <i className="fas fa-euro-sign"></i> Más caros
+              Hoteles ({hotels.length})
             </button>
             <button 
-              className={`filter-btn ${activeFilter === 'fastest' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('fastest')}
+              className={`nav-link ${activeTab === 'vehicles' ? 'active' : ''}`}
+              onClick={() => setActiveTab('vehicles')}
             >
-              <i className="fas fa-bolt"></i> Más rápidos
+              Vehículos ({vehicles.length})
             </button>
           </div>
 
           {/* Resumen de búsqueda */}
           <div className="search-summary">
-            <h2>Madrid (MAD) → Barcelona (BCN)</h2>
-            <p>Lunes, 15 de junio - 1 pasajero - Turista</p>
+            <h2>{searchParams.from} → {searchParams.to}</h2>
+            <p>
+              {formatDate(searchParams.departure)} - 
+              {searchParams.return && ` ${formatDate(searchParams.return)}`} | 
+              {searchParams.passengers}
+            </p>
           </div>
 
-          {/* Listado de vuelos */}
-          <div className="flights-list">
-            {filteredFlights.map(flight => (
-              <div key={flight.id} className="flight-card">
-                <div className="flight-header">
-                  <img src={flight.logo} alt={flight.airline} className="airline-logo" />
-                  <span className="airline-name">{flight.airline}</span>
-                  <span className="flight-price">{flight.price} €</span>
-                </div>
-                
-                <div className="flight-details">
-                  <div className="time-block">
-                    <span className="time">{flight.departure.time}</span>
-                    <span className="airport">{flight.departure.airport}</span>
-                    <span className="date">{flight.departure.date}</span>
+          {/* Mensajes de error */}
+          {error && <div className="error">{error}</div>}
+
+          {/* Contenido de cada sección */}
+          <div className="tab-content">
+            {/* Sección de Vuelos */}
+            {activeTab === 'flights' && (
+              <div className="flights-section">
+                {loading.flights ? (
+                  <div className="loading">Cargando vuelos...</div>
+                ) : flights.length === 0 ? (
+                  <div className="no-results">No se encontraron vuelos</div>
+                ) : (
+                  <div className="flights-list">
+                    {flights.map((flight, index) => {
+                      const firstSegment = flight.itineraries[0].segments[0];
+                      const lastSegment = flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1];
+                      
+                      return (
+                        <div key={index} className="flight-card">
+                          <div className="flight-header">
+                            <span className="airline">{firstSegment.carrierCode}</span>
+                            <span className="price">{flight.price.total} {flight.price.currency}</span>
+                          </div>
+                          
+                          <div className="flight-details">
+                            <div className="time-block">
+                              <span className="time">{formatTime(firstSegment.departureTime)}</span>
+                              <span className="airport">{firstSegment.departureAirport}</span>
+                            </div>
+                            
+                            <div className="duration-block">
+                              <div className="duration-line">
+                                <span className="duration">{formatDuration(flight.itineraries[0].duration)}</span>
+                              </div>
+                              <span className="stops">
+                                {flight.itineraries[0].segments.length === 1 ? 'Directo' : `${flight.itineraries[0].segments.length - 1} escala(s)`}
+                              </span>
+                            </div>
+                            
+                            <div className="time-block">
+                              <span className="time">{formatTime(lastSegment.arrivalTime)}</span>
+                              <span className="airport">{lastSegment.arrivalAirport}</span>
+                            </div>
+                          </div>
+                          
+                          <div className="flight-footer">
+                            <button className="select-btn">Seleccionar</button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  
-                  <div className="duration-block">
-                    <div className="duration-line">
-                      <span className="duration">{flight.duration}</span>
-                    </div>
-                    <span className="stops">{flight.stops}</span>
-                  </div>
-                  
-                  <div className="time-block">
-                    <span className="time">{flight.arrival.time}</span>
-                    <span className="airport">{flight.arrival.airport}</span>
-                    <span className="date">{flight.arrival.date}</span>
-                  </div>
-                </div>
-                
-                <div className="flight-footer">
-                  <span className="baggage-info">
-                    <i className="fas fa-suitcase"></i> {flight.baggage}
-                  </span>
-                  <button className="select-btn">
-                    Seleccionar
-                  </button>
-                </div>
+                )}
               </div>
-            ))}
+            )}
+
+            {activeTab === 'hotels' && (
+              <div className="hotels-section">
+                {loading.hotels ? (
+                  <div className="loading">Cargando hoteles...</div>
+                ) : hotels.length === 0 ? (
+                  <div className="no-results">No se encontraron hoteles</div>
+                ) : (
+                  <div className="hotels-list">
+                    {hotels.map((hotel) => (
+                      <div key={hotel.hotelId} className="hotel-card">
+                        <div className="hotel-image">
+                          <img 
+                            src={`https://source.unsplash.com/random/300x200/?hotel,${hotel.name}`} 
+                            alt={hotel.name} 
+                          />
+                        </div>
+                        <div className="hotel-info">
+                          <h3>{hotel.name}</h3>
+                          <div className="location">{hotel.cityCode}</div>
+                          <div className="price">
+                            {hotel.price} {hotel.currency}
+                            {hotel.nights && ` x ${hotel.nights} noches`}
+                          </div>
+                        </div>
+                        <button className="select-btn">Reservar</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Sección de Vehículos */}
+            {activeTab === 'vehicles' && (
+              <div className="vehicles-section">
+                {loading.vehicles ? (
+                  <div className="loading">Cargando vehículos...</div>
+                ) : vehicles.length === 0 ? (
+                  <div className="no-results">No se encontraron vehículos</div>
+                ) : (
+                  <div className="vehicles-list">
+                    {vehicles.map((vehicle) => (
+                      <div key={vehicle.vehicleId} className="vehicle-card">
+                        <div className="vehicle-image">
+                          <img 
+                            src={`https://source.unsplash.com/random/300x200/?car,${vehicle.brand}`} 
+                            alt={vehicle.name} 
+                          />
+                        </div>
+                        <div className="vehicle-info">
+                          <h3>{vehicle.name} ({vehicle.year})</h3>
+                          <div className="type">{vehicle.vehicleType || 'Economy'}</div>
+                          <div className="price">
+                            {vehicle.pricePerDay} {vehicle.currency} /día
+                          </div>
+                          <div className="features">
+                            <span>✔️ {vehicle.seats} asientos</span>
+                            <span>✔️ {vehicle.transmission}</span>
+                            <span>✔️ {vehicle.fuelType}</span>
+                            <span>✔️ {vehicle.doors} puertas</span>
+                          </div>
+                        </div>
+                        <button className="select-btn">Alquilar</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>
 
-      {/* Footer (puedes reutilizar el mismo de tu Home) */}
       <footer className="footer">
         <div className="container">
             <div className="footer-columns">

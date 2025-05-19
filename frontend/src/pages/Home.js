@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
 
+// Función para formatear la hora (añade esto fuera del componente App)
+const formatTime = (dateTimeStr) => {
+  if (!dateTimeStr) return '';
+  const date = new Date(dateTimeStr);
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
 function App() {
+  const navigate = useNavigate();
   const [mensaje, setMensaje] = useState('');
-  const [resultados, setResultados] = useState([]);
   const [searchParams, setSearchParams] = useState({
-    from: 'Madrid-Barajas (MAD)',
-    to: '',
-    departure: '',
-    return: '',
+    from: 'MAD',
+    to: 'NYC',
+    departure: '2025-06-15',
+    return: '2025-06-25',
     passengers: '1 Adulto, Turista',
     nearbyFrom: false,
     nearbyTo: false,
@@ -31,40 +38,86 @@ function App() {
     });
   };
 
-
-
-
-
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      // Datos comunes para las peticiones
+      const commonData = {
+        location: searchParams.to,
+        departureDate: searchParams.departure,
+        returnDate: searchParams.return || searchParams.departure,
+        adults: 1
+      };
 
-    const data = {
-      origin: searchParams.from,
-      destination: searchParams.to,
-      departure_date: searchParams.departure,
-      return_date: searchParams.return || "",
-      adults: 1,
-      max_results: 5
-    };
+      // Realizar las 3 peticiones simultáneamente con Promise.all
+      const [flightsResponse, hotelsResponse, vehiclesResponse] = await Promise.all([
+        // Petición de vuelos
+        fetch("http://localhost:8000/flight-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            originLocationCode: searchParams.from,
+            destinationLocationCode: searchParams.to,
+            departureDate: searchParams.departure,
+            returnDate: searchParams.return,
+            adults: 1,
+            max: 5
+          })
+        }),
+        // Petición de hoteles
+        fetch("http://localhost:8000/hotel-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            cityCode: searchParams.to,
+            radius: 10,
+            checkInDate: searchParams.departure,
+            checkOutDate: searchParams.return || searchParams.departure,
+            limit: 10,
+            defaultPrice: 100
+          })
+        }),
+        // Petición de vehículos
+        fetch("http://localhost:8000/vehicle-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            location: searchParams.to,
+            pickUpDate: searchParams.departure,
+            dropOffDate: searchParams.return || searchParams.departure,
+            vehicleType: "economy",
+            limit: 10,
+            defaultPrice: 50
+          })
+        })
+      ]);
 
-    fetch("http://localhost:8000/buscarViaje", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    }).then(res => {
-      console.log("Estado HTTP:", res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("📦 Respuesta de la API:", data); 
-      setResultados(data);
-    })
-    .catch(err => {
-      console.error("Error al obtener los vuelos:", err);
-      setMensaje("Hubo un error al obtener los vuelos. Por favor, intenta nuevamente.");
-    });
+      // Verificar que todas las respuestas sean OK
+      if (!flightsResponse.ok || !hotelsResponse.ok || !vehiclesResponse.ok) {
+        throw new Error('Error en una o más peticiones');
+      }
 
+      // Procesar las respuestas
+      const [flightsData, hotelsData, vehiclesData] = await Promise.all([
+        flightsResponse.json(),
+        hotelsResponse.json(),
+        vehiclesResponse.json()
+      ]);
+
+      // Redirigir a FlightResults con todos los datos
+      navigate('/FlightResults', {
+        state: {
+          searchParams: searchParams,
+          flightResults: flightsData.offers || [],
+          hotelResults: hotelsData.results || [],
+          vehicleResults: vehiclesData.cars || []
+        }
+      });
+      
+    } catch (error) {
+      console.error("Error en la búsqueda:", error);
+      setMensaje(error.message || 'Error al realizar la búsqueda');
+    }
   };
 
   const { currentUser } = useAuth();
@@ -75,7 +128,7 @@ function App() {
 
       <main className="main-content">
         <div className="container">
-          <h1>Millones de vuelos baratos. Tu eligues tu proximo destino.</h1>
+          <h1>Millones de vuelos baratos. Tu eligues tu próximo destino.</h1>
           <br/>
 
           <SearchForm
@@ -86,20 +139,13 @@ function App() {
 
           <ServicesSection />
 
-          {resultados.length > 0 && (
-            <div className="flight-results">
-              <h3>Vuelos disponibles</h3>
-              <ul>
-                {resultados.map((vuelo, index) => (
-                  <li key={index}>
-                    <strong>Desde:</strong> {vuelo.itineraries[0].segments[0].departure.iataCode} -
-                    <strong>Hasta:</strong> {vuelo.itineraries[0].segments.slice(-1)[0].arrival.iataCode} <br />
-                    <strong>Precio:</strong> {vuelo.price.total} EUR
-                  </li>
-                ))}
-              </ul>
+          {/* Mensajes de error */}
+          {mensaje && (
+            <div className="alert alert-error">
+              {mensaje}
             </div>
           )}
+
           {currentUser && (
             <div className="user-greeting">
               <p>Bienvenido, <strong>{currentUser.nombre}</strong>!</p>
@@ -273,8 +319,7 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
         </div>
 
         <div style={{flexGrow: 1, textAlign: 'right'}}>
-          {/* <button type="submit" className="search-button">Buscar vuelos</button> */}
-          <Link to="/FlightResults" className="search-button">Buscar vuelos</Link>
+          <button type="submit" className="search-button">Buscar vuelos</button>
         </div>
       </div>
     </form>
