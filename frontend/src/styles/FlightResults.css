@@ -8,7 +8,7 @@
 .results-container {
   flex: 1;
   overflow-y: auto; /* Hace que solo esta área sea desplazable */
-  max-height: calc(100vh - 483px); /* Ajusta según la altura de tu header/footer */
+  max-height: calc(100vh - 395px); /* Ajusta según la altura de tu header/footer */
   padding: 20px 0;
 }
 
@@ -273,7 +273,6 @@
   align-items: center;
   padding: 15px 20px;
   border-top: 1px solid #eee;
-  background: #f9f9f9;
 }
 
 .baggage-info {

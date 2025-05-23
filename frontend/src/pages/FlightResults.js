@@ -160,19 +160,19 @@ function FlightResults() {
   }, [activeTab]);
 
   const { logout } = useAuth();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    //cuando clicke fuera se cierra
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-        if (isMenuOpen && !e.target.closest('.user-menu-container')) {
-            setIsMenuOpen(false);
-        }
-        };
+  //cuando clicke fuera se cierra
+  useEffect(() => {
+      const handleClickOutside = (e) => {
+      if (isMenuOpen && !e.target.closest('.user-menu-container')) {
+          setIsMenuOpen(false);
+      }
+      };
 
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, [isMenuOpen]);
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+  }, [isMenuOpen]);
 
   return (
     <div className="flight-results-app">

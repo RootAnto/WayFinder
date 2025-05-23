@@ -1,0 +1,551 @@
+Header
+.header {
+  background-color: #003580;
+  color: white;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.nav {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  transition: opacity 0.3s;
+}
+
+.nav-link:hover {
+  opacity: 0.9;
+}
+
+.auth-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.login-btn,
+.register-btn {
+  padding: 8px 20px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-btn {
+  color: #003580;
+  background: white;
+}
+
+.register-btn {
+  color: white;
+  border: 1px solid white;
+}
+
+/* User Menu */
+.user-menu-container {
+  position: relative;
+}
+
+.user-menu-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.user-menu-trigger:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: #0071c2;
+  border-radius: 50%;
+}
+
+.user-dropdown {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-width: 180px;
+  margin-top: 10px;
+  padding: 10px 0;
+}
+
+.user-dropdown a,
+.logout-btn {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.logout-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.user-dropdown a:hover,
+.logout-btn:hover {
+  background: #f5f5f5;
+}
+
+/* Main */
+.flight-results-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+}
+
+.results-container {
+  flex: 1 0 auto;
+  overflow-y: auto;
+  padding: 20px 0;
+  background-color: #f5f7fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  padding: 15px 0;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.breadcrumb a {
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* Resumen de búsqueda */
+.search-summary {
+  margin: 20px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.search-summary h2 {
+  color: #003580;
+  margin: 0 0 5px 0;
+  font-size: 22px;
+}
+
+.search-summary p {
+  color: #666;
+  margin: 0;
+  font-size: 15px;
+}
+
+/* Tarjetas principales */
+.trip-summary-card,
+.flight-card,
+.hotel-card,
+.vehicle-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.trip-summary-card:hover,
+.flight-card:hover,
+.hotel-card:hover,
+.vehicle-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.trip-summary-card h3,
+.flight-card h3,
+.hotel-card h3,
+.vehicle-card h3 {
+  color: #003580;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+/* Resumen de costos */
+.trip-cost-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.cost-item {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #eee;
+  font-size: 15px;
+}
+
+.cost-item span:first-child {
+  color: #666;
+}
+
+.cost-item span:last-child {
+  font-weight: 500;
+}
+
+.cost-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 2px solid #003580;
+}
+
+/* Estilos para vuelo */
+.flight-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.airline {
+  font-weight: 500;
+  color: #333;
+}
+
+.price {
+  font-weight: bold;
+  color: #003580;
+  font-size: 18px;
+}
+
+.flight-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.time-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+}
+
+.time {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.airport {
+  font-size: 14px;
+  color: #003580;
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+.duration-block {
+  flex-grow: 1;
+  padding: 0 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.duration-line {
+  width: 100%;
+  height: 1px;
+  background: #ddd;
+  position: relative;
+  margin: 10px 0;
+}
+
+.duration-line::before,
+.duration-line::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #0066cc;
+}
+
+.duration-line::before {
+  left: 0;
+}
+
+.duration-line::after {
+  right: 0;
+}
+
+.duration {
+  position: absolute;
+  top: -15px;
+  background: white;
+  padding: 0 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+.stops {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Estilos para hotel */
+.hotel-image {
+  height: 180px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.hotel-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.hotel-card:hover .hotel-image img {
+  transform: scale(1.05);
+}
+
+.hotel-info h3 {
+  margin: 0 0 10px 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.hotel-info .price {
+  font-size: 18px;
+  color: #ff5722;
+  font-weight: bold;
+}
+
+/* Estilos para vehículo */
+.vehicle-image {
+  height: 160px;
+  overflow: hidden;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.vehicle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.vehicle-card:hover .vehicle-image img {
+  transform: scale(1.05);
+}
+
+.vehicle-info .price {
+  font-size: 18px;
+  color: #ff5722;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+/* Botón de reserva */
+.book-trip-button {
+  text-align: center;
+  margin: 30px 0 20px;
+}
+
+.select-btn {
+  padding: 12px 30px;
+  background: #ff5722;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.select-btn:hover {
+  background: #e64a19;
+}
+
+/* Footer */
+.footer {
+  background-color: #003580;
+  color: white;
+  padding: 40px 0 20px;
+  margin-top: auto;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+}
+
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.footer-column {
+  flex: 1;
+  min-width: 200px;
+}
+
+.footer-column h4 {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column li {
+  margin-bottom: 10px;
+}
+
+.footer-column a {
+  color: #ddd;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-column a:hover {
+  color: white;
+}
+
+.newsletter-form {
+  display: flex;
+  margin: 15px 0;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+}
+
+.newsletter-form button {
+  padding: 10px 15px;
+  background-color: #0071c2;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.social-links {
+  display: flex;
+  gap: 15px;
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+.social-links a {
+  color: white;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ddd;
+  font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .flight-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .duration-block {
+    width: 100%;
+    padding: 15px 0;
+  }
+  
+  .duration-line {
+    margin: 5px 0;
+  }
+
+  .hotel-image,
+  .vehicle-image {
+    height: 200px;
+  }
+}

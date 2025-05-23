@@ -38,6 +38,46 @@ function App() {
     });
   };
 
+  const handleSuggestTrip = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("http://localhost:8000/trip-search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          originLocationCode: searchParams.from,
+          destinationLocationCode: searchParams.to,
+          departureDate: searchParams.departure,
+          returnDate: searchParams.return,
+          adults: 1,
+          max: 1,
+          cityCode: searchParams.to,
+          checkInDate: searchParams.departure,
+          checkOutDate: searchParams.return || searchParams.departure,
+          hotelLimit: 1,
+          defaultHotelPrice: 100,
+          vehicleLocation: searchParams.to,
+          vehicleLimit: 1
+        })
+      });
+
+      if (!response.ok) throw new Error('Error al obtener sugerencia de viaje');
+      const data = await response.json();
+
+      // Redirigir a la página de sugerencia con los datos
+      navigate('/TripSuggestion', {
+        state: {
+          searchParams: searchParams,
+          tripData: data
+        }
+      });
+
+    } catch (error) {
+      console.error("Error en la sugerencia de viaje:", error);
+      setMensaje(error.message || 'Error al obtener sugerencia de viaje');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -135,6 +175,7 @@ function App() {
             searchParams={searchParams}
             onInputChange={handleInputChange}
             onSubmit={handleSubmit}
+            onSuggestTrip={handleSuggestTrip}
           />
 
           <ServicesSection />
@@ -223,10 +264,10 @@ const Header = () => {
   );
 };
 
-const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
+const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip  }) => (
   <>
     <h3>Crea una ruta con múltiples destinos</h3>
-    <form className="search-form" onSubmit={onSubmit}>
+    <form className="search-form">
       <div className="form-row">
         <div className="form-group">
           <label>Desde</label>
@@ -318,8 +359,9 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit }) => (
           <label htmlFor="direct-flights">Vuelos directos</label>
         </div>
 
-        <div style={{flexGrow: 1, textAlign: 'right'}}>
-          <button type="submit" className="search-button">Buscar vuelos</button>
+        <div style={{flexGrow: 1, justifyContent: 'right', display: 'flex', gap: '10px'}}>
+          <button type="button" className="suggest-button" onClick={onSuggestTrip}>Sugerir viaje completo</button>
+          <button type="submit" className="search-button" onClick={onSubmit}>Buscar vuelos</button>
         </div>
       </div>
     </form>

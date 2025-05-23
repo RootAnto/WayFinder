@@ -239,7 +239,7 @@
     font-weight: normal;
   }
   
-  .search-button {
+  .search-button, .suggest-button {
     background-color: #ff5722;
     color: white;
     border: none;
@@ -250,7 +250,7 @@
     transition: background-color 0.3s;
   }
   
-  .search-button:hover {
+  .search-button:hover, .suggest-button:hover {
     background-color: #e64a19;
   }
   

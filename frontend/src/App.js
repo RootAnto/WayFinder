@@ -5,6 +5,7 @@ import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import PerfilPage from './pages/Profile';
 import FlightResultsPage from './pages/FlightResults'
+import TripSuggestionPage from './pages/TripSuggestion'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/profile" element={<PerfilPage />} />
           <Route path="/FlightResults" element={<FlightResultsPage />} />
+          <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
         </Routes>
       </AuthProvider>
     </Router>
