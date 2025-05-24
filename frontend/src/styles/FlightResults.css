@@ -8,7 +8,7 @@
 .results-container {
   flex: 1;
   overflow-y: auto; /* Hace que solo esta área sea desplazable */
-  max-height: calc(100vh - 395px); /* Ajusta según la altura de tu header/footer */
+  max-height: calc(100vh - 403px); /* Ajusta según la altura de tu header/footer */
   padding: 20px 0;
 }
 
@@ -56,6 +56,21 @@
 
 .breadcrumb a:hover {
   text-decoration: underline;
+}
+
+.cart-icon {
+  cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
+}
+
+.cart-icon:hover {
+  color: #0066cc;
+  transform: scale(1.2);
+}
+
+.cart-icon svg {
+  vertical-align: middle;
 }
 
 .results-navigation {

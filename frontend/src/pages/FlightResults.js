@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import '../styles/FlightResults.css';
 
 function FlightResults() {
   const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('flights');
   const location = useLocation();
+  const { addToCart } = useCart();
   
   // Extraer datos de location.state o usar valores por defecto
   const { 
@@ -225,8 +227,27 @@ function FlightResults() {
         <div className="container">
           {/* Breadcrumb */}
           <div className="breadcrumb">
-            <Link to="/">Inicio</Link> &gt; <span>Resultados de vuelos</span>
-          </div>
+                <div> <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
+                <div className="cart-icon">
+                  <Link to="/cart">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="9" cy="21" r="1"></circle>
+                      <circle cx="20" cy="21" r="1"></circle>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                  </Link>
+              </div>
+            </div>
           
           {/* Navegación entre secciones */}
           <div className="results-navigation">
@@ -307,7 +328,20 @@ function FlightResults() {
                           </div>
                           
                           <div className="flight-footer">
-                            <button className="select-btn">Seleccionar</button>
+                            {/* temporal el boton hasta tener la base de datos */}
+                            <button 
+                              className="select-btn"
+                              onClick={() => addToCart({
+                                type: 'flight',
+                                ...flight,
+                                origin: searchParams.from,
+                                destination: searchParams.to,
+                                price: flight.price.total,
+                                currency: flight.price.currency
+                              })}
+                            >
+                              Seleccionar
+                            </button>
                           </div>
                         </div>
                       );
@@ -341,7 +375,25 @@ function FlightResults() {
                             {hotel.nights && ` x ${hotel.nights} noches`}
                           </div>
                         </div>
-                        <button className="select-btn">Reservar</button>
+                        {/* temporal el boton hasta tener la base de datos */}
+                        <button 
+                          className="select-btn"
+                          onClick={() => {
+                            const checkIn = new Date(searchParams.departure);
+                            const checkOut = new Date(searchParams.return || searchParams.departure);
+                            const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+                            
+                            addToCart({
+                              type: 'hotel',
+                              ...hotel,
+                              price: hotel.price * nights,
+                              currency: hotel.currency,
+                              nights: nights
+                            })
+                          }}
+                        >
+                          Reservar
+                        </button>
                       </div>
                     ))}
                   </div>
@@ -379,7 +431,25 @@ function FlightResults() {
                             <span>✔️ {vehicle.doors} puertas</span>
                           </div>
                         </div>
-                        <button className="select-btn">Alquilar</button>
+                        <button 
+                          className="select-btn"
+                          onClick={() => {
+                            const pickUp = new Date(searchParams.departure);
+                            const dropOff = new Date(searchParams.return || searchParams.departure);
+                            const days = Math.ceil((dropOff - pickUp) / (1000 * 60 * 60 * 24));
+                            
+                            addToCart({
+                              type: 'vehicle',
+                              ...vehicle,
+                              price: vehicle.pricePerDay * days, // Precio total
+                              currency: vehicle.currency,
+                              days: days,
+                              pricePerDay: vehicle.pricePerDay // Guardamos el precio por día
+                            })
+                          }}
+                        >
+                          Alquilar
+                        </button>
                       </div>
                     ))}
                   </div>
