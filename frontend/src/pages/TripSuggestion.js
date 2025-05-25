@@ -68,10 +68,16 @@ function TripSuggestion() {
       hotel_limit: 5,
       vehicle_limit: 5,
       max_price: null,
+      user_name: currentUser.nombre,
+      // Nota: no incluyas user_email aquí
     };
 
+    // Construir URL con user_email como query param
+    const url = new URL('http://localhost:8000/trips/');
+    url.searchParams.append('user_email', currentUser.email);
+
     try {
-      const response = await fetch('http://localhost:8000/trips/', {
+      const response = await fetch(url.toString(), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tripPayload),
@@ -88,6 +94,7 @@ function TripSuggestion() {
       alert('Error: ' + error.message);
     }
   };
+
 
   if (!tripData) {
     return (

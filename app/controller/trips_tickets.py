@@ -1,11 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
+from pydantic import EmailStr
 from sqlalchemy.orm import Session
+from services.email_service import send_confirmation_email
 from models.trips.trip_pydantic import TripCreate, TripOut
 from models.trips.trip_db import Trip
 from database.db import get_db
-from typing import List
+from typing import List, Optional
 import uuid
-
+from fastapi import Query
 router = APIRouter(prefix="/trips", tags=["Trips"])
 
 '''
@@ -18,14 +20,30 @@ router = APIRouter(prefix="/trips", tags=["Trips"])
 
 @return The newly created Trip object (not saved in DB).
 '''
+
 @router.post("/", response_model=TripOut)
-def create_trip(trip: TripCreate, db: Session = Depends(get_db)):
+def create_trip(
+    trip: TripCreate,
+    user_email: EmailStr = Query(...),
+    user_name: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+):
     trip_id = str(uuid.uuid4())
-    db_trip = Trip(id=trip_id, **trip.model_dump())
-    # Database insertion is disabled
+    trip_data = trip.model_dump()
+    trip_data.pop("user_email", None)  # Evitar pasar user_email
+    trip_data.pop("user_name", None)   # Evitar pasar user_name
+
+    db_trip = Trip(id=trip_id, **trip_data)
+
     # db.add(db_trip)
     # db.commit()
     # db.refresh(db_trip)
+
+    send_confirmation_email(
+        to_email=user_email,
+        to_name=user_name,
+        trip=db_trip
+    )
     return db_trip
 
 '''
