@@ -28,14 +28,15 @@ class UserLogin(BaseModel):
 # Endpoints modificados
 @router.post("/registrar")
 async def registrar_usuario(user: UserCreate):
+    print("Datos recibidos:", user)
     if email_exists(user.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="El correo ya está registrado"
         )
-    
+
     hashed_password = pwd_context.hash(user.password)
-    
+
     user_data = {
         "email": user.email,
         "password": hashed_password,
@@ -47,30 +48,30 @@ async def registrar_usuario(user: UserCreate):
         "last_login": None,
         "roles": ["usuario"]
     }
-    
+
     user_id = create_user(user_data)
     return {"id": user_id, "email": user.email, "nombre": user.nombre}
 
 @router.post("/login")
 async def login_user(credentials: UserLogin):
     user_data = get_user_by_email(credentials.email)
-    
+
     if not user_data or not user_data.get("active", True):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Usuario no encontrado o inactivo"
         )
-    
+
     if not pwd_context.verify(credentials.password, user_data["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Contraseña incorrecta"
         )
-    
+
     # Actualizar último login
     user_ref = db.collection("usuarios").where("email", "==", credentials.email).limit(1).get()[0]
     update_user(user_ref.id, {"last_login": datetime.now()})
-    
+
     return {
         "id": user_ref.id,
         "email": user_data["email"],

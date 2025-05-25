@@ -1,0 +1,25 @@
+2025-05-25 11:19:30.888 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:19:33.175 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:21:05.236 | DEBUG    | database.firebase:email_exists:33 - Verificando si el email ya existe: antonio@hormail.com
+2025-05-25 11:21:06.114 | DEBUG    | database.firebase:email_exists:38 - Resultado existencia email 'antonio@hormail.com': False
+2025-05-25 11:21:06.440 | DEBUG    | database.firebase:create_user:47 - Creando usuario con datos: {'email': 'antonio@hormail.com', 'password': '$2b$12$A9QxVar6OOEw025HLAIPTuxCOHqn8ntYrod7nlzDVsEZCy7M.YQ2S', 'nombre': 'Antonio Llorente', 'birthdate': '2025-05-19', 'acceptTerms': True, 'created_at': datetime.datetime(2025, 5, 25, 11, 21, 6, 440921), 'active': True, 'last_login': None, 'roles': ['usuario']}
+2025-05-25 11:21:06.535 | SUCCESS  | database.firebase:create_user:49 - ✅ Usuario creado con ID: OtvmwxsQyLylABmihkzi
+2025-05-25 11:22:32.635 | DEBUG    | database.firebase:get_user_by_email:58 - Buscando usuario con email: antonio@hotamil.com
+2025-05-25 11:22:32.695 | DEBUG    | database.firebase:get_user_by_email:65 - No se encontró usuario con email: antonio@hotamil.com
+2025-05-25 11:22:48.939 | DEBUG    | database.firebase:get_user_by_email:58 - Buscando usuario con email: antonio@hotamail.com
+2025-05-25 11:22:49.012 | DEBUG    | database.firebase:get_user_by_email:65 - No se encontró usuario con email: antonio@hotamail.com
+2025-05-25 11:22:58.084 | DEBUG    | database.firebase:get_user_by_email:58 - Buscando usuario con email: antonio@hotmail.com
+2025-05-25 11:22:58.150 | DEBUG    | database.firebase:get_user_by_email:62 - Usuario encontrado: {'password': '$2b$12$VrGKU3AUvvQoeKpyGPrK4.PVvyaaaQlmrz19Y7/2q2tj8.CXS0HnS', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 10, 53, 56, 552421, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2006-06-22', 'roles': ['usuario'], 'last_login': None, 'email': 'antonio@hotmail.com', 'nombre': 'Antonio Llorente'}
+2025-05-25 11:22:58.503 | DEBUG    | database.firebase:update_user:74 - Actualizando usuario NpaGLTQIfCvvh2jCS5uw con: {'last_login': datetime.datetime(2025, 5, 25, 11, 22, 58, 503716)}
+2025-05-25 11:22:58.629 | SUCCESS  | database.firebase:update_user:76 - ✅ Usuario NpaGLTQIfCvvh2jCS5uw actualizado correctamente
+2025-05-25 11:28:07.629 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:28:09.846 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:28:32.656 | ERROR    | app:validation_exception_handler:19 - 📛 Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None}}]
+2025-05-25 11:33:37.169 | ERROR    | app:validation_exception_handler:19 - 📛 Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None}}]
+2025-05-25 11:33:43.926 | ERROR    | app:validation_exception_handler:19 - 📛 Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None}}]
+2025-05-25 11:34:51.349 | ERROR    | app:validation_exception_handler:19 - 📛 Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None}}]
+2025-05-25 11:36:24.719 | ERROR    | app:validation_exception_handler:19 - 📛 Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None}}]
+2025-05-25 11:40:21.307 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:40:23.700 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:40:51.170 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 11:40:53.296 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente

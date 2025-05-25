@@ -9,9 +9,9 @@ function FlightResults() {
   const [activeTab, setActiveTab] = useState('flights');
   const location = useLocation();
   const { addToCart } = useCart();
-  
+
   // Extraer datos de location.state o usar valores por defecto
-  const { 
+  const {
     searchParams = {
       from: 'MAD',
       to: 'NYC',
@@ -28,7 +28,7 @@ function FlightResults() {
   const [flights, setFlights] = useState(flightResults);
   const [hotels, setHotels] = useState(hotelResults.data || hotelResults);
   const [vehicles, setVehicles] = useState(vehicleResults.data || vehicleResults);
-  
+
   const [loading, setLoading] = useState({
     flights: false,
     hotels: false,
@@ -55,9 +55,9 @@ function FlightResults() {
   // Función para formatear horas
   const formatTime = (dateTimeStr) => {
     if (!dateTimeStr) return '';
-    return new Date(dateTimeStr).toLocaleTimeString('es-ES', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(dateTimeStr).toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -191,7 +191,7 @@ function FlightResults() {
           <div className="auth-buttons">
             {currentUser ? (
               <div className="user-menu-container">
-                <button 
+                <button
                   className="user-menu-trigger"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
@@ -201,7 +201,7 @@ function FlightResults() {
                   <span className="user-welcome">{currentUser.nombre}</span>
                   <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
                 </button>
-                
+
                 {isMenuOpen && (
                   <div className="user-dropdown">
                     <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
@@ -222,7 +222,7 @@ function FlightResults() {
           </div>
         </div>
       </header>
-      
+
       <main className="results-container">
         <div className="container">
           {/* Breadcrumb */}
@@ -230,15 +230,15 @@ function FlightResults() {
                 <div> <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
                 <div className="cart-icon">
                   <Link to="/cart">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="20" 
-                      height="20" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
                       strokeLinejoin="round"
                     >
                       <circle cx="9" cy="21" r="1"></circle>
@@ -248,22 +248,22 @@ function FlightResults() {
                   </Link>
               </div>
             </div>
-          
+
           {/* Navegación entre secciones */}
           <div className="results-navigation">
-            <button 
+            <button
               className={`nav-link ${activeTab === 'flights' ? 'active' : ''}`}
               onClick={() => setActiveTab('flights')}
             >
               Vuelos ({flights.length})
             </button>
-            <button 
+            <button
               className={`nav-link ${activeTab === 'hotels' ? 'active' : ''}`}
               onClick={() => setActiveTab('hotels')}
             >
               Hoteles ({hotels.length})
             </button>
-            <button 
+            <button
               className={`nav-link ${activeTab === 'vehicles' ? 'active' : ''}`}
               onClick={() => setActiveTab('vehicles')}
             >
@@ -275,8 +275,8 @@ function FlightResults() {
           <div className="search-summary">
             <h2>{searchParams.from} → {searchParams.to}</h2>
             <p>
-              {formatDate(searchParams.departure)} - 
-              {searchParams.return && ` ${formatDate(searchParams.return)}`} | 
+              {formatDate(searchParams.departure)} -
+              {searchParams.return && ` ${formatDate(searchParams.return)}`} |
               {searchParams.passengers}
             </p>
           </div>
@@ -298,20 +298,20 @@ function FlightResults() {
                     {flights.map((flight, index) => {
                       const firstSegment = flight.itineraries[0].segments[0];
                       const lastSegment = flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1];
-                      
+
                       return (
                         <div key={index} className="flight-card">
                           <div className="flight-header">
                             <span className="airline">{firstSegment.carrierCode}</span>
                             <span className="price">{flight.price.total} {flight.price.currency}</span>
                           </div>
-                          
+
                           <div className="flight-details">
                             <div className="time-block">
                               <span className="time">{formatTime(firstSegment.departureTime)}</span>
                               <span className="airport">{firstSegment.departureAirport}</span>
                             </div>
-                            
+
                             <div className="duration-block">
                               <div className="duration-line">
                                 <span className="duration">{formatDuration(flight.itineraries[0].duration)}</span>
@@ -320,16 +320,16 @@ function FlightResults() {
                                 {flight.itineraries[0].segments.length === 1 ? 'Directo' : `${flight.itineraries[0].segments.length - 1} escala(s)`}
                               </span>
                             </div>
-                            
+
                             <div className="time-block">
                               <span className="time">{formatTime(lastSegment.arrivalTime)}</span>
                               <span className="airport">{lastSegment.arrivalAirport}</span>
                             </div>
                           </div>
-                          
+
                           <div className="flight-footer">
                             {/* temporal el boton hasta tener la base de datos */}
-                            <button 
+                            <button
                               className="select-btn"
                               onClick={() => addToCart({
                                 type: 'flight',
@@ -362,9 +362,9 @@ function FlightResults() {
                     {hotels.map((hotel) => (
                       <div key={hotel.hotelId} className="hotel-card">
                         <div className="hotel-image">
-                          <img 
-                            src={`https://source.unsplash.com/random/300x200/?hotel,${hotel.name}`} 
-                            alt={hotel.name} 
+                          <img
+                            src={`https://source.unsplash.com/random/300x200/?hotel,${hotel.name}`}
+                            alt={hotel.name}
                           />
                         </div>
                         <div className="hotel-info">
@@ -376,13 +376,13 @@ function FlightResults() {
                           </div>
                         </div>
                         {/* temporal el boton hasta tener la base de datos */}
-                        <button 
+                        <button
                           className="select-btn"
                           onClick={() => {
                             const checkIn = new Date(searchParams.departure);
                             const checkOut = new Date(searchParams.return || searchParams.departure);
                             const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
-                            
+
                             addToCart({
                               type: 'hotel',
                               ...hotel,
@@ -413,9 +413,9 @@ function FlightResults() {
                     {vehicles.map((vehicle) => (
                       <div key={vehicle.vehicleId} className="vehicle-card">
                         <div className="vehicle-image">
-                          <img 
-                            src={`https://source.unsplash.com/random/300x200/?car,${vehicle.brand}`} 
-                            alt={vehicle.name} 
+                          <img
+                            src={`https://source.unsplash.com/random/300x200/?car,${vehicle.brand}`}
+                            alt={vehicle.name}
                           />
                         </div>
                         <div className="vehicle-info">
@@ -431,13 +431,13 @@ function FlightResults() {
                             <span>✔️ {vehicle.doors} puertas</span>
                           </div>
                         </div>
-                        <button 
+                        <button
                           className="select-btn"
                           onClick={() => {
                             const pickUp = new Date(searchParams.departure);
                             const dropOff = new Date(searchParams.return || searchParams.departure);
                             const days = Math.ceil((dropOff - pickUp) / (1000 * 60 * 60 * 24));
-                            
+
                             addToCart({
                               type: 'vehicle',
                               ...vehicle,

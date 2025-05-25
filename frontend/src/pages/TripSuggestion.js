@@ -8,20 +8,19 @@ function TripSuggestion() {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  //cuando clicke fuera se cierra
+  // Cerrar menú al hacer clic fuera
   useEffect(() => {
-      const handleClickOutside = (e) => {
+    const handleClickOutside = (e) => {
       if (isMenuOpen && !e.target.closest('.user-menu-container')) {
-          setIsMenuOpen(false);
+        setIsMenuOpen(false);
       }
-      };
-
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
   // Extraer datos de location.state
-  const { 
+  const {
     searchParams = {
       from: 'MAD',
       to: 'NYC',
@@ -32,12 +31,106 @@ function TripSuggestion() {
     tripData
   } = location.state || {};
 
-  // Verificar si hay datos de viaje
+  // Funciones para formatear fecha, hora y duración
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const options = { weekday: 'short', day: 'numeric', month: 'short' };
+    return new Date(dateStr).toLocaleDateString('es-ES', options);
+  };
+
+  const formatTime = (dateTimeStr) => {
+    if (!dateTimeStr) return '';
+    return new Date(dateTimeStr).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDuration = (duration) => {
+    if (!duration) return '';
+    return duration.replace('PT', '').replace('H', 'h ').replace('M', 'm').trim();
+  };
+
+  // Función para reservar el viaje (POST a backend)
+  const handleBookTrip = async () => {
+    if (!currentUser) {
+      alert("Debes iniciar sesión para reservar un viaje.");
+      return;
+    }
+
+    console.log('🧾 currentUser:', currentUser);
+
+    const tripPayload = {
+      user_id: currentUser.id,
+      origin: searchParams.from,
+      destination: searchParams.to,
+      departure_date: searchParams.departure,
+      return_date: searchParams.return || null,
+      adults: 1,
+      children: 0,
+      hotel_limit: 5,
+      vehicle_limit: 5,
+      max_price: null,
+    };
+
+    try {
+      const response = await fetch('http://localhost:8000/trips/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tripPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Error creando el viaje');
+      }
+
+      const data = await response.json();
+      alert('Viaje reservado con éxito. ID: ' + data.id);
+    } catch (error) {
+      alert('Error: ' + error.message);
+    }
+  };
+
   if (!tripData) {
     return (
       <div className="flight-results-app">
         <header className="header">
-          {/* ... (header igual que en FlightResults) ... */}
+          {/* Aquí el header igual que abajo */}
+          <div className="container">
+            <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>VuelaBarato</Link></div>
+            <nav className="nav">
+              <a href="/" className="nav-link">Inicio</a>
+              <a href="#" className="nav-link">Vuelos</a>
+              <a href="#" className="nav-link">Hoteles</a>
+              <a href="#" className="nav-link">Ofertas</a>
+              <a href="#" className="nav-link">Contacto</a>
+            </nav>
+            <div className="auth-buttons">
+              {currentUser ? (
+                <div className="user-menu-container">
+                  <button
+                    className="user-menu-trigger"
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                  >
+                    <span className="user-avatar">
+                      {currentUser.nombre.charAt(0).toUpperCase()}
+                    </span>
+                    <span className="user-welcome">{currentUser.nombre}</span>
+                    <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
+                  </button>
+                  {isMenuOpen && (
+                    <div className="user-dropdown">
+                      <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>Mi perfil</Link>
+                      <button className="logout-btn" onClick={logout}>Cerrar sesión</button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Link to="/login" className="login-btn">Iniciar sesión</Link>
+                  <Link to="/Register" className="register-btn">Registrarse</Link>
+                </>
+              )}
+            </div>
+          </div>
         </header>
         <main className="results-container">
           <div className="container">
@@ -48,7 +141,54 @@ function TripSuggestion() {
           </div>
         </main>
         <footer className="footer">
-          {/* ... (footer igual que en FlightResults) ... */}
+          <div className="container">
+            {/* Footer igual que abajo */}
+            <div className="footer-columns">
+              <div className="footer-column">
+                <h4>Compañía</h4>
+                <ul>
+                  <li><a href="#">Sobre nosotros</a></li>
+                  <li><a href="#">Carreras</a></li>
+                  <li><a href="#">Prensa</a></li>
+                  <li><a href="#">Blog</a></li>
+                </ul>
+              </div>
+              <div className="footer-column">
+                <h4>Asistencia</h4>
+                <ul>
+                  <li><a href="#">Centro de ayuda</a></li>
+                  <li><a href="#">Contáctanos</a></li>
+                  <li><a href="#">Política de privacidad</a></li>
+                  <li><a href="#">Términos y condiciones</a></li>
+                </ul>
+              </div>
+              <div className="footer-column">
+                <h4>Recursos</h4>
+                <ul>
+                  <li><a href="#">Guías de viaje</a></li>
+                  <li><a href="#">Aerolíneas</a></li>
+                  <li><a href="#">Aeropuertos</a></li>
+                  <li><a href="#">Mapa del sitio</a></li>
+                </ul>
+              </div>
+              <div className="footer-column">
+                <h4>Suscríbete</h4>
+                <p>Recibe ofertas exclusivas en tu correo</p>
+                <div className="newsletter-form">
+                  <input type="email" placeholder="Tu email" />
+                  <button>Suscribirse</button>
+                </div>
+                <div className="social-links">
+                  <a href="#"><i className="fab fa-facebook"></i></a>
+                  <a href="#"><i className="fab fa-twitter"></i></a>
+                  <a href="#"><i className="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <div className="footer-bottom">
+              <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
+            </div>
+          </div>
         </footer>
       </div>
     );
@@ -59,30 +199,6 @@ function TripSuggestion() {
   const hotel = tripData.hotels[0];
   const vehicle = tripData.vehicles[0];
   const summary = tripData.summary;
-
-  // Función para formatear fechas
-  const formatDate = (dateStr) => {
-    if (!dateStr) return '';
-    const options = { weekday: 'short', day: 'numeric', month: 'short' };
-    return new Date(dateStr).toLocaleDateString('es-ES', options);
-  };
-
-  // Función para formatear horas
-  const formatTime = (dateTimeStr) => {
-    if (!dateTimeStr) return '';
-    return new Date(dateTimeStr).toLocaleTimeString('es-ES', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
-  };
-
-  // Función para formatear duración
-  const formatDuration = (duration) => {
-    if (!duration) return '';
-    return duration.replace('PT', '').replace('H', 'h ').replace('M', 'm').trim();
-  };
-
-  
 
   return (
     <div className="flight-results-app">
@@ -99,7 +215,7 @@ function TripSuggestion() {
           <div className="auth-buttons">
             {currentUser ? (
               <div className="user-menu-container">
-                <button 
+                <button
                   className="user-menu-trigger"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
@@ -109,7 +225,7 @@ function TripSuggestion() {
                   <span className="user-welcome">{currentUser.nombre}</span>
                   <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
                 </button>
-                
+
                 {isMenuOpen && (
                   <div className="user-dropdown">
                     <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
@@ -130,22 +246,22 @@ function TripSuggestion() {
           </div>
         </div>
       </header>
-      
+
       <main className="results-container">
         <div className="container">
             {/* Breadcrumb */}
             <div className="breadcrumb">
                 <div> <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
                 <div className="cart-icon">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="20" 
-                  height="20" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
                   strokeLinejoin="round"
                 >
                   <circle cx="9" cy="21" r="1"></circle>
@@ -154,18 +270,16 @@ function TripSuggestion() {
                 </svg>
               </div>
             </div>
-            
+
             {/* Resumen de búsqueda */}
             <div className="search-summary">
                 <h2>{searchParams.from} → {searchParams.to}</h2>
                 <p>
-                {formatDate(searchParams.departure)} - 
-                {searchParams.return && ` ${formatDate(searchParams.return)}`} | 
+                {formatDate(searchParams.departure)} -
+                {searchParams.return && ` ${formatDate(searchParams.return)}`} |
                 {searchParams.passengers}
                 </p>
             </div>
-
-            
 
             {/* Detalles del vuelo */}
             <div className="flight-card">
@@ -176,13 +290,13 @@ function TripSuggestion() {
                     <span className="airline">{flight.itineraries[0].segments[0].carrierCode}</span>
                     <span className="price">{flight.price.total} {flight.price.currency}</span>
                     </div>
-                    
+
                     <div className="flight-details">
                     <div className="time-block">
                         <span className="time">{formatTime(flight.itineraries[0].segments[0].departureTime)}</span>
                         <span className="airport">{flight.itineraries[0].segments[0].departureAirport}</span>
                     </div>
-                    
+
                     <div className="duration-block">
                         <div className="duration-line">
                         <span className="duration">{formatDuration(flight.itineraries[0].duration)}</span>
@@ -191,7 +305,7 @@ function TripSuggestion() {
                         {flight.itineraries[0].segments.length === 1 ? 'Directo' : `${flight.itineraries[0].segments.length - 1} escala(s)`}
                         </span>
                     </div>
-                    
+
                     <div className="time-block">
                         <span className="time">{formatTime(flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrivalTime)}</span>
                         <span className="airport">{flight.itineraries[0].segments[flight.itineraries[0].segments.length - 1].arrivalAirport}</span>
@@ -206,19 +320,12 @@ function TripSuggestion() {
                 <h3>Hotel seleccionado</h3>
                 {hotel && (
                 <>
-                    <div className="hotel-image">
-                    <img 
-                        src={`https://source.unsplash.com/random/300x200/?hotel,${hotel.name}`} 
-                        alt={hotel.name} 
-                    />
+                    <div className="hotel-header">
+                    <h4>{hotel.name}</h4>
+                    <span className="price">{hotel.price} EUR</span>
                     </div>
-                    <div className="hotel-info">
-                    <h3>{hotel.name}</h3>
-                    <div className="location">{hotel.cityCode}</div>
-                    <div className="price">
-                        {hotel.price} {hotel.currency} ({hotel.nights} noches)
-                    </div>
-                    </div>
+                    <p>{hotel.address}</p>
+                    <p>Estrellas: {hotel.rating}</p>
                 </>
                 )}
             </div>
@@ -228,103 +335,80 @@ function TripSuggestion() {
                 <h3>Vehículo seleccionado</h3>
                 {vehicle && (
                 <>
-                    <div className="vehicle-image">
-                    <img 
-                        src={`https://source.unsplash.com/random/300x200/?car,${vehicle.brand}`} 
-                        alt={vehicle.name} 
-                    />
+                    <div className="vehicle-header">
+                    <h4>{vehicle.name}</h4>
+                    <span className="price">{vehicle.price} EUR/día</span>
                     </div>
-                    <div className="vehicle-info">
-                    <h3>{vehicle.name} ({vehicle.year})</h3>
-                    <div className="price">
-                        {vehicle.pricePerDay} {vehicle.currency} / día
-                    </div>
-                    </div>
+                    <p>Tipo: {vehicle.type}</p>
                 </>
                 )}
             </div>
 
-            {/* Resumen del costo total */}
-            <div className="trip-summary-card">
-                <h3>Tu paquete de viaje completo</h3>
-                <div className="trip-cost-summary">
-                <div className="cost-item">
-                    <span>Vuelo:</span>
-                    <span>{summary.currency} {summary.flightTotal}</span>
-                </div>
-                <div className="cost-item">
-                    <span>Hotel ({hotel.nights} noches):</span>
-                    <span>{summary.currency} {summary.hotelTotal}</span>
-                </div>
-                <div className="cost-item">
-                    <span>Vehículo:</span>
-                    <span>{summary.currency} {summary.vehicleTotal}</span>
-                </div>
-                <div className="cost-total">
-                    <span>Total:</span>
-                    <span>{summary.currency} {summary.grandTotal}</span>
-                </div>
-                </div>
+            {/* Resumen general */}
+            <div className="summary-card">
+                <h3>Resumen del paquete</h3>
+                {summary && (
+                <>
+                    <p>Duración: {summary.duration}</p>
+                    <p>Precio total: {summary.price} EUR</p>
+                </>
+                )}
             </div>
 
-            {/* Botón de reserva */}
-            <div className="book-trip-button">
-                <button className="select-btn">Reservar paquete completo</button>
-            </div>
+            {/* Botón para reservar */}
+            <button className="select-btn" onClick={handleBookTrip}>
+              Reservar paquete completo
+            </button>
         </div>
       </main>
 
       <footer className="footer">
         <div className="container">
-            <div className="footer-columns">
-                <div className="footer-column">
-                <h4>Compañía</h4>
-                <ul>
-                    <li><a href="#">Sobre nosotros</a></li>
-                    <li><a href="#">Carreras</a></li>
-                    <li><a href="#">Prensa</a></li>
-                    <li><a href="#">Blog</a></li>
-                </ul>
-                </div>
-
-                <div className="footer-column">
-                <h4>Asistencia</h4>
-                <ul>
-                    <li><a href="#">Centro de ayuda</a></li>
-                    <li><a href="#">Contáctanos</a></li>
-                    <li><a href="#">Política de privacidad</a></li>
-                    <li><a href="#">Términos y condiciones</a></li>
-                </ul>
-                </div>
-
-                <div className="footer-column">
-                <h4>Recursos</h4>
-                <ul>
-                    <li><a href="#">Guías de viaje</a></li>
-                    <li><a href="#">Aerolíneas</a></li>
-                    <li><a href="#">Aeropuertos</a></li>
-                    <li><a href="#">Mapa del sitio</a></li>
-                </ul>
-                </div>
-
-                <div className="footer-column">
-                <h4>Suscríbete</h4>
-                <p>Recibe ofertas exclusivas en tu correo</p>
-                <div className="newsletter-form">
-                    <input type="email" placeholder="Tu email" />
-                    <button>Suscribirse</button>
-                </div>
-                <div className="social-links">
-                    <a href="#"><i className="fab fa-facebook"></i></a>
-                    <a href="#"><i className="fab fa-twitter"></i></a>
-                    <a href="#"><i className="fab fa-instagram"></i></a>
-                </div>
-                </div>
+          <div className="footer-columns">
+            <div className="footer-column">
+              <h4>Compañía</h4>
+              <ul>
+                <li><a href="#">Sobre nosotros</a></li>
+                <li><a href="#">Carreras</a></li>
+                <li><a href="#">Prensa</a></li>
+                <li><a href="#">Blog</a></li>
+              </ul>
             </div>
-
-            <div className="footer-bottom">
-                <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
+            <div className="footer-column">
+              <h4>Asistencia</h4>
+              <ul>
+                <li><a href="#">Centro de ayuda</a></li>
+                <li><a href="#">Contáctanos</a></li>
+                <li><a href="#">Política de privacidad</a></li>
+                <li><a href="#">Términos y condiciones</a></li>
+              </ul>
             </div>
+            <div className="footer-column">
+              <h4>Recursos</h4>
+              <ul>
+                <li><a href="#">Guías de viaje</a></li>
+                <li><a href="#">Aerolíneas</a></li>
+                <li><a href="#">Aeropuertos</a></li>
+                <li><a href="#">Mapa del sitio</a></li>
+              </ul>
+            </div>
+            <div className="footer-column">
+              <h4>Suscríbete</h4>
+              <p>Recibe ofertas exclusivas en tu correo</p>
+              <div className="newsletter-form">
+                <input type="email" placeholder="Tu email" />
+                <button>Suscribirse</button>
+              </div>
+              <div className="social-links">
+                <a href="#"><i className="fab fa-facebook"></i></a>
+                <a href="#"><i className="fab fa-twitter"></i></a>
+                <a href="#"><i className="fab fa-instagram"></i></a>
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
+          </div>
         </div>
       </footer>
     </div>

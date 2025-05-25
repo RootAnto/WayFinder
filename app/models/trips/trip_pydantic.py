@@ -1,15 +1,26 @@
 from pydantic import BaseModel
-from typing import List
+from typing import Optional
+from datetime import date
+
 
 class TripCreate(BaseModel):
-    userId: str
-    flightId: str
-    hotelId: str
-    vehicleId: str
+    user_id: str  # UID de Firebase
+    origin: str
+    destination: str
+    departure_date: date
+    return_date: Optional[date]
+    adults: int = 1
+    children: int = 0
+    hotel_limit: Optional[int] = 5
+    vehicle_limit: Optional[int] = 5
+    max_price: Optional[float] = None
 
-class TripOut(BaseModel):
-    id: str
-    userId: str
-    flightId: str
-    hotelId: str
-    vehicleId: str
+
+class TripOut(TripCreate):
+    id: str  # UUID como string
+    flight_id: Optional[str]
+    hotel_id: Optional[str]
+    vehicle_id: Optional[str]
+
+    class Config:
+        orm_mode = True
