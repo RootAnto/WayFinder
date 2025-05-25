@@ -1,8 +1,10 @@
+import datetime
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
-from services.email_service import send_confirmation_email
-from models.trips.trip_pydantic import TripCreate, TripOut
+from models.travel_tickets.travel_ticket_db import Ticket
+from services.email_service import send_confirmation_tiket, send_ticket_email
+from models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
 from models.trips.trip_db import Trip
 from database.db import get_db
 from typing import List, Optional
@@ -10,41 +12,117 @@ import uuid
 from fastapi import Query
 router = APIRouter(prefix="/trips", tags=["Trips"])
 
-'''
-@brief Create a new trip with a unique UUID.
-
-@param trip Data for the new trip.
-@param db Database session dependency.
-
-@note Database insertion is currently disabled (commented out).
-
-@return The newly created Trip object (not saved in DB).
-'''
 
 @router.post("/", response_model=TripOut)
 def create_trip(
     trip: TripCreate,
-    user_email: EmailStr = Query(...),
-    user_name: Optional[str] = Query(None),
+    user_email: str = Query(...),
     db: Session = Depends(get_db),
 ):
     trip_id = str(uuid.uuid4())
     trip_data = trip.model_dump()
-    trip_data.pop("user_email", None)  # Evitar pasar user_email
-    trip_data.pop("user_name", None)   # Evitar pasar user_name
 
-    db_trip = Trip(id=trip_id, **trip_data)
+    # Quitamos user_email y user_name si están en el body
+    trip_data.pop("user_email", None)
+    user_name = trip_data.pop("user_name", None)
 
-    # db.add(db_trip)
-    # db.commit()
-    # db.refresh(db_trip)
-
-    send_confirmation_email(
-        to_email=user_email,
-        to_name=user_name,
-        trip=db_trip
+    db_trip = Trip(
+        id=trip_id,
+        user_email=user_email,
+        user_name=user_name,
+        status=TripStatus.pendiente,
+        **trip_data
     )
+
+    db.add(db_trip)
+    db.commit()
+    db.refresh(db_trip)
+
+    send_ticket_email(
+        to_email=user_email,
+        to_name=user_name or "cliente",
+        trip=TripOut.from_orm(db_trip)
+    )
+
     return db_trip
+
+
+@router.get("/reservas/{trip_id}/aceptar")
+def aceptar_reserva(trip_id: str, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+
+    if trip.status != TripStatus.pendiente:
+        return {"mensaje": f"La reserva ya fue {trip.status}"}
+
+    if not (trip.flight_id and trip.hotel_id and trip.vehicle_id):
+        raise HTTPException(status_code=400, detail="No se puede generar ticket, faltan datos del viaje")
+
+    ticket = Ticket(
+        id=str(uuid.uuid4()),
+        user_id=trip.user_id,
+        flight_id=trip.flight_id,
+        hotel_id=trip.hotel_id,
+        vehicle_id=trip.vehicle_id,
+    )
+
+    trip.status = TripStatus.aceptada
+    trip.confirmed = True
+
+    db.add(ticket)
+    db.commit()
+    db.refresh(trip)
+
+    trip_out = TripOut.from_orm(trip)
+
+    user_email = trip.user_email
+    user_name = trip.user_name or "cliente"
+
+    send_confirmation_tiket(user_email, trip_out, user_name)
+
+    return {"mensaje": "Reserva aceptada, ticket generado y correo enviado", "ticket_id": ticket.id}
+
+
+
+@router.get("/reservas/{trip_id}/rechazar")
+def rechazar_reserva(trip_id: str, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+
+    if trip.status != TripStatus.pendiente:
+        return {"mensaje": f"La reserva ya fue {trip.status}"}
+
+    trip.status = TripStatus.rechazada
+    trip.updated_at = datetime.utcnow()
+    db.commit()
+
+    # Opcional: enviar notificación por email o registrar log aquí
+
+    return {"mensaje": "Reserva rechazada correctamente"}
+
+
+
+@router.get("/confirm-trip")
+def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+    if trip.confirmed:
+        return {"message": "Reserva ya confirmada."}
+
+    trip.confirmed = True
+    db.commit()
+
+    # Reenvía el viaje como TripOut
+    trip_out = TripOut.from_orm(trip)
+
+    # Envía el correo con los billetes
+    send_ticket_email(to_email=user_email, trip=trip_out)
+
+    return {"message": "Reserva confirmada. Se han enviado los billetes al correo."}
+
 
 '''
 @brief Retrieve a trip by its ID.

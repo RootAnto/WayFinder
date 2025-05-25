@@ -9,8 +9,8 @@ from sqlalchemy.orm import sessionmaker
 The URL includes username, password, host, port, and database name.
 '''
 SQLALCHEMY_DATABASE_URL = (
-    "mysql+mysqlconnector://root:HamYeVRsyRpaArPQENEdusvaJjBDyUwc"
-    "@metro.proxy.rlwy.net:40135/railway"
+    "mysql+mysqlconnector://root:vWqSlDAMeDnLeCTPGRhezUFbcWhSLUfd"
+    "@nozomi.proxy.rlwy.net:38342/railway"
 )
 
 '''

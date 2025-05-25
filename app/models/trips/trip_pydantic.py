@@ -1,6 +1,12 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date
+from enum import Enum
+
+class TripStatus(str, Enum):
+    pendiente = "pendiente"
+    aceptada = "aceptada"
+    rechazada = "rechazada"
 
 class TripCreate(BaseModel):
     user_id: str  # UID de Firebase
@@ -21,7 +27,9 @@ class TripOut(TripCreate):
     flight_id: Optional[str]
     hotel_id: Optional[str]
     vehicle_id: Optional[str]
+    confirmed: Optional[bool] = False
+    status: Optional[TripStatus] = TripStatus.pendiente  # Status incluido
 
-    class Config:
-        orm_mode = True
-
+    model_config = {
+        "from_attributes": True
+    }

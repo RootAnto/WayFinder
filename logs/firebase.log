@@ -99,3 +99,108 @@
 2025-05-25 14:37:08.760 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
 2025-05-25 14:38:11.136 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
 2025-05-25 14:38:13.599 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 14:40:02.226 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 14:40:04.667 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 14:53:26.822 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:04:43.860 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:04:46.102 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:21:55.521 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:21:57.640 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:26:47.969 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:26:50.157 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:27:24.681 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:27:27.038 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:28:09.716 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-25 15:28:10.541 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 25, 14, 23, 29, 181984, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-25 15:28:10.930 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 25, 15, 28, 10, 930866)}
+2025-05-25 15:28:11.048 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-25 15:32:37.965 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:32:40.186 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:50:59.837 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:51:02.036 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:53:12.488 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 15:53:14.920 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:31:42.930 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:31:45.032 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:32:18.063 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-25 16:32:18.992 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 25, 15, 28, 10, 930866, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-25 16:32:19.389 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 25, 16, 32, 19, 389406)}
+2025-05-25 16:32:19.500 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-25 16:38:54.358 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:38:56.646 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:42:31.502 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:42:33.559 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:57:37.483 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 16:57:39.533 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:01:14.293 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:01:16.440 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:05:13.674 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:05:15.762 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:30:38.990 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:30:41.437 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:33:05.115 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-25 17:33:06.106 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 25, 16, 32, 19, 389406, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-25 17:33:06.496 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 25, 17, 33, 6, 496255)}
+2025-05-25 17:33:06.604 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-25 17:49:06.196 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:49:08.601 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:54:35.506 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:54:39.684 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:59:50.980 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 17:59:54.363 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:00:26.740 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID d65873c2-5112-4089-90c8-c2bf3b8d70d1
+2025-05-25 18:00:26.741 | INFO     | services.email_service:send_ticket_email:43 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:00:27.001 | DEBUG    | services.email_service:send_ticket_email:46 - Login SMTP exitoso
+2025-05-25 18:00:27.593 | SUCCESS  | services.email_service:send_ticket_email:48 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 18:12:36.652 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID 9d130368-e6f2-4d64-9def-192ed882fd6f
+2025-05-25 18:12:36.652 | INFO     | services.email_service:send_ticket_email:43 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:12:36.892 | DEBUG    | services.email_service:send_ticket_email:46 - Login SMTP exitoso
+2025-05-25 18:12:37.440 | SUCCESS  | services.email_service:send_ticket_email:48 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 18:13:27.767 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:13:29.999 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:13:38.024 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID 1506c3c8-5bea-4bc8-802e-38d2df58c9e5
+2025-05-25 18:13:38.024 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:13:38.253 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 18:13:38.889 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 18:18:43.095 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:18:45.271 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:18:50.434 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID ebc90585-3e52-4fdf-8140-4239a1065839
+2025-05-25 18:18:50.434 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:18:50.686 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 18:18:51.216 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 18:21:47.106 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:21:49.294 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:22:05.530 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID aad61681-5c5a-4530-9a4a-e267ef91710c
+2025-05-25 18:22:05.530 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:22:05.778 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 18:22:06.255 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 18:35:10.228 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:38:03.696 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:38:05.778 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:41:39.280 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:41:41.433 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:41:54.875 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-25 18:41:55.687 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 25, 17, 33, 6, 496255, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-25 18:41:56.057 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 25, 18, 41, 56, 57089)}
+2025-05-25 18:41:56.171 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-25 18:43:51.378 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:43:53.637 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:46:21.274 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:46:23.444 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:48:03.066 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:48:05.219 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 18:48:10.668 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID 1f5e38b8-866e-4545-8aa4-a6ea070b5342
+2025-05-25 18:48:10.668 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 18:48:10.913 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 18:48:11.476 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 19:00:00.785 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 19:00:03.064 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-25 19:00:09.559 | ERROR    | app:validation_exception_handler:19 - Error de validación: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None, 'user_name': 'Anto Llore'}}]
+2025-05-25 19:00:35.343 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID f882406c-4fe0-478e-a20c-e043c5a8e9c6
+2025-05-25 19:00:35.343 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 19:00:35.625 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 19:00:36.132 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-25 19:03:01.230 | DEBUG    | services.email_service:send_ticket_email:15 - Preparando correo para extrem.bird.0.1@gmail.com con reserva ID 96aed2c8-1fe1-405f-ac77-df94f42bfa60
+2025-05-25 19:03:01.230 | INFO     | services.email_service:send_ticket_email:56 - Conectando al servidor SMTP de Gmail para enviar correo a extrem.bird.0.1@gmail.com
+2025-05-25 19:03:01.463 | DEBUG    | services.email_service:send_ticket_email:59 - Login SMTP exitoso
+2025-05-25 19:03:01.974 | SUCCESS  | services.email_service:send_ticket_email:61 - Correo de billetes enviado correctamente a extrem.bird.0.1@gmail.com

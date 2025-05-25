@@ -1,5 +1,11 @@
-from sqlalchemy import Column, String, Date, Integer, Float
 from database.db import Base
+from sqlalchemy import Column, String, Date, Integer, Float, Boolean, Enum as SqlEnum
+import enum
+
+class TripStatusEnum(enum.Enum):
+    pendiente = "pendiente"
+    aceptada = "aceptada"
+    rechazada = "rechazada"
 
 class Trip(Base):
     __tablename__ = "trips"
@@ -23,3 +29,9 @@ class Trip(Base):
     flight_id = Column(String(255), nullable=True)
     hotel_id = Column(String(255), nullable=True)
     vehicle_id = Column(String(255), nullable=True)
+    confirmed = Column(Boolean, default=False)
+
+    status = Column(SqlEnum(TripStatusEnum), default=TripStatusEnum.pendiente, nullable=False)
+
+    user_email = Column(String(255), nullable=True)
+    user_name = Column(String(255), nullable=True)

@@ -22,8 +22,9 @@ class TripOut(TripCreate):
     hotel_id: Optional[str] = None
     vehicle_id: Optional[str] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 # Modelo para crear un billete
 class TicketCreate(BaseModel):
@@ -44,5 +45,6 @@ class TicketCreate(BaseModel):
 class TicketOut(TicketCreate):
     id: str  # ID único del billete
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
