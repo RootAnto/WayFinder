@@ -27,3 +27,9 @@
 2025-05-25 11:43:13.607 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
 2025-05-25 11:54:51.766 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
 2025-05-25 11:54:53.944 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 12:39:33.931 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 12:39:36.302 | SUCCESS  | database.firebase:<module>:22 - ✅ Firebase inicializado correctamente
+2025-05-25 12:40:14.490 | DEBUG    | database.firebase:get_user_by_email:58 - Buscando usuario con email: antonio@hotmail.com
+2025-05-25 12:40:15.316 | DEBUG    | database.firebase:get_user_by_email:62 - Usuario encontrado: {'password': '$2b$12$VrGKU3AUvvQoeKpyGPrK4.PVvyaaaQlmrz19Y7/2q2tj8.CXS0HnS', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 10, 53, 56, 552421, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2006-06-22', 'roles': ['usuario'], 'last_login': DatetimeWithNanoseconds(2025, 5, 25, 11, 22, 58, 503716, tzinfo=datetime.timezone.utc), 'email': 'antonio@hotmail.com', 'nombre': 'Antonio Llorente'}
+2025-05-25 12:40:15.691 | DEBUG    | database.firebase:update_user:74 - Actualizando usuario NpaGLTQIfCvvh2jCS5uw con: {'last_login': datetime.datetime(2025, 5, 25, 12, 40, 15, 691567)}
+2025-05-25 12:40:15.810 | SUCCESS  | database.firebase:update_user:76 - ✅ Usuario NpaGLTQIfCvvh2jCS5uw actualizado correctamente

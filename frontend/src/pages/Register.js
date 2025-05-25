@@ -44,11 +44,11 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
+
     if (!validateForm()) return;
-  
+
     setLoading(true);
-  
+
     try {
       const userData = {
         email: formData.email,
@@ -57,17 +57,17 @@ const Register = () => {
         birthdate: formData.birthdate,
         acceptTerms: formData.acceptTerms
       };
-  
-      const response = await axios.post('http://localhost:8000/auth/registrar', userData);
-      
+
+      const response = await axios.post('http://localhost:8000/auth/register', userData);
+
       console.log('Usuario registrado:', response.data);
-      navigate('/login', { 
-        state: { 
+      navigate('/login', {
+        state: {
           registrationSuccess: true,
-          email: formData.email 
-        } 
+          email: formData.email
+        }
       });
-      
+
     } catch (err) {
       console.error('Error en el registro:', err);
       setError(err.response?.data?.detail || 'Error al registrar el usuario');
@@ -81,13 +81,13 @@ const Register = () => {
       <header className="register-header">
         <Link to="/" className="register-logo">VuelaBarato</Link>
       </header>
-      
+
       <div className="register-content">
         <div className="register-card">
           <h1 className="register-title">Crear una cuenta</h1>
-          
+
           {error && <div className="register-error">{error}</div>}
-          
+
           <form onSubmit={handleSubmit} className="register-form">
             <div className="register-name-fields">
               <div className="register-form-group">
@@ -102,7 +102,7 @@ const Register = () => {
                   required
                 />
               </div>
-              
+
               <div className="register-form-group">
                 <label htmlFor="lastName" className="register-label">Apellidos</label>
                 <input
@@ -116,7 +116,7 @@ const Register = () => {
                 />
               </div>
             </div>
-            
+
             <div className="register-form-group">
               <label htmlFor="email" className="register-label">Correo electrónico</label>
               <input
@@ -130,7 +130,7 @@ const Register = () => {
                 required
               />
             </div>
-            
+
             <div className="register-form-group">
               <label htmlFor="password" className="register-label">Contraseña</label>
               <input
@@ -145,7 +145,7 @@ const Register = () => {
                 minLength="8"
               />
             </div>
-            
+
             <div className="register-form-group">
               <label htmlFor="confirmPassword" className="register-label">Confirmar contraseña</label>
               <input
@@ -160,7 +160,7 @@ const Register = () => {
                 minLength="8"
               />
             </div>
-            
+
             <div className="register-form-group">
               <label htmlFor="birthdate" className="register-label">Fecha de nacimiento</label>
               <input
@@ -173,7 +173,7 @@ const Register = () => {
                 required
               />
             </div>
-            
+
             <div className="register-terms">
               <input
                 type="checkbox"
@@ -185,24 +185,24 @@ const Register = () => {
                 required
               />
               <label htmlFor="acceptTerms" className="register-terms-label">
-                Acepto los <Link to="/terms" className="register-link">Términos y condiciones</Link> y la 
+                Acepto los <Link to="/terms" className="register-link">Términos y condiciones</Link> y la
                 <Link to="/privacy" className="register-link">Política de privacidad</Link>
               </label>
             </div>
-            
-            <button 
-              type="submit" 
+
+            <button
+              type="submit"
               className="register-button"
               disabled={loading}
             >
               {loading ? 'Registrando...' : 'Registrarse'}
             </button>
           </form>
-          
+
           <div className="register-divider">
             <span className="register-divider-text">o continuar con</span>
           </div>
-          
+
           <div className="register-social">
             <button type="button" className="register-social-button">
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" />
@@ -213,13 +213,13 @@ const Register = () => {
               Continuar con Apple
             </button>
           </div>
-          
+
           <div className="register-footer">
             ¿Ya tienes una cuenta? <Link to="/login" className="register-link">Inicia sesión</Link>
           </div>
         </div>
       </div>
-      
+
       <footer className="register-page-footer">
         <div className="footer-columns">
           <div className="footer-column">
@@ -230,7 +230,7 @@ const Register = () => {
               <li><Link to="/subscribe">Suscríbete</Link></li>
             </ul>
           </div>
-          
+
           <div className="footer-column">
             <h3>Sobre nosotros</h3>
             <ul>
@@ -239,7 +239,7 @@ const Register = () => {
               <li><Link to="/blog">Blog</Link></li>
             </ul>
           </div>
-          
+
           <div className="footer-column">
             <h3>Centro de ayuda</h3>
             <ul>
@@ -248,7 +248,7 @@ const Register = () => {
               <li><Link to="/terms">Términos y condiciones</Link></li>
             </ul>
           </div>
-          
+
           <div className="footer-column">
             <h3>Guías de viaje</h3>
             <ul>
@@ -258,7 +258,7 @@ const Register = () => {
             </ul>
           </div>
         </div>
-        
+
         <div className="footer-newsletter">
           <h3>Recibe ofertas exclusivas en tu correo</h3>
           <form className="newsletter-form">
@@ -266,7 +266,7 @@ const Register = () => {
             <button type="submit" className="newsletter-button">Suscribirse</button>
           </form>
         </div>
-        
+
         <div className="footer-copyright">
           © 2023 VuelaBarato. Todos los derechos reservados.
         </div>

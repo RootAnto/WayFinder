@@ -9,14 +9,14 @@ from controller.amadeus_controller.vehicle_controller import router as vehicle_r
 from controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
 from controller.trips_tickets import router as trips_tickets_route
 from controller.user_controller import router as user_controller_route
-from controller.fb import router as auth_router
+from controller.firebase_controller import router as auth_router
 from loguru import logger
 
 app = FastAPI()
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    logger.error(f"📛 Error de validación: {exc.errors()}")
+    logger.error(f"Error de validación: {exc.errors()}")
     return JSONResponse(
         status_code=422,
         content={"detail": exc.errors()},
