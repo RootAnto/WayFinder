@@ -1,15 +1,22 @@
 from pathlib import Path
 import firebase_admin
 from firebase_admin import credentials, firestore
-from firebase_admin.exceptions import FirebaseError
-from datetime import datetime
 from typing import Optional, Dict, Any
 from loguru import logger
 
-# Configuración de logs
+"""
+@brief Firebase configuration and Firestore client initialization.
+
+This module handles the setup and initialization of the Firebase app using a service account key.
+It also provides functions to perform CRUD operations on the 'usuarios' collection in Firestore.
+
+The logging configuration uses loguru to store logs in 'logs/firebase.log' with rotation and retention policies.
+"""
+
+# Logging configuration
 logger.add("logs/firebase.log", rotation="1 MB", retention="7 days", level="DEBUG")
 
-# Configuración Firebase
+# Firebase configuration
 SERVICE_ACCOUNT_PATH = Path(__file__).parent / "serviceAccountKey.json"
 
 if not firebase_admin._apps:
@@ -19,76 +26,121 @@ if not firebase_admin._apps:
             'projectId': 'wayfinder-6a444',
             'storageBucket': 'wayfinder-6a444.appspot.com'
         })
-        logger.success("✅ Firebase inicializado correctamente")
+        logger.success("Firebase initialized successfully")
     except Exception as e:
-        logger.exception(f"❌ Error inicializando Firebase: {str(e)}")
+        logger.exception(f"Error initializing Firebase: {str(e)}")
         raise
 
 db = firestore.client()
 
-# Operaciones CRUD
+"""
+@brief Checks if an email already exists in the 'usuarios' collection.
+
+@param email The email address to check.
+
+@return True if the email exists, False otherwise.
+
+@throws Exception if there is an error during the query.
+"""
 def email_exists(email: str) -> bool:
-    """Verifica si un email ya está registrado"""
     try:
-        logger.debug(f"Verificando si el email ya existe: {email}")
+        logger.debug(f"Checking if email exists: {email}")
+        email = email.lower()
         users_ref = db.collection('usuarios')
         query = users_ref.where('email', '==', email).limit(1)
         results = query.get()
         exists = len(results) > 0
-        logger.debug(f"Resultado existencia email '{email}': {exists}")
+        logger.debug(f"Email existence result for '{email}': {exists}")
         return exists
     except Exception as e:
-        logger.exception(f"Error al verificar existencia del email '{email}': {e}")
+        logger.exception(f"Error checking email existence '{email}': {e}")
         raise
 
+"""
+@brief Creates a new user in the 'usuarios' collection.
+
+@param user_data A dictionary containing user data to store.
+
+@return The newly created user's document ID.
+
+@throws Exception if there is an error during creation.
+"""
 def create_user(user_data: Dict[str, Any]) -> str:
-    """Crea un nuevo usuario y devuelve su ID"""
     try:
-        logger.debug(f"Creando usuario con datos: {user_data}")
+        if 'email' in user_data:
+            user_data['email'] = user_data['email'].lower()
+        logger.debug(f"Creating user with data: {user_data}")
         _, doc_ref = db.collection('usuarios').add(user_data)
-        logger.success(f"✅ Usuario creado con ID: {doc_ref.id}")
+        logger.success(f"User created with ID: {doc_ref.id}")
         return doc_ref.id
     except Exception as e:
-        logger.exception(f"❌ Error al crear usuario: {e}")
+        logger.exception(f"Error creating user: {e}")
         raise
 
+"""
+@brief Retrieves a user document by email.
+
+@param email The email of the user to retrieve.
+
+@return A dictionary with user data if found, None otherwise.
+
+@throws Exception if there is an error during retrieval.
+"""
 def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
-    """Obtiene un usuario por email"""
     try:
-        logger.debug(f"Buscando usuario con email: {email}")
+        email = email.lower()
+        logger.debug(f"Searching for user with email: {email}")
         query = db.collection('usuarios').where('email', '==', email).limit(1)
         docs = query.get()
         if docs:
-            logger.debug(f"Usuario encontrado: {docs[0].to_dict()}")
+            logger.debug(f"User found: {docs[0].to_dict()}")
             return docs[0].to_dict()
         else:
-            logger.debug(f"No se encontró usuario con email: {email}")
+            logger.debug(f"No user found with email: {email}")
             return None
     except Exception as e:
-        logger.exception(f"❌ Error buscando usuario por email '{email}': {e}")
+        logger.exception(f"Error retrieving user by email '{email}': {e}")
         raise
 
+"""
+@brief Updates an existing user document.
+
+@param user_id The document ID of the user to update.
+@param updates A dictionary with fields to update.
+
+@throws Exception if there is an error during update.
+"""
 def update_user(user_id: str, updates: Dict[str, Any]) -> None:
-    """Actualiza datos de usuario"""
     try:
-        logger.debug(f"Actualizando usuario {user_id} con: {updates}")
+        # Convert email to lowercase before updating
+        if 'email' in updates:
+            updates['email'] = updates['email'].lower()
+        logger.debug(f"Updating user {user_id} with data: {updates}")
         db.collection('usuarios').document(user_id).update(updates)
-        logger.success(f"✅ Usuario {user_id} actualizado correctamente")
+        logger.success(f"User {user_id} updated successfully")
     except Exception as e:
-        logger.exception(f"❌ Error actualizando usuario '{user_id}': {e}")
+        logger.exception(f"Error updating user '{user_id}': {e}")
         raise
 
+"""
+@brief Retrieves a user document by user ID.
+
+@param user_id The document ID of the user to retrieve.
+
+@return A dictionary with user data if found, None otherwise.
+
+@throws Exception if there is an error during retrieval.
+"""
 def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
-    """Obtiene un usuario por ID"""
     try:
-        logger.debug(f"Buscando usuario por ID: {user_id}")
+        logger.debug(f"Searching for user by ID: {user_id}")
         doc = db.collection('usuarios').document(user_id).get()
         if doc.exists:
-            logger.debug(f"Usuario encontrado: {doc.to_dict()}")
+            logger.debug(f"User found: {doc.to_dict()}")
             return doc.to_dict()
         else:
-            logger.debug(f"No se encontró usuario con ID: {user_id}")
+            logger.debug(f"No user found with ID: {user_id}")
             return None
     except Exception as e:
-        logger.exception(f"❌ Error obteniendo usuario por ID '{user_id}': {e}")
+        logger.exception(f"Error retrieving user by ID '{user_id}': {e}")
         raise

@@ -22,6 +22,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors()},
     )
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome a WayFinder"}
+
 # CORS to allow connection from the frontend
 app.add_middleware(
     CORSMiddleware,
