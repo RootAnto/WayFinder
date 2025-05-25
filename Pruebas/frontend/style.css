@@ -1,0 +1,122 @@
+/* Ocultar elementos con esta clase */
+.hidden {
+    display: none;
+}
+
+/* Botón flotante */
+#chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Caja del chat */
+#chat-container {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Header del chat */
+#chat-header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Mensajes */
+#chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* Input de chat */
+#chat-input-area {
+    display: flex;
+    border-top: 1px solid #ccc;
+}
+
+#chat-input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+}
+
+#chat-input:focus {
+    outline: none;
+}
+
+#chat-input-area button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+
+.user {
+    background: #e3f2fd;
+    margin: 5px;
+    padding: 8px;
+    border-radius: 5px;
+    align-self: flex-end;
+}
+
+.bot {
+    background: #f1f1f1;
+    margin: 5px;
+    padding: 8px;
+    border-radius: 5px;
+    align-self: flex-start;
+}
+
+.usuario {
+    background-color: #DCF8C6;
+    padding: 8px 12px;
+    margin: 6px;
+    border-radius: 12px;
+    align-self: flex-end;
+    max-width: 80%;
+    text-align: right;
+    font-family: sans-serif;
+}
+
+.agente {
+    background-color: #F1F0F0;
+    padding: 8px 12px;
+    margin: 6px;
+    border-radius: 12px;
+    align-self: flex-start;
+    max-width: 80%;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+}

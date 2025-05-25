@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot de Viajes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Botón flotante -->
+<div id="chat-button" onclick="toggleChat(event)">💬</div>
+
+<!-- Caja del chatbot -->
+<div id="chat-container" class="hidden">
+    <div id="chat-header">
+        <span>Agente de Viajes</span>
+        <button onclick="toggleChat(event)">✖️</button>
+    </div>
+    <div id="chat-messages"></div>
+    <div id="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Escribe un mensaje...">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
+</div>
+
+<script>
+let chatHistory = [];
+
+function toggleChat(event) {
+    const chatContainer = document.getElementById("chat-container");
+    chatContainer.classList.toggle("hidden");
+}
+
+async function sendMessage() {
+    const userMessage = document.getElementById("chat-input").value;
+    if (!userMessage) return;
+
+    appendMessage("usuario", userMessage);
+
+    // --- CAMBIÁ esto si usás Hugging Face directamente ---
+    const response = await fetch("http://localhost:8000/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage })
+    });
+
+    const data = await response.json();
+    const botReply = data.reply;
+
+    appendMessage("agente", botReply);
+    document.getElementById("chat-input").value = "";
+}
+
+function appendMessage(senderClass, message) {
+    const chatMessages = document.getElementById("chat-messages");
+    const messageElement = document.createElement("div");
+    messageElement.classList.add(senderClass);
+    messageElement.textContent = message;
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+</script>
+
+</body>
+</html>
