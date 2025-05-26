@@ -19,9 +19,21 @@ parser = PydanticOutputParser(pydantic_object=DatosVuelo)
 # Prompt con instrucciones claras para extraer solo el JSON solicitado
 prompt = PromptTemplate(
     template="""
-Eres un extractor de datos de vuelo. Extrae los campos solicitados a continuación del mensaje del usuario.
+Eres un extractor experto de datos de vuelo.
 
-Si no se puede determinar un campo, asígnale `null`. Devuelve solo un JSON. No escribas explicaciones, ni código, ni ningún otro texto.
+Tu tarea es extraer los siguientes datos desde un mensaje natural del usuario:
+- Origen: ciudad o aeropuerto desde donde sale.
+- Destino: ciudad o aeropuerto a donde viaja.
+- Fecha de salida: formato DD/MM/AAAA.
+- Fecha de regreso: mismo formato o null si no se indica.
+- Tipo de pasajero: "adulto" o "niño".
+
+⚠️ Reglas estrictas:
+- No asumas nada si no se dice claramente.
+- Ignora palabras como "como", "quiero", "me", "de", etc., si están solas.
+- Los nombres de ciudades deben ser reales (ej: "Madrid", "Barcelona", "Palma de Mallorca").
+- Acepta también códigos IATA (ej: "PMI", "MAD") y conviértelos si puedes.
+- Devuelve únicamente un JSON válido. Nada más.
 
 {format_instructions}
 
@@ -31,6 +43,7 @@ Mensaje del usuario:
     input_variables=["input"],
     partial_variables={"format_instructions": parser.get_format_instructions()}
 )
+
 # Instancia del modelo Ollama (asegúrate que llama correctamente a tu modelo local)
 model = OllamaLLM(model="llama3.2")
 

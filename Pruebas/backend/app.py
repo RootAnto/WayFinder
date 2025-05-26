@@ -22,7 +22,7 @@ Asistente:
 
 # Configuración del modelo Llama 3.2 (1B)
 model = OllamaLLM(
-    model="llama3.2",
+    model="gemma3:12b",
     temperature=0.7,
     system="""
 Eres un asistente de viajes en español. Tu tarea es ayudar al usuario a buscar vuelos.
