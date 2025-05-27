@@ -1,4 +1,3 @@
-// Cart.js
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import '../styles/Cart.css';
@@ -95,7 +94,7 @@ function CartPage() {
               <span>{(calculateTotal() * 1.21).toFixed(2)} €</span>
             </div>
             
-            <Link to="/checkout" className="checkout-btn">
+            <Link to="/Checkout" className="checkout-btn">
               Proceder al Pago
               <span className="secure-checkout">
                 <FaLock /> Pago seguro

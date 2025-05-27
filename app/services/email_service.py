@@ -225,3 +225,38 @@ def send_paid_ticket_with_qr(to_email: str, trip: TripOut):
         logger.success(f"Correo con billete enviado a {to_email}")
     except Exception as e:
         logger.error(f"Error al enviar billete confirmado: {e}")
+
+# envia un correo para verificar el correo del usuario al registrar
+def send_verification_email(to_email: str, to_name: str, verification_link: str):
+    subject = "Confirma tu correo electrónico - WayFinder"
+    sender_email = GMAIL_USER
+    receiver_email = to_email
+
+    html_body = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif;">
+        <p>Hola <strong>{to_name}</strong>,</p>
+        <p>Gracias por registrarte en <strong>WayFinder</strong>.</p>
+        <p>Por favor, confirma tu dirección de correo electrónico haciendo clic en el siguiente enlace:</p>
+        <p><a href="{verification_link}" style="padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">
+            Verificar Correo
+        </a></p>
+        <p>Saludos,<br>Equipo WayFinder</p>
+    </body>
+    </html>
+    """
+
+    message = MIMEMultipart("alternative")
+    message["From"] = formataddr(("WayFinder", sender_email))
+    message["To"] = receiver_email
+    message["Subject"] = subject
+    message.attach(MIMEText(html_body, "html"))
+
+    try:
+        logger.info(f"Enviando email de verificación a {to_email}")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(GMAIL_USER, GMAIL_PASSWORD)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        logger.success(f"Email de verificación enviado a {to_email}")
+    except Exception as e:
+        logger.error(f"Error al enviar email de verificación: {e}")

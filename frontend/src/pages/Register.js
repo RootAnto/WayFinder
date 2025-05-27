@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { auth, provider } from '../services/firebase';
+import { signInWithPopup } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Register.css';
@@ -39,6 +41,27 @@ const Register = () => {
       return false;
     }
     return true;
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      // Aquí puedes hacer una llamada a tu backend para registrar o autenticar al usuario con su UID de Firebase
+      const response = await axios.post('http://localhost:8000/auth/google-login', {
+        email: user.email,
+        nombre: user.displayName,
+        uid: user.uid,
+      });
+
+      console.log('Inicio con Google exitoso:', response.data);
+      navigate('/login'); // o a donde desees llevarlo
+
+    } catch (error) {
+      console.error('Error con Google Sign-In:', error);
+      setError('Error al iniciar sesión con Google');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -204,7 +227,11 @@ const Register = () => {
           </div>
 
           <div className="register-social">
-            <button type="button" className="register-social-button">
+            <button
+              type="button"
+              className="register-social-button"
+              onClick={handleGoogleLogin}
+            >
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" />
               Continuar con Google
             </button>

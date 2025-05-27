@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { auth, provider } from '../services/firebase';
+import { signInWithPopup } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 import '../styles/Login.css';
 
 const Login = () => {
@@ -9,8 +12,41 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, setCurrentUser } = useAuth();
   const navigate = useNavigate();
+
+  const handleGoogleLogin = async () => {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const response = await axios.post('http://localhost:8000/auth/google-login', {
+      email: user.email,
+      nombre: user.displayName,
+      uid: user.uid,
+    });
+
+    // Guardar sesión en localStorage
+    const sessionData = {
+      user: {
+        email: user.email,
+        nombre: user.displayName
+      },
+      expiresAt: new Date().getTime() + (60 * 60 * 1000) // 1 hora
+    };
+    localStorage.setItem('session', JSON.stringify(sessionData));
+
+    // Actualizar contexto
+    setCurrentUser(sessionData.user);
+
+    console.log('Inicio de sesión con Google exitoso:', response.data);
+    navigate('/');
+
+  } catch (error) {
+    console.error('Error al iniciar sesión con Google:', error);
+    setError('Error al iniciar sesión con Google');
+  }
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -102,10 +138,15 @@ const Login = () => {
           </div>
           
           <div className="login-social">
-            <button type="button" className="login-social-button">
+            <button
+              type="button"
+              className="login-social-button"
+              onClick={handleGoogleLogin}
+            >
               <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" />
               Continuar con Google
             </button>
+
             <button type="button" className="login-social-button">
               <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" />
               Continuar con Apple
