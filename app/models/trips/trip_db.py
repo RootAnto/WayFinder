@@ -35,3 +35,18 @@ class Trip(Base):
 
     user_email = Column(String(255), nullable=True)
     user_name = Column(String(255), nullable=True)
+
+    # Campos adicionales para detalles y precios
+    flight_name = Column(String(255), nullable=True)
+    flight_price = Column(Float, nullable=True)
+
+    hotel_name = Column(String(255), nullable=True)
+    hotel_price = Column(Float, nullable=True)
+    hotel_nights = Column(Integer, nullable=True)
+
+    vehicle_model = Column(String(255), nullable=True)
+    vehicle_price = Column(Float, nullable=True)
+    vehicle_days = Column(Integer, nullable=True)
+
+    total_price = Column(Float, nullable=True)
+    currency = Column(String(10), nullable=True)

@@ -15,7 +15,7 @@ amadeus = Client(
 )
 
 router = APIRouter(
-    tags=["Flights"],
+    tags=["Amadeus Controller"],
      responses={
         200: {"description": "Request completed successfully"},
         400: {"description": "Bad request due to invalid parameters"},

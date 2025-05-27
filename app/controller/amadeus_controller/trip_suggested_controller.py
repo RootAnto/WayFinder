@@ -7,14 +7,15 @@ from models.amadeus_pydantic.hotel import HotelInfo
 from models.amadeus_pydantic.vehicle import VehicleInfo
 from models.amadeus_pydantic.flight import FlightOffer, FlightSegment, FlightItinerary, FlightPrice
 
+# Configuración del cliente Amadeus
 amadeus = Client(
     client_id='GIsfA7oZrgp2EvhFPAOxZec3BNbb3glg',
     client_secret='0Bf6uymrGEPfB2Vr'
 )
 
 router = APIRouter(
-    tags=["Trips"],
-     responses={
+    tags=["Amadeus Controller"],
+    responses={
         200: {"description": "Request completed successfully"},
         400: {"description": "Bad request due to invalid parameters"},
         500: {"description": "Internal server error"},
@@ -24,27 +25,24 @@ router = APIRouter(
 @router.post("/trip-search", response_model=TripSearchResponse)
 async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
     """
-    Combined search for flights, hotels, and vehicles based on trip parameters.
-
-    Default values will be used if specific inputs are not provided.
-
-    Returns:
-        TripSearchResponse: Includes lists of flights, hotels, vehicles,
-        and a total cost summary.
+    Realiza una búsqueda combinada de vuelos, hoteles y vehículos.
     """
     try:
-        # ------------------------ FLIGHT SEARCH ------------------------
-        flight_params = {
-            "originLocationCode": query.originLocationCode,
-            "destinationLocationCode": query.destinationLocationCode,
-            "departureDate": query.departureDate,
-            "returnDate": query.returnDate,
-            "adults": query.adults,
-            "max": query.max
-        }
+        # ---------------------- VALIDACIÓN DE FECHAS ----------------------
+        check_in = datetime.strptime(query.checkInDate, "%Y-%m-%d")
+        check_out = datetime.strptime(query.checkOutDate, "%Y-%m-%d")
+        nights = (check_out - check_in).days
+        if nights <= 0:
+            raise HTTPException(status_code=400, detail="La fecha de salida debe ser posterior a la de entrada.")
 
+        # ------------------------ BÚSQUEDA DE VUELOS ------------------------
         flight_response = amadeus.shopping.flight_offers_search.get(
-            **flight_params
+            originLocationCode=query.originLocationCode,
+            destinationLocationCode=query.destinationLocationCode,
+            departureDate=query.departureDate,
+            returnDate=query.returnDate,
+            adults=query.adults,
+            max=query.max
         )
 
         flight_offers = []
@@ -66,10 +64,7 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
                     )
                     for seg in itinerary['segments']
                 ]
-                itineraries.append(FlightItinerary(
-                    duration=itinerary['duration'],
-                    segments=segments
-                ))
+                itineraries.append(FlightItinerary(duration=itinerary['duration'], segments=segments))
 
             price = FlightPrice(
                 total=offer['price']['total'],
@@ -86,14 +81,8 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
 
         currency = flight_offers[0].price.currency if flight_offers else "EUR"
 
-        # ------------------------ HOTEL SEARCH ------------------------
-        check_in = datetime.strptime(query.checkInDate, "%Y-%m-%d")
-        check_out = datetime.strptime(query.checkOutDate, "%Y-%m-%d")
-        nights = (check_out - check_in).days
-
-        hotel_response = amadeus.reference_data.locations.hotels.by_city.get(
-            cityCode=query.cityCode
-        )
+        # ------------------------ BÚSQUEDA DE HOTELES ------------------------
+        hotel_response = amadeus.reference_data.locations.hotels.by_city.get(cityCode=query.cityCode)
 
         hotels = []
         total_hotel_price = 0.0
@@ -108,34 +97,34 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
                 latitude=h.get('geoCode', {}).get('latitude', 0.0),
                 longitude=h.get('geoCode', {}).get('longitude', 0.0),
                 available=True,
-                price=price,
+                price=round(price, 2),
                 currency=currency,
                 nights=nights
             ))
 
-        # ------------------------ VEHICLE SEARCH ------------------------
+        # ------------------------ SIMULACIÓN DE VEHÍCULOS ------------------------
         city_vehicles = {
             "MAD": [("SEAT", "Ibiza"), ("Renault", "Clio"), ("BMW", "X1")],
             "BCN": [("Ford", "Focus"), ("Volkswagen", "Golf"), ("Tesla", "Model 3")],
             "PAR": [("Peugeot", "208"), ("Citroën", "C3"), ("Mercedes", "A-Class")]
         }
-        vehicle_brands = city_vehicles.get(
-            query.vehicleLocation.upper(), [("Toyota", "Corolla")]
-        )
+        vehicle_brands = city_vehicles.get(query.vehicleLocation.upper(), [("Toyota", "Corolla")])
 
         vehicles = []
         total_vehicle_price = 0.0
+
         for i in range(query.vehicleLimit):
             brand, model = random.choice(vehicle_brands)
-            price = round(random.uniform(30, 100), 2) * nights
-            total_vehicle_price += price
+            price_per_day = round(random.uniform(30, 100), 2)
+            total_price = price_per_day * nights
+            total_vehicle_price += total_price
 
             vehicles.append(VehicleInfo(
-                vehicleId=f"{query.vehicleLocation[:3]}-{i+1:03d}",
+                vehicleId=f"{query.vehicleLocation[:3].upper()}-{i+1:03d}",
                 name=f"{brand} {model}",
                 cityCode=query.vehicleLocation,
                 available=True,
-                pricePerDay=price / nights,
+                pricePerDay=price_per_day,
                 currency=currency,
                 vehicleType="economy",
                 brand=brand,
@@ -147,6 +136,7 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
                 fuelType=random.choice(["Gasoline", "Electric"])
             ))
 
+        # ------------------------ RESUMEN DEL COSTO TOTAL ------------------------
         grand_total = total_flight_price + total_hotel_price + total_vehicle_price
 
         summary = TripCostSummary(
@@ -165,12 +155,6 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
         )
 
     except ResponseError as error:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Amadeus API error: {str(error)}"
-        )
+        raise HTTPException(status_code=400, detail=f"Amadeus API error: {str(error)}")
     except Exception as error:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Internal error: {str(error)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(error)}")

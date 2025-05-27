@@ -1,30 +1,37 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime, date
 
-# Modelo para crear un viaje
+
 class TripCreate(BaseModel):
-    user_id: str  # UID de Firebase
+    user_id: str
     origin: str
     destination: str
-    departure_date: date
-    return_date: Optional[date] = None
-    adults: int = 1
-    children: int = 0
-    hotel_limit: Optional[int] = 5
-    vehicle_limit: Optional[int] = 5
+    departure_date: str
+    return_date: Optional[str] = None
+    adults: int
+    children: int
+    hotel_limit: int
+    vehicle_limit: int
     max_price: Optional[float] = None
 
-# Modelo para salida de un viaje, con IDs adicionales (vuelo, hotel, vehículo)
 class TripOut(TripCreate):
     id: str  # UUID como string
     flight_id: Optional[str] = None
     hotel_id: Optional[str] = None
     vehicle_id: Optional[str] = None
 
+    hotel_name: Optional[str] = None
+    vehicle_name: Optional[str] = None
+    total_days: Optional[int] = None
+    total_price: Optional[float] = None
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+
     model_config = {
         "from_attributes": True
     }
+
 
 # Modelo para crear un billete
 class TicketCreate(BaseModel):
@@ -41,7 +48,8 @@ class TicketCreate(BaseModel):
     passenger_name: Optional[str] = None
     additional_info: Optional[str] = None
 
-# Opcional: Modelo para salida de un billete si necesitas uno (puede heredar TicketCreate)
+
+# Modelo de salida del billete
 class TicketOut(TicketCreate):
     id: str  # ID único del billete
 
