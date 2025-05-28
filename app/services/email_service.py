@@ -62,15 +62,16 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
         <ul>{html_items}</ul>
         <p>Por favor, confirma o rechaza tu reserva:</p>
         <p>
-            <a href="https://api.wayfinder.com/reservas/{trip.id}/aceptar"
-               style="padding:12px 25px;margin-right:10px;background-color:#28a745;color:#fff;text-decoration:none;border-radius:6px;">
-               Confirmar Reserva
+            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/aceptar?user_name={to_name}&user_email={trip.user_email}"
+                style="padding:12px 25px; margin-right:10px; background-color:#28a745; color:#fff; text-decoration:none; border-radius:6px;">
+                Confirmar Reserva
             </a>
-            <a href="https://api.wayfinder.com/reservas/{trip.id}/rechazar"
-               style="padding:12px 25px;background-color:#dc3545;color:#fff;text-decoration:none;border-radius:6px;">
-               Rechazar Reserva
+            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/rechazar?user_name={to_name}&user_email={trip.user_email}"
+                style="padding:12px 25px; background-color:#dc3545; color:#fff; text-decoration:none; border-radius:6px;">
+                Rechazar Reserva
             </a>
         </p>
+
         <p>Saludos,<br>Equipo WayFinder</p>
     </body>
     </html>
@@ -129,8 +130,6 @@ def send_confirmation_ticket(to_email: str, to_name: str, trip: TripOut):
 
 
 # 📩 2. Email tras el pago (con QR)
-
-
 def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
     qr_payload = {
         "user_id": trip.user_id,
@@ -225,3 +224,49 @@ def send_paid_ticket_with_qr(to_email: str, trip: TripOut):
         logger.success(f"Correo con billete enviado a {to_email}")
     except Exception as e:
         logger.error(f"Error al enviar billete confirmado: {e}")
+
+
+def send_rejection_email(to_email: str, to_name: str, trip: TripOut) -> None:
+    """
+    Envía un correo notificando el rechazo de la reserva.
+
+    :param to_email: Dirección de correo del usuario
+    :param to_name: Nombre del usuario
+    :param trip: Objeto TripOut con los datos del viaje
+    """
+    subject = "Reserva rechazada - WayFinder"
+
+    html = f"""
+    <html>
+    <body style="font-family: Arial, sans-serif; color: #333;">
+        <p>Hola <strong>{to_name}</strong>,</p>
+        <p>Lamentamos informarte que la reserva con ID <strong>{trip.id}</strong> ha sido <strong>rechazada</strong>.</p>
+        <p>Detalles de tu solicitud:</p>
+        <ul>
+            <li><strong>Origen:</strong> {trip.origin}</li>
+            <li><strong>Destino:</strong> {trip.destination}</li>
+            <li><strong>Fecha de salida:</strong> {trip.departure_date}</li>
+            <li><strong>Precio total:</strong> {trip.total_price} {trip.currency}</li>
+        </ul>
+        <p>Si creés que se trata de un error o querés realizar otra reserva, por favor visitá nuestra web o respondé a este correo.</p>
+        <p>Saludos,<br>Equipo WayFinder</p>
+    </body>
+    </html>
+    """
+
+    # Armado del mensaje
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = formataddr(("WayFinder", GMAIL_USER))
+    msg["To"] = to_email
+
+    msg.attach(MIMEText(html, "html"))
+
+    try:
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_PASSWORD)
+            server.sendmail(GMAIL_USER, to_email, msg.as_string())
+            logger.info(f"Correo de rechazo enviado a {to_email}")
+    except Exception as e:
+        logger.error(f"❌ Error al enviar correo de rechazo: {e}")

@@ -1,7 +1,6 @@
-import datetime
-import json
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
+from controller.payments.payments import create_payment_intent_from_trip
 from models.travel_tickets.travel_ticket_db import Ticket
 from services.email_service import *
 from models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
@@ -80,9 +79,77 @@ def create_trip(
         to_name=user_name or "cliente",
         trip=trip_out
     )
-    send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
 
     return trip_out
+
+
+@router.get("/reservas/{trip_id}/aceptar")
+def confirmar_pago(trip_id: str, db: Session = Depends(get_db)):
+    logger.info(f"Iniciando confirmación de pago para reserva {trip_id}")
+
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+
+    if not trip:
+        logger.warning(f"Reserva no encontrada: {trip_id}")
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+
+    logger.info(f"Estado actual de la reserva {trip_id}: {trip.status}")
+    if trip.status in [TripStatus.aceptada, TripStatus.rechazada]:
+        logger.info(f"No se puede confirmar pago para reserva {trip_id} con estado {trip.status}")
+        return {"mensaje": f"La reserva ya fue {trip.status.value}"}
+
+    logger.info(f"Cambiando estado a aceptada para la reserva {trip_id}")
+    trip.status = TripStatus.aceptada
+
+    ticket = Ticket(
+        id=str(uuid.uuid4()),
+        user_id=trip.user_id,
+        flight_id=trip.flight_id,
+        hotel_id=trip.hotel_id,
+        vehicle_id=trip.vehicle_id,
+    )
+
+    db.add(ticket)
+    db.commit()
+    db.refresh(trip)
+
+    logger.info(f"Ticket {ticket.id} creado para la reserva {trip_id}")
+
+    trip_out = TripOut.from_orm(trip)
+
+    logger.info(f"Enviando correo con ticket a {trip_out.user_email}")
+    send_paid_ticket_with_qr(trip_out.user_email, trip_out)  # Aquí se llama la función que envía el mail con QR
+
+    logger.info(f"Confirmación de pago completada para reserva {trip_id}")
+
+    return {"mensaje": "Reserva aceptada, ticket generado y correo enviado", "ticket_id": ticket.id}
+
+
+
+
+@router.get("/reservas/{trip_id}/rechazar")
+def rechazar_reserva(trip_id: str, db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+
+    if trip.status == TripStatus.rechazada:
+        return {"mensaje": "La reserva ya fue rechazada"}
+
+    if trip.status == TripStatus.aceptada or trip.confirmed:
+        return {"mensaje": "No se puede rechazar una reserva ya aceptada o confirmada/pagada."}
+
+    # Si está pendiente, se puede rechazar
+    trip.status = TripStatus.rechazada
+    db.commit()
+    db.refresh(trip)
+
+    trip_out = TripOut.from_orm(trip)
+    send_rejection_email(trip.user_email, trip.user_name or "cliente", trip_out)
+
+    return {"mensaje": "Reserva rechazada y correo enviado"}
+
+
 
 
 @router.get("/confirm-trip")
@@ -115,100 +182,9 @@ def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)) -
     trip_out = TripOut.from_orm(trip)
 
     # Envía el correo con los billetes
-    send_ticket_email(to_email=user_email, trip=trip_out)
+    send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
 
     return {"message": "Reserva confirmada. Se han enviado los billetes al correo."}
-
-@router.get("/reservas/{trip_id}/aceptar")
-def aceptar_reserva(trip_id: str, db: Session = Depends(get_db)):
-    '''
-    @brief Accept a pending reservation and generate a ticket.
-
-    @param trip_id The UUID of the trip to accept.
-    @param db Database session dependency.
-
-    @throws HTTPException 404 if the trip is not found.
-    @throws HTTPException 400 if trip data is incomplete.
-
-    @note Accepts only reservations with 'pendiente' status. Ensures all
-          required trip components (flight, hotel, vehicle) are present before
-          generating the ticket.
-
-    @return Dictionary with success message and generated ticket ID.
-    '''
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-    if not trip:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
-
-    if trip.status != TripStatus.pendiente:
-        return {"mensaje": f"La reserva ya fue {trip.status}"}
-
-    if not (trip.flight_id and trip.hotel_id and trip.vehicle_id):
-        raise HTTPException(status_code=400, detail="No se puede generar " \
-        "ticket, faltan datos del viaje")
-
-    ticket = Ticket(
-        id=str(uuid.uuid4()),
-        user_id=trip.user_id,
-        flight_id=trip.flight_id,
-        hotel_id=trip.hotel_id,
-        vehicle_id=trip.vehicle_id,
-    )
-
-    trip.status = TripStatus.aceptada
-    trip.confirmed = True
-
-    db.add(ticket)
-    db.commit()
-    db.refresh(trip)
-
-    trip_out = TripOut.from_orm(trip)
-
-    user_email = trip.user_email
-    user_name = trip.user_name or "cliente"
-
-    send_confirmation_tiket(user_email, trip_out, user_name)
-
-    return {"mensaje": "Reserva aceptada, ticket generado y correo enviado",
-            "ticket_id": ticket.id}
-
-
-
-@router.get("/reservas/{trip_id}/rechazar")
-def rechazar_reserva(
-    trip_id: str,
-    db: Session = Depends(get_db)
-) -> dict[str, str]:
-    '''
-    @brief Reject a pending trip reservation by its ID.
-
-    @param trip_id The UUID of the trip to reject.
-    @param db Database session dependency.
-
-    @throws HTTPException 404 if the trip is not found.
-
-    @note Only reservations with status 'pendiente' can be rejected.
-          If the reservation was already confirmed or rejected,
-          it returns a status message.
-
-    @return Dictionary with a message indicating the result.
-    '''
-
-    trip = db.query(Trip).filter(Trip.id == trip_id).first()
-
-
-    if not trip:
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
-
-    if trip.status != TripStatus.pendiente:
-        return {"mensaje": f"La reserva ya fue {trip.status}"}
-
-    trip.status = TripStatus.rechazada
-    trip.updated_at = datetime.utcnow()
-
-    db.commit()
-
-    return {"mensaje": "Reserva rechazada correctamente"}
 
 
 @router.get("/{trip_id}", response_model=TripOut)
@@ -311,3 +287,19 @@ def clear_trips(db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Error al vaciar la tabla de viajes.")
+
+
+def confirm_trip_logic(trip_id: str, user_email: str, db: Session):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+    if trip.confirmed:
+        return {"message": "Reserva ya confirmada."}
+
+    trip.confirmed = True
+    db.commit()
+
+    trip_out = TripOut.from_orm(trip)
+
+    send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
+    return {"message": "Reserva confirmada. Se han enviado los billetes al correo."}

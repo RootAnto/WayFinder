@@ -56,68 +56,68 @@ function TripSuggestion() {
   }
 
     console.log('🧾 currentUser:', currentUser);
-  console.log('✈️ flight:', tripData.flights?.[0]);
-  console.log('🏨 hotel:', tripData.hotels?.[0]);
-  console.log('🚗 vehicle:', tripData.vehicles?.[0]);
+    console.log('✈️ flight:', tripData.flights?.[0]);
+    console.log('🏨 hotel:', tripData.hotels?.[0]);
+    console.log('🚗 vehicle:', tripData.vehicles?.[0]);
 
-  const flight = tripData.flights?.[0];
-  const hotel = tripData.hotels?.[0];
-  const vehicle = tripData.vehicles?.[0];
+    const flight = tripData.flights?.[0];
+    const hotel = tripData.hotels?.[0];
+    const vehicle = tripData.vehicles?.[0];
 
-  const departure = new Date(searchParams.departure);
-  const returnDate = searchParams.return ? new Date(searchParams.return) : null;
+    const departure = new Date(searchParams.departure);
+    const returnDate = searchParams.return ? new Date(searchParams.return) : null;
 
-  const hotelNights = hotel?.nights || (
-    returnDate
-      ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24))
-      : null
-  );
+    const hotelNights = hotel?.nights || (
+      returnDate
+        ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24))
+        : null
+    );
 
-  const vehicleDays = hotelNights;
+    const vehicleDays = hotelNights;
 
-  const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
-  const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
-  const vehiclePrice =
-    typeof vehicle?.pricePerDay === "number" && vehicleDays
-      ? parseFloat((vehicle.pricePerDay * vehicleDays).toFixed(2))
-      : 0;
+    const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+    const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
+    const vehiclePrice =
+      typeof vehicle?.pricePerDay === "number" && vehicleDays
+        ? parseFloat((vehicle.pricePerDay * vehicleDays).toFixed(2))
+        : 0;
 
-  const tripPayload = {
-    user_id: currentUser.id,
-    origin: searchParams.from,
-    destination: searchParams.to,
-    departure_date: searchParams.departure,
-    return_date: searchParams.return || null,
-    adults: 1,
-    children: 0,
-    hotel_limit: 5,
-    vehicle_limit: 5,
-    max_price: null,
-    user_email: currentUser.email || null,
-    user_name: currentUser.nombre,
+    const tripPayload = {
+      user_id: currentUser.id,
+      origin: searchParams.from,
+      destination: searchParams.to,
+      departure_date: searchParams.departure,
+      return_date: searchParams.return || null,
+      adults: 1,
+      children: 0,
+      hotel_limit: 5,
+      vehicle_limit: 5,
+      max_price: null,
+      user_email: currentUser.email || null,
+      user_name: currentUser.nombre,
 
-    // IDs
-    flight_id: flight?.id || null,
-    hotel_id: hotel?.hotelId || null,
-    vehicle_id: vehicle?.vehicleId || null,
+      // IDs
+      flight_id: flight?.id || null,
+      hotel_id: hotel?.hotelId || null,
+      vehicle_id: vehicle?.vehicleId || null,
 
-    // Detalles
-    flight_price: flightPrice || null,
-    flight_name: flight?.airline || null,
+      // Detalles
+      flight_price: flightPrice || null,
+      flight_name: flight?.airline || null,
 
-    hotel_name: hotel?.name || null,
-    hotel_price: hotelPrice || null,
-    hotel_nights: hotelNights,
+      hotel_name: hotel?.name || null,
+      hotel_price: hotelPrice || null,
+      hotel_nights: hotelNights,
 
-    vehicle_model: vehicle?.model || null,
-    vehicle_price: vehiclePrice || null,
-    vehicle_days: vehicleDays,
+      vehicle_model: vehicle?.model || null,
+      vehicle_price: vehiclePrice || null,
+      vehicle_days: vehicleDays,
 
-    total_price: parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2)),
-    currency: flight?.price?.currency || hotel?.currency || vehicle?.currency || "EUR",
-  };
+      total_price: parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2)),
+      currency: flight?.price?.currency || hotel?.currency || vehicle?.currency || "EUR",
+    };
 
-  console.log('📦 tripPayload construido:', tripPayload);
+    console.log('📦 tripPayload construido:', tripPayload);
 
 
     // Construir URL con user_email como query param
