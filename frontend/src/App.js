@@ -8,6 +8,8 @@ import PerfilPage from './pages/Profile';
 import FlightResultsPage from './pages/FlightResults'
 import TripSuggestionPage from './pages/TripSuggestion'
 import CartPage from './pages/Cart'
+import CheckoutPage from './pages/Checkout'
+import PaymentSuccessPage from './pages/PaymentSuccess'
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
             <Route path="/FlightResults" element={<FlightResultsPage />} />
             <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
             <Route path="/Cart" element={<CartPage />} />
+            <Route path="/Checkout" element={<CheckoutPage />} />
+            <Route path="/PaymentSuccess" element={<PaymentSuccessPage />} />
           </Routes>
         </CartProvider>
       </AuthProvider>

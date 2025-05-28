@@ -93,8 +93,11 @@ def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
         query = db.collection('usuarios').where('email', '==', email).limit(1)
         docs = query.get()
         if docs:
-            logger.debug(f"User found: {docs[0].to_dict()}")
-            return docs[0].to_dict()
+            user_doc = docs[0]
+            user_data = user_doc.to_dict()
+            user_data["id"] = user_doc.id
+            logger.debug(f"User found: {user_data}")
+            return user_data
         else:
             logger.debug(f"No user found with email: {email}")
             return None
