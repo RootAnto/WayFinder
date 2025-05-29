@@ -333,11 +333,15 @@ function FlightResults() {
                               className="select-btn"
                               onClick={() => addToCart({
                                 type: 'flight',
-                                ...flight,
+                                id: flight.id,
+                                airline: flight.itineraries[0].segments[0].carrierCode,
                                 origin: searchParams.from,
                                 destination: searchParams.to,
+                                departure: searchParams.departure,
+                                returnDate: searchParams.return,
                                 price: flight.price.total,
-                                currency: flight.price.currency
+                                currency: flight.price.currency,
+                                duration: flight.itineraries[0].duration
                               })}
                             >
                               Seleccionar
@@ -385,10 +389,15 @@ function FlightResults() {
 
                             addToCart({
                               type: 'hotel',
-                              ...hotel,
+                              hotelId: hotel.hotelId,
+                              name: hotel.name,
                               price: hotel.price * nights,
+                              pricePerDay: hotel.price,
                               currency: hotel.currency,
-                              nights: nights
+                              nights: nights,
+                              cityCode: hotel.cityCode,
+                              checkInDate: searchParams.departure,
+                              checkOutDate: searchParams.return || searchParams.departure
                             })
                           }}
                         >
@@ -440,11 +449,16 @@ function FlightResults() {
 
                             addToCart({
                               type: 'vehicle',
-                              ...vehicle,
-                              price: vehicle.pricePerDay * days, // Precio total
+                              vehicleId: vehicle.vehicleId,
+                              model: vehicle.name,
+                              brand: vehicle.brand,
+                              price: vehicle.pricePerDay * days,
+                              pricePerDay: vehicle.pricePerDay,
                               currency: vehicle.currency,
                               days: days,
-                              pricePerDay: vehicle.pricePerDay // Guardamos el precio por día
+                              vehicleType: vehicle.vehicleType,
+                              pickUpDate: searchParams.departure,
+                              dropOffDate: searchParams.return || searchParams.departure
                             })
                           }}
                         >

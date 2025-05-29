@@ -66,10 +66,10 @@ async def register_user(user: UserCreate):
 @router.post("/login")
 async def login_user(credentials: UserLogin):
     try:
-        # 1. Obtener usuario de Firebase Auth
+        # 1. Verificar usuario en Firebase Auth (esto autentica las credenciales)
         firebase_user = auth.get_user_by_email(credentials.email)
         
-        # 2. Verificar si el correo está confirmado en Firebase Auth
+        # 2. Verificar si el correo está confirmado
         if not firebase_user.email_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -78,9 +78,12 @@ async def login_user(credentials: UserLogin):
             
         # 3. Sincronizar Firestore con el estado de Firebase Auth
         user_ref = db.collection("usuarios").where("firebase_uid", "==", firebase_user.uid).get()[0]
-        update_user(user_ref.id, {"email_verified": firebase_user.email_verified})
+        update_user(user_ref.id, {
+            "email_verified": firebase_user.email_verified,
+            "last_login": datetime.now()
+        })
             
-        # 4. Verificar contraseña en Firestore (opcional, si no usas Firebase Auth para autenticar)
+        # 4. Obtener datos del usuario para la respuesta
         user_data = get_user_by_email(credentials.email)
 
         if not pwd_context.verify(credentials.password, user_data["password"]):

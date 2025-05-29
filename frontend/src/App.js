@@ -5,11 +5,11 @@ import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import PerfilPage from './pages/Profile';
-import FlightResultsPage from './pages/FlightResults'
-import TripSuggestionPage from './pages/TripSuggestion'
-import CartPage from './pages/Cart'
-import CheckoutPage from './pages/Checkout'
-import PaymentSuccessPage from './pages/PaymentSuccess'
+import FlightResultsPage from './pages/FlightResults';
+import TripSuggestionPage from './pages/TripSuggestion';
+import CartPage from './pages/Cart';
+import CheckoutPage from './pages/Checkout';
+import PaymentSuccessPage from './pages/PaymentSuccess';
 
 function App() {
   return (
