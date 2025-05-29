@@ -62,15 +62,16 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
         <ul>{html_items}</ul>
         <p>Por favor, confirma o rechaza tu reserva:</p>
         <p>
-            <a href="https://api.wayfinder.com/reservas/{trip.id}/aceptar"
-               style="padding:12px 25px;margin-right:10px;background-color:#28a745;color:#fff;text-decoration:none;border-radius:6px;">
-               Confirmar Reserva
+            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/aceptar?user_name={to_name}&user_email={trip.user_email}"
+                style="padding:12px 25px; margin-right:10px; background-color:#28a745; color:#fff; text-decoration:none; border-radius:6px;">
+                Confirmar Reserva
             </a>
-            <a href="https://api.wayfinder.com/reservas/{trip.id}/rechazar"
-               style="padding:12px 25px;background-color:#dc3545;color:#fff;text-decoration:none;border-radius:6px;">
-               Rechazar Reserva
+            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/rechazar?user_name={to_name}&user_email={trip.user_email}"
+                style="padding:12px 25px; background-color:#dc3545; color:#fff; text-decoration:none; border-radius:6px;">
+                Rechazar Reserva
             </a>
         </p>
+
         <p>Saludos,<br>Equipo WayFinder</p>
     </body>
     </html>
@@ -129,8 +130,6 @@ def send_confirmation_ticket(to_email: str, to_name: str, trip: TripOut):
 
 
 # 📩 2. Email tras el pago (con QR)
-
-
 def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
     qr_payload = {
         "user_id": trip.user_id,
@@ -225,38 +224,3 @@ def send_paid_ticket_with_qr(to_email: str, trip: TripOut):
         logger.success(f"Correo con billete enviado a {to_email}")
     except Exception as e:
         logger.error(f"Error al enviar billete confirmado: {e}")
-
-# envia un correo para verificar el correo del usuario al registrar
-def send_verification_email(to_email: str, to_name: str, verification_link: str):
-    subject = "Confirma tu correo electrónico - WayFinder"
-    sender_email = GMAIL_USER
-    receiver_email = to_email
-
-    html_body = f"""
-    <html>
-    <body style="font-family: Arial, sans-serif;">
-        <p>Hola <strong>{to_name}</strong>,</p>
-        <p>Gracias por registrarte en <strong>WayFinder</strong>.</p>
-        <p>Por favor, confirma tu dirección de correo electrónico haciendo clic en el siguiente enlace:</p>
-        <p><a href="{verification_link}" style="padding:10px 20px; background-color:#007bff; color:white; text-decoration:none; border-radius:5px;">
-            Verificar Correo
-        </a></p>
-        <p>Saludos,<br>Equipo WayFinder</p>
-    </body>
-    </html>
-    """
-
-    message = MIMEMultipart("alternative")
-    message["From"] = formataddr(("WayFinder", sender_email))
-    message["To"] = receiver_email
-    message["Subject"] = subject
-    message.attach(MIMEText(html_body, "html"))
-
-    try:
-        logger.info(f"Enviando email de verificación a {to_email}")
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(GMAIL_USER, GMAIL_PASSWORD)
-            server.sendmail(sender_email, receiver_email, message.as_string())
-        logger.success(f"Email de verificación enviado a {to_email}")
-    except Exception as e:
-        logger.error(f"Error al enviar email de verificación: {e}")

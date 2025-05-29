@@ -437,3 +437,182 @@
 2025-05-27 13:57:45.093 | SUCCESS  | services.email_service:send_paid_ticket_with_qr:225 - Correo con billete enviado a extrem.bird.0.1@gmail.com
 2025-05-27 14:04:52.907 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
 2025-05-27 14:04:55.100 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 14:16:09.163 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 14:16:11.557 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 14:17:27.012 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-27 14:17:27.847 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 27, 13, 2, 51, 846948, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-27 14:17:28.227 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 27, 14, 17, 28, 227866)}
+2025-05-27 14:17:28.330 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-27 14:17:51.135 | INFO     | services.email_service:send_confirmation_ticket:122 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-27 14:17:52.501 | SUCCESS  | services.email_service:send_confirmation_ticket:126 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-27 14:17:52.689 | INFO     | services.email_service:send_paid_ticket_with_qr:221 - Enviando billete con QR a extrem.bird.0.1@gmail.com
+2025-05-27 14:17:54.243 | SUCCESS  | services.email_service:send_paid_ticket_with_qr:225 - Correo con billete enviado a extrem.bird.0.1@gmail.com
+2025-05-27 14:20:05.788 | INFO     | services.email_service:send_confirmation_ticket:122 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-27 14:20:07.195 | SUCCESS  | services.email_service:send_confirmation_ticket:126 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-27 14:20:07.355 | INFO     | services.email_service:send_paid_ticket_with_qr:221 - Enviando billete con QR a extrem.bird.0.1@gmail.com
+2025-05-27 14:20:09.059 | SUCCESS  | services.email_service:send_paid_ticket_with_qr:225 - Correo con billete enviado a extrem.bird.0.1@gmail.com
+2025-05-27 19:02:48.732 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 19:02:50.917 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 19:16:10.611 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-27 19:16:12.811 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:22:46.464 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:22:50.044 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:29:57.982 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:30:01.588 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:55:36.282 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:55:40.117 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 16:57:30.767 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-28 16:57:31.789 | DEBUG    | database.firebase:get_user_by_email:96 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 27, 14, 17, 28, 227866, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore'}
+2025-05-28 16:57:32.196 | DEBUG    | database.firebase:update_user:118 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 28, 16, 57, 32, 196157)}
+2025-05-28 16:57:32.320 | SUCCESS  | database.firebase:update_user:120 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-28 16:57:45.164 | INFO     | services.email_service:send_confirmation_ticket:122 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 16:57:46.931 | SUCCESS  | services.email_service:send_confirmation_ticket:126 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:14:42.768 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:14:46.491 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:14:55.795 | INFO     | services.email_service:send_confirmation_ticket:122 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:14:59.585 | SUCCESS  | services.email_service:send_confirmation_ticket:126 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:18:04.284 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:18:08.036 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:18:25.572 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:18:26.967 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:21:32.528 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:21:36.088 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:22:04.357 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:22:05.800 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:27:06.704 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:27:08.269 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:28:54.854 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:28:56.353 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:32:24.585 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:32:28.592 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:33:21.627 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:33:23.222 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:38:50.674 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:38:54.886 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:39:48.194 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:39:49.560 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:39:59.924 | INFO     | services.email_service:send_rejection_email:272 - Correo de rechazo enviado a extrem.bird.0.1@gmail.com
+2025-05-28 17:47:49.315 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:47:50.885 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:47:59.322 | INFO     | services.email_service:send_rejection_email:272 - Correo de rechazo enviado a extrem.bird.0.1@gmail.com
+2025-05-28 17:49:33.825 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:49:35.511 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:51:19.488 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:51:20.915 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:52:43.616 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:52:47.587 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:53:18.083 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:53:19.583 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 17:56:00.346 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:56:04.097 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 17:56:25.718 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 17:56:28.127 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:01:18.424 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:01:22.041 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:01:26.934 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:01:28.399 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:01:59.147 | INFO     | controller.trips_tickets:aceptar_reserva:90 - Inicio de aceptación de reserva: 7d0407f7-ae85-4c3e-bd8e-bb53a0d210c3
+2025-05-28 18:01:59.240 | INFO     | controller.trips_tickets:aceptar_reserva:97 - Estado actual de la reserva: TripStatusEnum.pendiente
+2025-05-28 18:01:59.243 | INFO     | controller.trips_tickets:aceptar_reserva:111 - Creando intento de pago para reserva 7d0407f7-ae85-4c3e-bd8e-bb53a0d210c3
+2025-05-28 18:03:35.089 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:03:38.849 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:03:56.628 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:03:58.484 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:04:10.495 | INFO     | controller.trips_tickets:aceptar_reserva:90 - Inicio de aceptación de reserva: 5f9fb9c0-4465-45b2-932d-84963dd34075
+2025-05-28 18:04:10.577 | INFO     | controller.trips_tickets:aceptar_reserva:97 - Estado actual de la reserva: TripStatusEnum.pendiente
+2025-05-28 18:04:10.577 | INFO     | controller.trips_tickets:aceptar_reserva:112 - Creando intento de pago para reserva 5f9fb9c0-4465-45b2-932d-84963dd34075
+2025-05-28 18:04:10.661 | ERROR    | controller.trips_tickets:aceptar_reserva:115 - Error creando intento de pago: 400: Reserva ya pagada o en otro estado
+2025-05-28 18:08:15.983 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:08:19.496 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:08:34.834 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:08:36.424 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:12:27.847 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:12:31.499 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:12:52.410 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:12:53.887 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:13:04.326 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 35d598b0-6991-408d-a0ca-35ae7826851e
+2025-05-28 18:13:04.455 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 35d598b0-6991-408d-a0ca-35ae7826851e: TripStatusEnum.pendiente
+2025-05-28 18:13:04.455 | INFO     | controller.trips_tickets:confirmar_pago:98 - Reserva 35d598b0-6991-408d-a0ca-35ae7826851e ya en estado TripStatusEnum.pendiente, no se puede confirmar pago.
+2025-05-28 18:19:18.888 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:19:22.611 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:19:43.165 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:19:44.635 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:19:52.245 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva f2506138-45f0-4a95-aa05-52f21cd10dfe
+2025-05-28 18:19:52.336 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva f2506138-45f0-4a95-aa05-52f21cd10dfe: TripStatusEnum.pendiente
+2025-05-28 18:19:52.336 | INFO     | controller.trips_tickets:confirmar_pago:98 - Reserva f2506138-45f0-4a95-aa05-52f21cd10dfe ya en estado TripStatusEnum.pendiente, no se puede confirmar pago.
+2025-05-28 18:24:47.671 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:24:51.279 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 18:25:05.735 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 18:25:07.126 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 18:25:13.908 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva c45191f4-6988-4adf-89ed-d3be2a59dffb
+2025-05-28 18:25:13.991 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva c45191f4-6988-4adf-89ed-d3be2a59dffb: TripStatusEnum.pendiente
+2025-05-28 18:25:13.991 | INFO     | controller.trips_tickets:confirmar_pago:98 - Reserva c45191f4-6988-4adf-89ed-d3be2a59dffb ya en estado TripStatusEnum.pendiente, no se puede confirmar pago.
+2025-05-28 19:06:00.338 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:06:04.516 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:06:12.536 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:06:13.983 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:06:20.390 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 2f33fa0a-221f-4423-b34a-165d9192c969
+2025-05-28 19:06:20.476 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 2f33fa0a-221f-4423-b34a-165d9192c969: TripStatusEnum.pendiente
+2025-05-28 19:06:20.483 | INFO     | controller.trips_tickets:confirmar_pago:102 - Cambiando estado a aceptada para la reserva 2f33fa0a-221f-4423-b34a-165d9192c969
+2025-05-28 19:06:20.937 | INFO     | controller.trips_tickets:confirmar_pago:117 - Ticket 6482b40a-23cb-40b2-a847-15595af667aa creado para la reserva 2f33fa0a-221f-4423-b34a-165d9192c969
+2025-05-28 19:06:20.937 | INFO     | controller.trips_tickets:confirmar_pago:121 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:10:11.500 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:10:15.617 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:10:22.429 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:10:23.810 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:10:30.753 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 2d7594b9-736b-412b-8b20-8f2b5f0e77ab
+2025-05-28 19:10:30.858 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 2d7594b9-736b-412b-8b20-8f2b5f0e77ab: TripStatusEnum.pendiente
+2025-05-28 19:10:30.858 | INFO     | controller.trips_tickets:confirmar_pago:102 - Cambiando estado a aceptada para la reserva 2d7594b9-736b-412b-8b20-8f2b5f0e77ab
+2025-05-28 19:10:31.320 | INFO     | controller.trips_tickets:confirmar_pago:117 - Ticket 27918cb2-3669-4749-a180-3bdc4dd90511 creado para la reserva 2d7594b9-736b-412b-8b20-8f2b5f0e77ab
+2025-05-28 19:10:31.323 | INFO     | controller.trips_tickets:confirmar_pago:121 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:14:49.943 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:14:53.964 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:15:04.196 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:15:06.049 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:15:14.972 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 4fd0da3d-8604-4abe-8edc-bab0ba68bc52
+2025-05-28 19:15:15.066 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 4fd0da3d-8604-4abe-8edc-bab0ba68bc52: TripStatusEnum.pendiente
+2025-05-28 19:15:15.066 | INFO     | controller.trips_tickets:confirmar_pago:102 - Cambiando estado a aceptada para la reserva 4fd0da3d-8604-4abe-8edc-bab0ba68bc52
+2025-05-28 19:15:15.544 | INFO     | controller.trips_tickets:confirmar_pago:117 - Ticket 95b47163-6bd7-4605-a696-362c6a1687be creado para la reserva 4fd0da3d-8604-4abe-8edc-bab0ba68bc52
+2025-05-28 19:15:15.544 | INFO     | controller.trips_tickets:confirmar_pago:121 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:16:54.646 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:16:58.870 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:17:07.134 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:17:08.455 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:17:15.694 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 17bbf489-eb79-466e-8e01-9a43313b2c7d
+2025-05-28 19:17:15.790 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 17bbf489-eb79-466e-8e01-9a43313b2c7d: TripStatusEnum.pendiente
+2025-05-28 19:17:15.794 | INFO     | controller.trips_tickets:confirmar_pago:102 - Cambiando estado a aceptada para la reserva 17bbf489-eb79-466e-8e01-9a43313b2c7d
+2025-05-28 19:17:16.377 | INFO     | controller.trips_tickets:confirmar_pago:117 - Ticket e26d6a38-73bd-449a-a48a-b09314043c7d creado para la reserva 17bbf489-eb79-466e-8e01-9a43313b2c7d
+2025-05-28 19:17:16.377 | INFO     | controller.trips_tickets:confirmar_pago:121 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:20:33.706 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:20:37.481 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:20:45.647 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:20:47.110 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:21:13.422 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva dce1c847-3be2-469e-8059-dc85f14c1e7a
+2025-05-28 19:21:13.514 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva dce1c847-3be2-469e-8059-dc85f14c1e7a: TripStatusEnum.pendiente
+2025-05-28 19:21:13.515 | INFO     | controller.trips_tickets:confirmar_pago:101 - Cambiando estado a aceptada para la reserva dce1c847-3be2-469e-8059-dc85f14c1e7a
+2025-05-28 19:21:13.941 | INFO     | controller.trips_tickets:confirmar_pago:116 - Ticket 9d1f722a-a03a-476c-98ce-b0bff34f311a creado para la reserva dce1c847-3be2-469e-8059-dc85f14c1e7a
+2025-05-28 19:21:13.942 | INFO     | controller.trips_tickets:confirmar_pago:120 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:21:13.946 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:21:15.303 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:21:15.303 | INFO     | controller.trips_tickets:confirmar_pago:123 - Confirmación de pago completada para reserva dce1c847-3be2-469e-8059-dc85f14c1e7a
+2025-05-28 19:32:59.972 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:33:03.942 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:33:59.436 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:34:00.769 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:34:07.394 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 60bb3f83-7701-4560-b637-526386db0f90
+2025-05-28 19:34:07.736 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 60bb3f83-7701-4560-b637-526386db0f90: TripStatusEnum.pendiente
+2025-05-28 19:34:07.737 | INFO     | controller.trips_tickets:confirmar_pago:101 - Cambiando estado a aceptada para la reserva 60bb3f83-7701-4560-b637-526386db0f90
+2025-05-28 19:34:08.144 | INFO     | controller.trips_tickets:confirmar_pago:116 - Ticket 79e6835a-9b7b-4d9c-8622-99614a3e7bea creado para la reserva 60bb3f83-7701-4560-b637-526386db0f90
+2025-05-28 19:34:08.145 | INFO     | controller.trips_tickets:confirmar_pago:120 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-28 19:34:08.147 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:34:09.676 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:34:09.677 | INFO     | controller.trips_tickets:confirmar_pago:127 - Confirmación de pago completada para reserva 60bb3f83-7701-4560-b637-526386db0f90
+2025-05-28 19:40:13.836 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:40:18.031 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-28 19:40:26.865 | INFO     | services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a extrem.bird.0.1@gmail.com
+2025-05-28 19:40:29.247 | SUCCESS  | services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a extrem.bird.0.1@gmail.com
+2025-05-28 19:40:44.185 | INFO     | controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76
+2025-05-28 19:40:44.273 | INFO     | controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76: TripStatusEnum.pendiente
+2025-05-28 19:40:44.273 | INFO     | controller.trips_tickets:confirmar_pago:101 - Cambiando estado a aceptada para la reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76
+2025-05-28 19:40:44.748 | INFO     | controller.trips_tickets:confirmar_pago:116 - Ticket 61e281d7-8fec-4c0e-aba5-c779eaf99e9f creado para la reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76
+2025-05-28 19:40:44.749 | INFO     | controller.trips_tickets:confirmar_pago:120 - Enviando correo con ticket a extrem.bird.0.1@gmail.com

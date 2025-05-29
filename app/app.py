@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import uvicorn
@@ -14,7 +14,7 @@ from loguru import logger
 app = FastAPI()
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(exc: RequestValidationError):
     logger.error(f"Error de validación: {exc.errors()}")
     return JSONResponse(
         status_code=422,
