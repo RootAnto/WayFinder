@@ -1,216 +1,192 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FaCreditCard, FaCalendarAlt, FaUser, FaLock } from 'react-icons/fa';
-import '../styles/Checkout.css';
+import { useAuth } from '../context/AuthContext';
+import '../styles/Cart.css';
+import { FaTrash, FaPlane, FaHotel, FaCar, FaLock } from 'react-icons/fa';
 
-function Checkout() {
+export default function CartPage() {
+  const { cartItems, removeFromCart, clearCart } = useCart();
   const { currentUser } = useAuth();
-  const { cartItems, clearCart } = useCart(); // Añade clearCart
-  const [cardData, setCardData] = useState({
-    name: '',
-    number: '',
-    expiry: '',
-    cvc: '',
-  });
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCardData({ ...cardData, [name]: value });
-  };
+  // Totales
+  const subtotal = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
+  const tax      = subtotal * 0.21;
+  const total    = subtotal + tax;
 
-  const handleExpiryChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length >= 3) {
-      value = `${value.slice(0, 2)}/${value.slice(2, 4)}`;
+  const handleCheckout = async () => {
+    try {
+      if (!currentUser?.email) {
+        throw new Error('Usuario no autenticado');
+      }
+
+      const flight = cartItems.find(i => i.type === 'flight');
+      const hotel  = cartItems.find(i => i.type === 'hotel');
+      const vehicle = cartItems.find(i => i.type === 'vehicle');
+
+      // Cálculo de noches/días
+      const hotelNights = hotel?.nights ?? (
+        flight?.returnDate && flight?.departure
+          ? Math.ceil((new Date(flight.returnDate) - new Date(flight.departure)) / (1000*60*60*24))
+          : 1
+      );
+      const vehicleDays = vehicle?.days ?? hotelNights;
+
+      // Payload
+      const tripPayload = {
+        user_id:     String(currentUser.id),
+        user_email:  currentUser.email,
+        user_name:   currentUser.nombre || '',
+        origin:      flight?.origin    || '',
+        destination: flight?.destination || '',
+        departure_date: flight?.departure   || '',
+        return_date:    flight?.returnDate  || null,
+        adults:      1,
+        children:    0,
+        hotel_limit:   5,
+        vehicle_limit: 5,
+        max_price:   null,
+
+        flight_id:    flight?.id ? String(flight.id) : null,
+        flight_name:  flight?.airline ?? flight?.name ?? '',
+        flight_price: parseFloat(flight?.price ?? 0),
+
+        hotel_id:     hotel?.id ? String(hotel.id) : null,
+        hotel_name:   hotel?.name ?? '',
+        hotel_price:  parseFloat(hotel?.price ?? 0),
+        hotel_nights: hotelNights,
+
+        vehicle_id:     vehicle?.id ? String(vehicle.id) : null,
+        vehicle_model:  vehicle?.model ?? vehicle?.name ?? '',
+        vehicle_price:  parseFloat(vehicle?.price ?? 0),
+        vehicle_days:   vehicleDays,
+
+        total_price: parseFloat((
+          Number(flight?.price  ?? 0) +
+          Number(hotel?.price   ?? 0) +
+          Number(vehicle?.price ?? 0)
+        ).toFixed(2)),
+        currency:    flight?.currency ?? hotel?.currency ?? vehicle?.currency ?? 'EUR',
+      };
+
+      console.log('🔔 tripPayload:', tripPayload);
+
+      // Construir URL con query param user_email
+      const url = new URL('http://localhost:8000/trips/');
+      url.searchParams.append('user_email', currentUser.email);
+
+      const response = await fetch(url.toString(), {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(tripPayload),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.error('Error backend:', errText);
+        throw new Error('Error al crear la reserva');
+      }
+
+      await response.json();
+      clearCart();
+      setShowSuccessModal(true);
+
+    } catch (err) {
+      console.error('Error en checkout:', err);
+      alert('Hubo un error al procesar tu reserva: ' + err.message);
     }
-    setCardData((prev) => ({ ...prev, expiry: value }));
   };
-
-  const handleCardNumberChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    value = value.replace(/(.{4})/g, '$1 ').trim();
-    setCardData((prev) => ({ ...prev, number: value }));
-  };
-
-    const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setError(null);
-
-  try {
-    // 1. Obtener elementos del carrito
-    const flight = cartItems.find(item => item.type === 'flight');
-    const hotel = cartItems.find(item => item.type === 'hotel');
-    const vehicle = cartItems.find(item => item.type === 'vehicle');
-
-    if (!flight || !hotel) {
-      throw new Error('Debes tener al menos un vuelo y un hotel en tu carrito');
-    }
-
-    // 2. Calcular fechas y duración
-    const departure = new Date(flight.departure);
-    const returnDate = flight.returnDate ? new Date(flight.returnDate) : null;
-
-    const hotelNights = hotel.nights || (
-      returnDate ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24)) : 1
-    );
-
-    const vehicleDays = vehicle?.days || hotelNights;
-
-    // 3. Convertir precios a float y asegurar consistencia
-    const flightPrice = parseFloat(flight.price || 0);
-    const hotelPrice = parseFloat(hotel.price || 0);
-    const vehiclePrice = vehicle ? parseFloat(vehicle.price || 0) : 0;
-
-    const totalPrice = parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2));
-
-    // 4. Construir tripPayload seguro
-    const tripPayload = {
-      user_id: String(currentUser.id),
-      origin: flight.origin,
-      destination: flight.destination,
-      departure_date: flight.departure,
-      return_date: flight.returnDate || null,
-      adults: 1,
-      children: 0,
-      user_email: currentUser.email || '',
-      user_name: currentUser.nombre || '',
-
-      flight_id: String(flight.id || ''),
-      hotel_id: String(hotel.hotelId || ''),
-      vehicle_id: vehicle?.vehicleId ? String(vehicle.vehicleId) : '',
-
-      flight_price: parseFloat(flight.price),
-      flight_name: flight.airline || '',
-
-      hotel_name: hotel.name || '',
-      hotel_price: parseFloat(hotel.price),
-      hotel_nights: hotel.nights,
-
-      vehicle_model: vehicle?.name || vehicle?.model || vehicle?.brand || '',
-      vehicle_price: vehicle ? parseFloat(vehicle.price) : 0,
-      vehicle_days: vehicle?.days || hotel.nights,
-
-      total_price: parseFloat((parseFloat(flight.price) + parseFloat(hotel.price) + (vehicle ? parseFloat(vehicle.price) : 0)).toFixed(2)),
-      currency: flight.currency || hotel.currency || vehicle?.currency || 'EUR',
-    };
-
-
-    console.log('🚀 tripPayload listo para enviar:', tripPayload);
-
-    // 5. Realizar petición
-    const url = new URL('http://localhost:8000/trips/');
-    url.searchParams.append('user_email', currentUser.email);
-
-    const response = await fetch(url.toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(tripPayload),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('❌ Error del servidor:', errorData);
-      throw new Error(errorData.detail || 'Error al crear el viaje');
-    }
-
-    const data = await response.json();
-    console.log('✅ Respuesta recibida:', data);
-
-    // 6. Vaciar carrito y redirigir
-    clearCart();
-    navigate('/PaymentSuccess');
-
-  } catch (err) {
-    console.error('🛑 Error en handleSubmit:', err);
-    setError('Error al procesar el pago: ' + err.message);
-    setIsSubmitting(false);
-  }
-};
-
 
   return (
-    <div className="checkout-form-container">
-      <h2>Información de Pago</h2>
-      <form className="checkout-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name"><FaUser /> Titular de la tarjeta</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Juan Pérez"
-            value={cardData.name}
-            onChange={handleChange}
-            required
-          />
+    <div className="cart-page">
+      <div className="cart-header">
+        <h1>Resumen de tu Reserva</h1>
+        <div className="cart-stats">
+          <span>{cartItems.length} elemento{cartItems.length !== 1 && 's'}</span>
+          <Link to="/" className="continue-shopping">← Seguir comprando</Link>
+        </div>
+      </div>
+
+      <div className="cart-container">
+        <div className="cart-items">
+          {cartItems.length === 0
+            ? (
+              <div className="empty-cart">
+                <h2>Tu carrito está vacío</h2>
+                <p>Agrega servicios para reservar.</p>
+              </div>
+            )
+            : cartItems.map(item => (
+              <div key={item.id} className="cart-item">
+                <div className="item-icon">
+                  {item.type === 'flight'  && <FaPlane />}
+                  {item.type === 'hotel'   && <FaHotel />}
+                  {item.type === 'vehicle' && <FaCar />}
+                </div>
+                <div className="item-details">
+                  <h3>
+                    {item.type === 'flight'
+                      ? `${item.origin} → ${item.destination}`
+                      : item.name
+                    }
+                  </h3>
+                  {item.type === 'flight' && (
+                    <p>
+                      {item.departure}
+                      {item.returnDate && ` - ${item.returnDate}`}
+                    </p>
+                  )}
+                  {item.type === 'hotel' && (
+                    <p>{item.nights} noches ({item.pricePerDay} {item.currency}/noche)</p>
+                  )}
+                  {item.type === 'vehicle' && (
+                    <p>{item.days} días ({item.pricePerDay} {item.currency}/día)</p>
+                  )}
+                </div>
+                <div className="item-price">
+                  <span>{item.price} {item.currency}</span>
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeFromCart(item.id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
+            ))
+          }
         </div>
 
-        <div className="form-group">
-          <label htmlFor="number"><FaCreditCard /> Número de tarjeta</label>
-          <input
-            type="text"
-            id="number"
-            name="number"
-            placeholder="1234 5678 9012 3456"
-            value={cardData.number}
-            onChange={handleCardNumberChange}
-            pattern="(?:\d{4} ){3}\d{4}"
-            maxLength={19}
-            required
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="expiry"><FaCalendarAlt /> Fecha de expiración</label>
-            <input
-              type="text"
-              id="expiry"
-              name="expiry"
-              placeholder="MM/AA"
-              value={cardData.expiry}
-              onChange={handleExpiryChange}
-              pattern="\d{2}/\d{2}"
-              maxLength={5}
-              required
-            />
+        {cartItems.length > 0 && (
+          <div className="cart-summary">
+            <h3>Resumen del Pedido</h3>
+            <div className="summary-row"><span>Subtotal:</span><span>{subtotal.toFixed(2)} €</span></div>
+            <div className="summary-row"><span>Impuestos (21%):</span><span>{tax.toFixed(2)} €</span></div>
+            <div className="summary-row total"><span>Total:</span><span>{total.toFixed(2)} €</span></div>
+            <button onClick={handleCheckout} className="checkout-btn">
+              Reservar
+              <span className="secure-checkout"><FaLock /> Pago seguro</span>
+            </button>
           </div>
+        )}
+      </div>
 
-          <div className="form-group">
-            <label htmlFor="cvc"><FaLock /> CVC</label>
-            <input
-              type="text"
-              id="cvc"
-              name="cvc"
-              placeholder="123"
-              value={cardData.cvc}
-              onChange={handleChange}
-              pattern="\d{3}"
-              maxLength={3}
-              required
-            />
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>¡Reserva realizada con éxito!</h2>
+            <p>Te hemos enviado un correo de confirmación a <strong>{currentUser.email}</strong>.</p>
+            <button
+              className="btn-close"
+              onClick={() => { setShowSuccessModal(false); navigate('/'); }}
+            >
+              Volver al inicio
+            </button>
           </div>
         </div>
-
-        <button type="submit" className="submit-payment-btn" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <span className="spinner" /> Confirmando pago...
-            </>
-          ) : (
-            'Confirmar Pago'
-          )}
-        </button>
-      </form>
+      )}
     </div>
   );
 }
-
-export default Checkout;

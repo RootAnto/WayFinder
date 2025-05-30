@@ -616,3 +616,167 @@
 2025-05-28 19:40:44.273 | INFO     | controller.trips_tickets:confirmar_pago:101 - Cambiando estado a aceptada para la reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76
 2025-05-28 19:40:44.748 | INFO     | controller.trips_tickets:confirmar_pago:116 - Ticket 61e281d7-8fec-4c0e-aba5-c779eaf99e9f creado para la reserva 3e0f5949-b0ae-48bf-b409-a48fb09c3d76
 2025-05-28 19:40:44.749 | INFO     | controller.trips_tickets:confirmar_pago:120 - Enviando correo con ticket a extrem.bird.0.1@gmail.com
+2025-05-30 08:49:17.450 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 08:49:21.447 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 08:53:02.974 | DEBUG    | database.firebase:create_user:72 - Creating user with data: {'firebase_uid': 'ml8QMGtUnPgw3X6eeuV51lyxUdj1', 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'aaa aaa', 'password': '$2b$12$5kJqerhcFaOPBEbqmj2K0OMRIS6xrQouG655hQVHr8JnFjdt1TqE.', 'birthdate': '2025-05-06', 'acceptTerms': True, 'email_verified': False, 'created_at': datetime.datetime(2025, 5, 30, 8, 53, 2, 974089), 'active': True, 'last_login': None, 'roles': ['user']}
+2025-05-30 08:53:03.260 | SUCCESS  | database.firebase:create_user:74 - User created with ID: B3vKMqmdewXswjPmZG7y
+2025-05-30 08:53:03.260 | INFO     | services.email_service:send_verification_email:255 - Enviando email de verificación a antoniollorentecuenca@hotmail.com
+2025-05-30 08:53:04.190 | SUCCESS  | services.email_service:send_verification_email:259 - Email de verificación enviado a antoniollorentecuenca@hotmail.com
+2025-05-30 08:54:36.553 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: antoniollorentecuenca@gmail.com
+2025-05-30 08:54:36.621 | DEBUG    | database.firebase:get_user_by_email:99 - User found: {'created_at': DatetimeWithNanoseconds(2025, 5, 29, 8, 52, 28, 974871, tzinfo=datetime.timezone.utc), 'acceptTerms': True, 'active': True, 'birthdate': None, 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 29, 8, 52, 28, 974871, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@gmail.com', 'nombre': '-{L&C}- -', 'email_verified': True, 'firebase_uid': '3w3OgpPCMVURE8LcoBMaWKWXKXs2', 'id': '2vyujSfNez3wSUTEVBwG'}
+2025-05-30 08:54:36.621 | DEBUG    | database.firebase:update_user:121 - Updating user 2vyujSfNez3wSUTEVBwG with data: {'last_login': datetime.datetime(2025, 5, 30, 8, 54, 36, 621332)}
+2025-05-30 08:54:36.733 | SUCCESS  | database.firebase:update_user:123 - User 2vyujSfNez3wSUTEVBwG updated successfully
+2025-05-30 08:55:05.157 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-30 08:55:05.237 | DEBUG    | database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$XXDMExmVelteD/r0K9c3zOVD1GwJ3nQFYA5ATcSiCd/ZleZ.qPSWq', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 25, 14, 22, 6, 76711, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-06', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 28, 16, 57, 32, 196157, tzinfo=datetime.timezone.utc), 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Anto Llore', 'id': 'yXSUNrVj7R8UC6IrhU60'}
+2025-05-30 08:55:05.239 | DEBUG    | database.firebase:update_user:121 - Updating user yXSUNrVj7R8UC6IrhU60 with data: {'last_login': datetime.datetime(2025, 5, 30, 8, 55, 5, 239270)}
+2025-05-30 08:55:05.331 | SUCCESS  | database.firebase:update_user:123 - User yXSUNrVj7R8UC6IrhU60 updated successfully
+2025-05-30 08:57:09.759 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 08:57:13.084 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:17:52.249 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-30 09:17:52.429 | DEBUG    | database.firebase:get_user_by_email:102 - No user found with email: extrem.bird.0.1@gmail.com
+2025-05-30 09:17:52.429 | DEBUG    | database.firebase:create_user:72 - Creating user with data: {'firebase_uid': 'cDWU8gDmj9VmL6G9He8JmhJHdlp1', 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Extrem_bird', 'birthdate': None, 'acceptTerms': True, 'email_verified': True, 'created_at': datetime.datetime(2025, 5, 30, 9, 17, 52, 429941), 'active': True, 'last_login': datetime.datetime(2025, 5, 30, 9, 17, 52, 429941), 'roles': ['user']}
+2025-05-30 09:17:52.573 | SUCCESS  | database.firebase:create_user:74 - User created with ID: EF2s55GW1I5xYv59qz2h
+2025-05-30 09:23:24.232 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:23:27.486 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:26:42.928 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:26:46.135 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:26:52.255 | INFO     | app:validation_exception_handler:19 - Validation error for request: POST http://localhost:8000/trips/?user_email=extrem.bird.0.1%40gmail.com
+2025-05-30 09:26:52.255 | INFO     | app:validation_exception_handler:20 - Errors: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None, 'user_email': 'extrem.bird.0.1@gmail.com', 'user_name': 'Extrem_bird', 'flight_id': '1', 'hotel_id': 'SINYC713', 'vehicle_id': 'NYC-001', 'flight_price': 438.48, 'flight_name': None, 'hotel_name': 'FOUR POINTS MIDTOWN TIMES SQRE', 'hotel_price': 1000, 'hotel_nights': 10, 'vehicle_model': 'Corolla', 'vehicle_price': 347.1, 'vehicle_days': 10, 'total_price': 1785.58, 'currency': 'EUR'}}]
+2025-05-30 09:37:16.916 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:37:20.412 | SUCCESS  | database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 09:38:22.641 | DEBUG    | database.firebase:get_user_by_email:92 - Searching for user with email: extrem.bird.0.1@gmail.com
+2025-05-30 09:38:22.785 | DEBUG    | database.firebase:get_user_by_email:102 - No user found with email: extrem.bird.0.1@gmail.com
+2025-05-30 09:38:22.787 | DEBUG    | database.firebase:create_user:72 - Creating user with data: {'firebase_uid': 'aD4ZTYG6sAZBEcgJMzRdqwaDIdq2', 'email': 'extrem.bird.0.1@gmail.com', 'nombre': 'Extrem_bird', 'birthdate': None, 'acceptTerms': True, 'email_verified': True, 'created_at': datetime.datetime(2025, 5, 30, 9, 38, 22, 787145), 'active': True, 'last_login': datetime.datetime(2025, 5, 30, 9, 38, 22, 787145), 'roles': ['user']}
+2025-05-30 09:38:22.915 | SUCCESS  | database.firebase:create_user:74 - User created with ID: ZE8vfbCSSJ41W8UcDzBz
+2025-05-30 09:38:38.075 | INFO     | app:validation_exception_handler:19 - Validation error for request: POST http://localhost:8000/trips/?user_email=extrem.bird.0.1%40gmail.com
+2025-05-30 09:38:38.075 | INFO     | app:validation_exception_handler:20 - Errors: [{'type': 'missing', 'loc': ('body', 'user_id'), 'msg': 'Field required', 'input': {'origin': 'MAD', 'destination': 'NYC', 'departure_date': '2025-06-15', 'return_date': '2025-06-25', 'adults': 1, 'children': 0, 'hotel_limit': 5, 'vehicle_limit': 5, 'max_price': None, 'user_email': 'extrem.bird.0.1@gmail.com', 'user_name': 'Extrem_bird', 'flight_id': '1', 'hotel_id': 'HGNYC454', 'vehicle_id': 'NYC-001', 'flight_price': 438.48, 'flight_name': None, 'hotel_name': 'HOMEWOOD NEW YORK MANHATTAN TIMES SQUARE', 'hotel_price': 1000, 'hotel_nights': 10, 'vehicle_model': 'Corolla', 'vehicle_price': 810.4, 'vehicle_days': 10, 'total_price': 2248.88, 'currency': 'EUR'}}]
+2025-05-30 09:48:47.104 | INFO     | app:validation_exception_handler:19 - Validation error for request: POST http://localhost:8000/auth/login
+2025-05-30 09:48:47.104 | INFO     | app:validation_exception_handler:20 - Errors: [{'type': 'missing', 'loc': ('body', 'uid'), 'msg': 'Field required', 'input': {'email': 'antoniollorentecuenca@hotmail.com', 'password': '12345678'}}, {'type': 'missing', 'loc': ('body', 'name'), 'msg': 'Field required', 'input': {'email': 'antoniollorentecuenca@hotmail.com', 'password': '12345678'}}]
+2025-05-30 10:07:22.812 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 10:08:49.899 | DEBUG    | app.database.firebase:create_user:72 - Creating user with data: {'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'birthdate': '2025-05-07', 'acceptTerms': True, 'email_verified': False, 'created_at': datetime.datetime(2025, 5, 30, 10, 8, 49, 899374), 'active': True, 'last_login': None, 'roles': ['user']}
+2025-05-30 10:08:50.070 | SUCCESS  | app.database.firebase:create_user:74 - User created with ID: SqPVDglDUt3jtFK108hf
+2025-05-30 10:08:50.070 | INFO     | app.services.email_service:send_verification_email:255 - Enviando email de verificación a antoniollorentecuenca@hotmail.com
+2025-05-30 10:08:51.015 | SUCCESS  | app.services.email_service:send_verification_email:259 - Email de verificación enviado a antoniollorentecuenca@hotmail.com
+2025-05-30 10:09:56.835 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 5, 30, 10, 9, 56, 835348)}
+2025-05-30 10:09:56.966 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 10:09:56.966 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: antoniollorentecuenca@hotmail.com
+2025-05-30 10:09:57.040 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 30, 10, 8, 49, 899374, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-07', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 30, 10, 9, 56, 835348, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'email_verified': True, 'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'id': 'SqPVDglDUt3jtFK108hf'}
+2025-05-30 10:09:57.313 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'last_login': datetime.datetime(2025, 5, 30, 10, 9, 57, 313239)}
+2025-05-30 10:09:57.400 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 10:10:12.185 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 10:10:13.738 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 10:11:22.995 | INFO     | app.controller.trips_tickets:confirmar_pago:88 - Iniciando confirmación de pago para reserva 6c8098e6-dfcc-4a37-b332-4004c8c30f0e
+2025-05-30 10:11:23.082 | INFO     | app.controller.trips_tickets:confirmar_pago:96 - Estado actual de la reserva 6c8098e6-dfcc-4a37-b332-4004c8c30f0e: TripStatusEnum.pendiente
+2025-05-30 10:11:23.082 | INFO     | app.controller.trips_tickets:confirmar_pago:101 - Cambiando estado a aceptada para la reserva 6c8098e6-dfcc-4a37-b332-4004c8c30f0e
+2025-05-30 10:11:23.505 | INFO     | app.controller.trips_tickets:confirmar_pago:116 - Ticket 2ba1403d-9ef7-4fbc-90dc-467bdfe9083c creado para la reserva 6c8098e6-dfcc-4a37-b332-4004c8c30f0e
+2025-05-30 10:11:23.505 | INFO     | app.controller.trips_tickets:confirmar_pago:120 - Enviando correo con ticket a antoniollorentecuenca@hotmail.com
+2025-05-30 10:11:23.728 | INFO     | app.services.email_service:send_paid_ticket_with_qr:220 - Enviando billete con QR a antoniollorentecuenca@hotmail.com
+2025-05-30 10:11:25.468 | SUCCESS  | app.services.email_service:send_paid_ticket_with_qr:224 - Correo con billete enviado a antoniollorentecuenca@hotmail.com
+2025-05-30 10:11:25.468 | INFO     | app.controller.trips_tickets:confirmar_pago:123 - Confirmación de pago completada para reserva 6c8098e6-dfcc-4a37-b332-4004c8c30f0e
+2025-05-30 10:21:39.867 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 10:21:41.338 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 10:36:25.124 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 11:10:06.924 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 12:36:31.248 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 12:54:13.421 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 12:54:42.007 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 12:57:32.397 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 12:59:57.927 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 13:00:58.514 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 13:02:47.232 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 5, 30, 13, 2, 47, 232514)}
+2025-05-30 13:02:47.332 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 13:02:47.333 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: antoniollorentecuenca@hotmail.com
+2025-05-30 13:02:47.411 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 30, 10, 8, 49, 899374, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-07', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 30, 13, 2, 47, 232514, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'email_verified': True, 'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'id': 'SqPVDglDUt3jtFK108hf'}
+2025-05-30 13:02:47.724 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'last_login': datetime.datetime(2025, 5, 30, 13, 2, 47, 724049)}
+2025-05-30 13:02:47.807 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 13:05:39.124 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 13:05:40.601 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 13:10:18.872 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 13:10:20.238 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 13:14:55.693 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 13:16:34.157 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 13:16:35.561 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 13:57:33.040 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 14:05:40.307 | INFO     | app.app:validation_exception_handler:19 - Validation error for request: POST http://localhost:8000/trips/?user_email=cliente%40example.com
+2025-05-30 14:05:40.308 | INFO     | app.app:validation_exception_handler:20 - Errors: [{'type': 'string_type', 'loc': ('body', 'flight_id'), 'msg': 'Input should be a valid string', 'input': 1748606295449}]
+2025-05-30 14:07:29.979 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 14:10:39.314 | INFO     | app.app:validation_exception_handler:19 - Validation error for request: POST http://localhost:8000/trips/?user_email=cliente%40example.com
+2025-05-30 14:10:39.315 | INFO     | app.app:validation_exception_handler:20 - Errors: [{'type': 'string_type', 'loc': ('body', 'flight_id'), 'msg': 'Input should be a valid string', 'input': 1748607028592}]
+2025-05-30 14:14:21.400 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 14:14:22.860 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 14:50:12.019 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 14:50:13.694 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 14:55:21.097 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 14:55:22.477 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:00:01.827 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:00:03.390 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:24:23.578 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:24:25.347 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:29:29.258 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:29:30.604 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:34:50.257 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:34:51.616 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:41:44.703 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:41:46.250 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:43:39.865 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:43:41.271 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:54:49.327 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:54:50.867 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:57:26.460 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:57:28.384 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 15:59:55.937 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 15:59:57.592 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:03:46.903 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 5, 30, 16, 3, 46, 903429)}
+2025-05-30 16:03:47.004 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 16:03:47.004 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: antoniollorentecuenca@hotmail.com
+2025-05-30 16:03:47.091 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 30, 10, 8, 49, 899374, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-07', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 30, 16, 3, 46, 903429, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'email_verified': True, 'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'id': 'SqPVDglDUt3jtFK108hf'}
+2025-05-30 16:03:47.416 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'last_login': datetime.datetime(2025, 5, 30, 16, 3, 47, 416293)}
+2025-05-30 16:03:47.598 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 16:04:12.549 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:04:14.016 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:07:42.170 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:07:43.634 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:09:13.729 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:09:15.052 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:11:00.575 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 16:14:38.966 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:14:40.806 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:16:40.653 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:16:42.422 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:19:08.628 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a user@example.com
+2025-05-30 16:19:09.951 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a user@example.com
+2025-05-30 16:21:41.048 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 16:21:42.419 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 16:30:57.683 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 16:31:44.578 | INFO     | app.controller.trips_tickets:confirmar_pago:87 - Iniciando confirmación de pago para reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:31:45.635 | INFO     | app.controller.trips_tickets:confirmar_pago:95 - Estado actual de la reserva 7a64d444-dd3a-4a7d-8cda-698004823442: TripStatusEnum.pendiente
+2025-05-30 16:31:45.635 | INFO     | app.controller.trips_tickets:confirmar_pago:100 - Cambiando estado a aceptada para la reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:48:11.692 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 16:49:06.830 | INFO     | app.controller.trips_tickets:confirmar_pago:87 - Iniciando confirmación de pago para reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:49:07.921 | INFO     | app.controller.trips_tickets:confirmar_pago:95 - Estado actual de la reserva 7a64d444-dd3a-4a7d-8cda-698004823442: TripStatusEnum.pendiente
+2025-05-30 16:49:07.921 | INFO     | app.controller.trips_tickets:confirmar_pago:100 - Cambiando estado a aceptada para la reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:51:16.331 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 16:51:35.440 | INFO     | app.controller.trips_tickets:confirmar_pago:87 - Iniciando confirmación de pago para reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:51:36.438 | INFO     | app.controller.trips_tickets:confirmar_pago:95 - Estado actual de la reserva 7a64d444-dd3a-4a7d-8cda-698004823442: TripStatusEnum.pendiente
+2025-05-30 16:51:36.439 | INFO     | app.controller.trips_tickets:confirmar_pago:100 - Cambiando estado a aceptada para la reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:53:38.129 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 16:53:54.442 | INFO     | app.controller.trips_tickets:confirmar_pago:87 - Iniciando confirmación de pago para reserva 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:53:55.445 | WARNING  | app.controller.trips_tickets:confirmar_pago:92 - Reserva no encontrada: 7a64d444-dd3a-4a7d-8cda-698004823442
+2025-05-30 16:55:25.204 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 16:55:26.634 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 17:05:03.139 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 17:05:04.979 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 17:12:47.958 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 17:14:02.139 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 5, 30, 17, 14, 2, 139405)}
+2025-05-30 17:14:02.343 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 17:14:02.343 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: antoniollorentecuenca@hotmail.com
+2025-05-30 17:14:02.407 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 30, 10, 8, 49, 899374, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-07', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 5, 30, 17, 14, 2, 139405, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'email_verified': True, 'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'id': 'SqPVDglDUt3jtFK108hf'}
+2025-05-30 17:14:02.721 | DEBUG    | app.database.firebase:update_user:121 - Updating user SqPVDglDUt3jtFK108hf with data: {'last_login': datetime.datetime(2025, 5, 30, 17, 14, 2, 721111)}
+2025-05-30 17:14:02.802 | SUCCESS  | app.database.firebase:update_user:123 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-05-30 17:14:30.547 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 17:14:31.842 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 18:01:54.182 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 18:06:59.481 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-05-30 18:07:42.789 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-05-30 18:07:44.989 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-05-30 18:21:00.092 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully

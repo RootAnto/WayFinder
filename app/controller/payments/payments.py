@@ -1,11 +1,11 @@
 import stripe
 from sqlalchemy.orm import Session
-from models.trips.trip_db import Trip
-from models.trips.trip_pydantic import TripStatus
+from app.models.trips.trip_db import Trip
+from app.models.trips.trip_pydantic import TripStatus
 from fastapi import HTTPException
 from loguru import logger
 
-stripe.api_key = "pk_test_51RTl1TQdIRsrFscjY4XaBinOjkD3hFJj7mUDNw8X6pWe7QX2KarXDGb99DgldUcvng2RESJra3vjjlpDUyaMiIKN00RZKTO68m"
+stripe.api_key = "sk_test_51RTl1TQdIRsrFscj0OC26WaAxd6HpzFhYkz98Ka3sp8Ae7s4G1SHXwupDBqBCBM7jrRScxNWRUr8F5agzOBt2OeE00QE4O6Xej"
 
 def create_payment_intent_from_trip(trip_id: str, db: Session) -> str:
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
@@ -14,7 +14,7 @@ def create_payment_intent_from_trip(trip_id: str, db: Session) -> str:
 
     if trip.status in [TripStatus.aceptada, TripStatus.rechazada]:
         logger.info(f"No se puede confirmar pago para reserva {trip_id} con estado {trip.status}")
-        return {"mensaje": f"La reserva ya fue {trip.status.value}"}
+        raise HTTPException(status_code=400, detail=f"La reserva ya fue {trip.status.value}")
 
     intent = stripe.PaymentIntent.create(
         amount=int(trip.total_price * 100),
@@ -22,4 +22,5 @@ def create_payment_intent_from_trip(trip_id: str, db: Session) -> str:
         metadata={"trip_id": trip.id},
         payment_method_types=["card"]
     )
+
     return intent.client_secret

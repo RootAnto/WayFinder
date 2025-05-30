@@ -1,6 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { Elements } from '@stripe/react-stripe-js';
+import { stripePromise } from './stripePromise';
+
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
@@ -10,6 +13,8 @@ import TripSuggestionPage from './pages/TripSuggestion';
 import CartPage from './pages/Cart';
 import CheckoutPage from './pages/Checkout';
 import PaymentSuccessPage from './pages/PaymentSuccess';
+
+import StripeCheckout from './components/StripeCheckout';  // Importa el componente que quieres usar
 
 function App() {
   return (
@@ -24,7 +29,26 @@ function App() {
             <Route path="/FlightResults" element={<FlightResultsPage />} />
             <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
             <Route path="/Cart" element={<CartPage />} />
-            <Route path="/Checkout" element={<CheckoutPage />} />
+
+            {/* Aquí usas StripeCheckout envuelto en Elements */}
+            <Route
+              path="/pago"
+              element={
+                <Elements stripe={stripePromise}>
+                  <StripeCheckout />
+                </Elements>
+              }
+            />
+
+            <Route
+              path="/Checkout"
+              element={
+                <Elements stripe={stripePromise}>
+                  <CheckoutPage />
+                </Elements>
+              }
+            />
+
             <Route path="/PaymentSuccess" element={<PaymentSuccessPage />} />
           </Routes>
         </CartProvider>

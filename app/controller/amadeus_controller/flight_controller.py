@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from amadeus import Client, ResponseError
-from models.amadeus_pydantic.flight import (
+from app.models.amadeus_pydantic.flight import (
         FlightSearchQuery,
         FlightSearchResponse,
         FlightOffer,

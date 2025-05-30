@@ -3,11 +3,11 @@ from datetime import datetime
 from passlib.context import CryptContext
 from firebase_admin import auth
 from firebase_admin.exceptions import FirebaseError
-from models.users.user_pydantic_firebase import UserCreate, UserLogin
-from services.email_service import send_verification_email
+from app.models.users.user_pydantic_firebase import UserCreate, UserLogin
+from app.services.email_service import send_verification_email
 from fastapi import Body
 
-from database.firebase import (
+from app.database.firebase import (
     email_exists,
     create_user,
     get_user_by_email,
@@ -31,7 +31,7 @@ async def register_user(user: UserCreate):
 
         # 2. Generar enlace de verificación de Firebase
         verification_link = auth.generate_email_verification_link(user.email)
-        
+
         hashed_password = pwd_context.hash(user.password)
 
         # 3. Guardar datos en Firestore
@@ -48,12 +48,12 @@ async def register_user(user: UserCreate):
             "last_login": None,
             "roles": ["user"]
         }
-        
+
         user_id = create_user(user_data)
-        
+
         # 4. Enviar el enlace de verificación
         send_verification_email(to_email=user.email, to_name=user.nombre, verification_link=verification_link)
-        
+
         return {"id": user_id, "email": user.email, "nombre": user.nombre}
 
     except auth.EmailAlreadyExistsError:
@@ -68,37 +68,37 @@ async def login_user(credentials: UserLogin):
     try:
         # 1. Verificar usuario en Firebase Auth (esto autentica las credenciales)
         firebase_user = auth.get_user_by_email(credentials.email)
-        
+
         # 2. Verificar si el correo está confirmado
         if not firebase_user.email_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Debes verificar tu correo electrónico primero"
             )
-            
+
         # 3. Sincronizar Firestore con el estado de Firebase Auth
         user_ref = db.collection("usuarios").where("firebase_uid", "==", firebase_user.uid).get()[0]
         update_user(user_ref.id, {
             "email_verified": firebase_user.email_verified,
             "last_login": datetime.now()
         })
-            
+
         # 4. Obtener datos del usuario para la respuesta
         user_data = get_user_by_email(credentials.email)
 
         if not pwd_context.verify(credentials.password, user_data["password"]):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
-            
+
         # 5. Actualizar último login
         update_user(user_ref.id, {"last_login": datetime.now()})
-        
+
         return {"id": user_ref.id, "email": user_data["email"], "nombre": user_data["nombre"]}
 
     except auth.UserNotFoundError:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     except FirebaseError as e:
         raise HTTPException(status_code=500, detail=f"Error de Firebase: {str(e)}")
-    
+
 @router.post("/google-login")
 async def google_login(email: str = Body(...), nombre: str = Body(...), uid: str = Body(...)):
     try:
