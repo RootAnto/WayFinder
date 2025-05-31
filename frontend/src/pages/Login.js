@@ -74,7 +74,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <header className="login-header">
-        <Link to="/" className="login-logo">VuelaBarato</Link>
+        <Link to="/" className="login-logo">WayFinder</Link>
       </header>
       
       <div className="login-content">

@@ -102,7 +102,7 @@ const Register = () => {
   return (
     <div className="register-container">
       <header className="register-header">
-        <Link to="/" className="register-logo">VuelaBarato</Link>
+        <Link to="/" className="register-logo">WayFinder</Link>
       </header>
 
       <div className="register-content">

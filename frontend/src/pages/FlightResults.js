@@ -180,7 +180,7 @@ function FlightResults() {
     <div className="flight-results-app">
       <header className="header">
         <div className="container">
-          <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>VuelaBarato</Link></div>
+          <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>WayFinder</Link></div>
           <nav className="nav">
             <a href="/" className="nav-link">Inicio</a>
             <a href="#" className="nav-link">Vuelos</a>
@@ -255,19 +255,19 @@ function FlightResults() {
               className={`nav-link ${activeTab === 'flights' ? 'active' : ''}`}
               onClick={() => setActiveTab('flights')}
             >
-              Vuelos ({flights.length})
+              Vuelos
             </button>
             <button
               className={`nav-link ${activeTab === 'hotels' ? 'active' : ''}`}
               onClick={() => setActiveTab('hotels')}
             >
-              Hoteles ({hotels.length})
+              Hoteles
             </button>
             <button
               className={`nav-link ${activeTab === 'vehicles' ? 'active' : ''}`}
               onClick={() => setActiveTab('vehicles')}
             >
-              Vehículos ({vehicles.length})
+              Vehículos
             </button>
           </div>
 
@@ -450,6 +450,7 @@ function FlightResults() {
                             addToCart({
                               type: 'vehicle',
                               vehicleId: vehicle.vehicleId,
+                              name: vehicle.name,
                               model: vehicle.name,
                               brand: vehicle.brand,
                               price: vehicle.pricePerDay * days,

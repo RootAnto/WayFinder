@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import '../styles/TripSuggestion.css';
 
 function TripSuggestion() {
   const { currentUser, logout } = useAuth();
+  const { addToCart } = useCart();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -53,12 +55,7 @@ function TripSuggestion() {
     if (!currentUser) {
       alert("Debes iniciar sesión para reservar un viaje.");
       return;
-  }
-
-    console.log('🧾 currentUser:', currentUser);
-    console.log('✈️ flight:', tripData.flights?.[0]);
-    console.log('🏨 hotel:', tripData.hotels?.[0]);
-    console.log('🚗 vehicle:', tripData.vehicles?.[0]);
+    }
 
     const flight = tripData.flights?.[0];
     const hotel = tripData.hotels?.[0];
@@ -70,77 +67,58 @@ function TripSuggestion() {
     const hotelNights = hotel?.nights || (
       returnDate
         ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24))
-        : null
+        : 1
     );
 
     const vehicleDays = hotelNights;
 
     const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
     const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
-    const vehiclePrice =
+    const vehiclePrice = 
       typeof vehicle?.pricePerDay === "number" && vehicleDays
         ? parseFloat((vehicle.pricePerDay * vehicleDays).toFixed(2))
         : 0;
 
-    const tripPayload = {
-      user_id: currentUser.id,
-      origin: searchParams.from,
-      destination: searchParams.to,
-      departure_date: searchParams.departure,
-      return_date: searchParams.return || null,
-      adults: 1,
-      children: 0,
-      hotel_limit: 5,
-      vehicle_limit: 5,
-      max_price: null,
-      user_email: currentUser.email || null,
-      user_name: currentUser.nombre,
-
-      // IDs
-      flight_id: flight?.id || null,
-      hotel_id: hotel?.hotelId || null,
-      vehicle_id: vehicle?.vehicleId || null,
-
-      // Detalles
-      flight_price: flightPrice || null,
-      flight_name: flight?.airline || null,
-
-      hotel_name: hotel?.name || null,
-      hotel_price: hotelPrice || null,
-      hotel_nights: hotelNights,
-
-      vehicle_model: vehicle?.model || null,
-      vehicle_price: vehiclePrice || null,
-      vehicle_days: vehicleDays,
-
-      total_price: parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2)),
+    // Crear objeto de paquete completo para el carrito
+    const packageItem = {
+      id: `package-${Date.now()}`, // ID único
+      type: 'package',
+      name: `Paquete Completo: ${searchParams.from} → ${searchParams.to}`,
+      price: parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2)),
       currency: flight?.price?.currency || hotel?.currency || vehicle?.currency || "EUR",
+      details: {
+        flight: {
+          id: flight?.id,
+          airline: flight?.itineraries[0]?.segments[0]?.carrierCode,
+          origin: searchParams.from,
+          destination: searchParams.to,
+          departure: searchParams.departure,
+          returnDate: searchParams.return || null,
+          price: flightPrice
+        },
+        hotel: {
+          id: hotel?.hotelId,
+          name: hotel?.name,
+          nights: hotelNights,
+          price: hotelPrice,
+          checkIn: searchParams.departure,
+          checkOut: searchParams.return || searchParams.departure
+        },
+        vehicle: vehicle ? {
+          id: vehicle?.vehicleId,
+          model: vehicle?.name,
+          days: vehicleDays,
+          price: vehiclePrice,
+          pickUpDate: searchParams.departure,
+          dropOffDate: searchParams.return || searchParams.departure
+        } : null
+      },
+      isPackage: true // Flag para identificar paquetes
     };
 
-    console.log('📦 tripPayload construido:', tripPayload);
-
-
-    // Construir URL con user_email como query param
-    const url = new URL('http://localhost:8000/trips/');
-    url.searchParams.append('user_email', currentUser.email);
-
-    try {
-      const response = await fetch(url.toString(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tripPayload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || 'Error creando el viaje');
-      }
-
-      const data = await response.json();
-      alert('Viaje reservado con éxito. ID: ' + data.id);
-    } catch (error) {
-      alert('Error: ' + error.message);
-    }
+    // Añadir al carrito
+    addToCart(packageItem);
+    alert('Paquete añadido al carrito. Dirígete al carrito para completar la compra.');
   };
 
 
@@ -250,16 +228,29 @@ function TripSuggestion() {
   }
 
   // Extraer componentes del viaje
-  const flight = tripData.flights[0];
-  const hotel = tripData.hotels[0];
-  const vehicle = tripData.vehicles[0];
+  const flight = tripData.flights?.[0];
+  const hotel = tripData.hotels?.[0];
+  const vehicle = tripData.vehicles?.[0];
   const summary = tripData.summary;
+
+  // Calcular variables necesarias para el renderizado
+  const departure = new Date(searchParams.departure);
+  const returnDate = searchParams.return ? new Date(searchParams.return) : null;
+
+  const hotelNights = hotel?.nights || (returnDate ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24)) : 1);
+  const vehicleDays = hotelNights;
+
+  const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+  const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
+  const vehiclePrice = vehicle?.pricePerDay ? vehicle.pricePerDay * vehicleDays : 0;
+  
+  const currency = flight?.price?.currency || hotel?.currency || vehicle?.currency || "EUR";
 
   return (
     <div className="flight-results-app">
       <header className="header">
         <div className="container">
-          <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>VuelaBarato</Link></div>
+          <div className="logo"><Link to="/" style={{textDecoration:'none', color: 'white'}}>WayFinder</Link></div>
           <nav className="nav">
             <a href="/" className="nav-link">Inicio</a>
             <a href="#" className="nav-link">Vuelos</a>
@@ -308,22 +299,24 @@ function TripSuggestion() {
             <div className="breadcrumb">
                 <div> <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
                 <div className="cart-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="9" cy="21" r="1"></circle>
-                  <circle cx="20" cy="21" r="1"></circle>
-                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-              </div>
+                  <Link to="/cart">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                      </svg>
+                    </Link>
+                </div>
             </div>
 
             {/* Resumen de búsqueda */}
@@ -380,40 +373,40 @@ function TripSuggestion() {
                     <span className="price">{hotel.price} EUR</span>
                     </div>
                     <p>{hotel.address}</p>
-                    <p>Estrellas: {hotel.rating}</p>
+                    <p>Estrellas: {'★'.repeat(hotel?.category)}</p> 
                 </>
                 )}
             </div>
 
             {/* Detalles del vehículo */}
             <div className="vehicle-card">
-                <h3>Vehículo seleccionado</h3>
-                {vehicle && (
+              <h3>Vehículo seleccionado</h3>
+              {vehicle && (
                 <>
-                    <div className="vehicle-header">
+                  <div className="vehicle-header">
                     <h4>{vehicle.name}</h4>
-                    <span className="price">{vehicle.price} EUR/día</span>
-                    </div>
-                    <p>Tipo: {vehicle.type}</p>
+                    <span className="price">{vehicle.pricePerDay} {vehicle.currency}/día</span>
+                  </div>
+                  <p>Tipo: {vehicle.vehicleType}</p>
+                  <p>Total: {(vehicle.pricePerDay * vehicleDays).toFixed(2)} {vehicle.currency} ({vehicleDays} días)</p>
                 </>
-                )}
+              )}
             </div>
 
             {/* Resumen general */}
             <div className="summary-card">
-                <h3>Resumen del paquete</h3>
-                {summary && (
-                <>
-                    <p>Duración: {summary.duration}</p>
-                    <p>Precio total: {summary.price} EUR</p>
-                </>
-                )}
+              <h3>Resumen del paquete</h3>
+              <div className="summary-content">
+                <p>Duración: {vehicleDays} días</p>
+                <p>Precio total: {(flightPrice + hotelPrice + vehiclePrice).toFixed(2)} {currency}</p>
+              </div>
             </div>
-
-            {/* Botón para reservar */}
-            <button className="select-btn" onClick={handleBookTrip}>
-              Reservar paquete completo
-            </button>
+            <div className="div-select-btn">
+              <button className="select-btn" onClick={handleBookTrip}>
+                Reservar paquete completo
+              </button>
+            </div>
+            
         </div>
       </main>
 

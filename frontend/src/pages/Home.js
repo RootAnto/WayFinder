@@ -219,7 +219,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="container">
-        <div className="logo">VuelaBarato</div>
+        <div className="logo">WayFinder</div>
         <nav className="nav">
           <a href="#" className="nav-link">Inicio</a>
           <a href="#" className="nav-link">Vuelos</a>

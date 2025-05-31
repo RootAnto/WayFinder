@@ -238,7 +238,8 @@
 .trip-summary-card,
 .flight-card,
 .hotel-card,
-.vehicle-card {
+.vehicle-card,
+.summary-card{
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -250,7 +251,8 @@
 .trip-summary-card:hover,
 .flight-card:hover,
 .hotel-card:hover,
-.vehicle-card:hover {
+.vehicle-card:hover,
+.summary-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
@@ -258,7 +260,8 @@
 .trip-summary-card h3,
 .flight-card h3,
 .hotel-card h3,
-.vehicle-card h3 {
+.vehicle-card h3,
+.summary-card h3 {
   color: #003580;
   margin-top: 0;
   margin-bottom: 20px;
@@ -466,6 +469,11 @@
 }
 
 /* Botón de reserva */
+.div-select-btn{
+  display: flex;
+  justify-content: center;
+}
+
 .book-trip-button {
   text-align: center;
   margin: 30px 0 20px;
