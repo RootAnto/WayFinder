@@ -1,24 +1,27 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from controller.amadeus_controller.flight_controller import router as fligth_router
-from controller.amadeus_controller.hotel_controller import router as hotel_router
-from controller.amadeus_controller.vehicle_controller import router as vehicle_router
-from controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
-from controller.trips_tickets import router as trips_tickets_route
-from controller.firebase_controller import router as auth_router
+from app.controller.amadeus_controller.flight_controller import router as fligth_router
+from app.controller.amadeus_controller.hotel_controller import router as hotel_router
+from app.controller.amadeus_controller.vehicle_controller import router as vehicle_router
+from app.controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
+from app.controller.trips_tickets import router as trips_tickets_route
+from app.controller.firebase_controller import router as auth_router
+from app.services.payment_service import router as paymetn_route
 from loguru import logger
 
 app = FastAPI()
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(exc: RequestValidationError):
-    logger.error(f"Error de validación: {exc.errors()}")
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    logger.info(f"Validation error for request: {request.method} {request.url}")
+    logger.info(f"Errors: {exc.errors()}")
+    # Aquí puedes regresar una respuesta custom si quieres
     return JSONResponse(
         status_code=422,
-        content={"detail": exc.errors()},
+        content={"detail": exc.errors(), "body": exc.body}
     )
 
 @app.get("/")
@@ -41,6 +44,7 @@ app.include_router(hotel_router)
 app.include_router(vehicle_router)
 app.include_router(automatic_travel_router)
 app.include_router(trips_tickets_route)
+app.include_router(paymetn_route)
 
 if __name__ == "__main__":
     uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)

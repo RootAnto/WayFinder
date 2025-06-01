@@ -1,11 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
-from controller.payments.payments import create_payment_intent_from_trip
-from models.travel_tickets.travel_ticket_db import Ticket
-from services.email_service import *
-from models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
-from models.trips.trip_db import Trip
-from database.db import get_db
+from app.models.travel_tickets.travel_ticket_db import Ticket
+from app.services.email_service import *
+from app.models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
+from app.models.trips.trip_db import Trip
+from app.database.db import get_db
 from typing import List
 import uuid
 from fastapi import Query

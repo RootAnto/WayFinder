@@ -1,42 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { FaCreditCard, FaCalendarAlt, FaUser, FaLock } from 'react-icons/fa';
-import '../styles/Checkout.css';
+import { useAuth } from '../context/AuthContext';
+import '../styles/Cart.css';
+import { FaTrash, FaPlane, FaHotel, FaCar, FaLock } from 'react-icons/fa';
 
-function Checkout() {
+export default function CartPage() {
+  const { cartItems, removeFromCart, clearCart } = useCart();
   const { currentUser } = useAuth();
-  const { cartItems, clearCart } = useCart(); // Añade clearCart
-  const [cardData, setCardData] = useState({
-    name: '',
-    number: '',
-    expiry: '',
-    cvc: '',
-  });
-
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCardData({ ...cardData, [name]: value });
-  };
-
-  const handleExpiryChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    if (value.length >= 3) {
-      value = `${value.slice(0, 2)}/${value.slice(2, 4)}`;
-    }
-    setCardData((prev) => ({ ...prev, expiry: value }));
-  };
-
-  const handleCardNumberChange = (e) => {
-    let value = e.target.value.replace(/\D/g, '');
-    value = value.replace(/(.{4})/g, '$1 ').trim();
-    setCardData((prev) => ({ ...prev, number: value }));
-  };
+  const subtotal = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
+  const tax = subtotal * 0.21;
+  const total = subtotal + tax;
 
   const buildTripPayload = ({
     user,
@@ -84,8 +63,7 @@ function Checkout() {
     };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleCheckout = async () => {
     setIsSubmitting(true);
     setError(null);
 
@@ -98,7 +76,6 @@ function Checkout() {
 
       const payloads = [];
 
-      // 1. Paquetes
       for (const pkg of packageItems) {
         const payload = buildTripPayload({
           user: currentUser,
@@ -112,7 +89,6 @@ function Checkout() {
         payloads.push(payload);
       }
 
-      // 2. Individuales
       const flight = individualItems.find(i => i.type === 'flight');
       const hotel = individualItems.find(i => i.type === 'hotel');
 
@@ -136,7 +112,6 @@ function Checkout() {
         payloads.push(payload);
       }
 
-      // 3. Enviar todos los payloads
       for (const tripPayload of payloads) {
         const response = await fetch(urlBase + emailParam, {
           method: 'POST',
@@ -146,101 +121,110 @@ function Checkout() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.error('❌ Error del servidor:', errorData);
           throw new Error(errorData.detail || 'Error al crear el viaje');
         }
 
-        const data = await response.json();
-        console.log('✅ Viaje registrado:', data);
+        await response.json();
       }
 
       clearCart();
-      navigate('/PaymentSuccess');
-
+      setShowSuccessModal(true);
     } catch (err) {
-      console.error('🛑 Error en handleSubmit:', err);
-      setError('Error al procesar el pago: ' + err.message);
+      console.error('Error en checkout:', err);
+      setError('Error al procesar la reserva: ' + err.message);
+    } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
-    <div className="checkout-form-container">
-      <h2>Información de Pago</h2>
-      <form className="checkout-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="name"><FaUser /> Titular de la tarjeta</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Juan Pérez"
-            value={cardData.name}
-            onChange={handleChange}
-            required
-          />
+    <div className="cart-page">
+      <div className="cart-header">
+        <h1>Resumen de tu Reserva</h1>
+        <div className="cart-stats">
+          <span>{cartItems.length} elemento{cartItems.length !== 1 && 's'}</span>
+          <Link to="/" className="continue-shopping">← Seguir comprando</Link>
         </div>
+      </div>
 
-        <div className="form-group">
-          <label htmlFor="number"><FaCreditCard /> Número de tarjeta</label>
-          <input
-            type="text"
-            id="number"
-            name="number"
-            placeholder="1234 5678 9012 3456"
-            value={cardData.number}
-            onChange={handleCardNumberChange}
-            pattern="(?:\d{4} ){3}\d{4}"
-            maxLength={19}
-            required
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="expiry"><FaCalendarAlt /> Fecha de expiración</label>
-            <input
-              type="text"
-              id="expiry"
-              name="expiry"
-              placeholder="MM/AA"
-              value={cardData.expiry}
-              onChange={handleExpiryChange}
-              pattern="\d{2}/\d{2}"
-              maxLength={5}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="cvc"><FaLock /> CVC</label>
-            <input
-              type="text"
-              id="cvc"
-              name="cvc"
-              placeholder="123"
-              value={cardData.cvc}
-              onChange={handleChange}
-              pattern="\d{3}"
-              maxLength={3}
-              required
-            />
-          </div>
-        </div>
-
-        <button type="submit" className="submit-payment-btn" disabled={isSubmitting}>
-          {isSubmitting ? (
-            <>
-              <span className="spinner" /> Confirmando pago...
-            </>
+      <div className="cart-container">
+        <div className="cart-items">
+          {cartItems.length === 0 ? (
+            <div className="empty-cart">
+              <h2>Tu carrito está vacío</h2>
+              <p>Agrega servicios para reservar.</p>
+            </div>
           ) : (
-            'Confirmar Pago'
+            cartItems.map(item => (
+              <div key={item.id} className="cart-item">
+                <div className="item-icon">
+                  {item.type === 'flight' && <FaPlane />}
+                  {item.type === 'hotel' && <FaHotel />}
+                  {item.type === 'vehicle' && <FaCar />}
+                </div>
+                <div className="item-details">
+                  <h3>
+                    {item.type === 'flight'
+                      ? `${item.origin} → ${item.destination}`
+                      : item.name}
+                  </h3>
+                  {item.type === 'flight' && (
+                    <p>{item.departure}{item.returnDate && ` - ${item.returnDate}`}</p>
+                  )}
+                  {item.type === 'hotel' && (
+                    <p>{item.nights} noches ({item.pricePerDay} {item.currency}/noche)</p>
+                  )}
+                  {item.type === 'vehicle' && (
+                    <p>{item.days} días ({item.pricePerDay} {item.currency}/día)</p>
+                  )}
+                </div>
+                <div className="item-price">
+                  <span>{item.price} {item.currency}</span>
+                  <button
+                    className="remove-btn"
+                    onClick={() => removeFromCart(item.id)}
+                  >
+                    <FaTrash />
+                  </button>
+                </div>
+              </div>
+            ))
           )}
-        </button>
-      </form>
+        </div>
+
+        {cartItems.length > 0 && (
+          <div className="cart-summary">
+            <h3>Resumen del Pedido</h3>
+            <div className="summary-row"><span>Subtotal:</span><span>{subtotal.toFixed(2)} €</span></div>
+            <div className="summary-row"><span>Impuestos (21%):</span><span>{tax.toFixed(2)} €</span></div>
+            <div className="summary-row total"><span>Total:</span><span>{total.toFixed(2)} €</span></div>
+            <button
+              onClick={handleCheckout}
+              className="checkout-btn"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Procesando...' : 'Reservar'}
+              <span className="secure-checkout"><FaLock /> Pago seguro</span>
+            </button>
+            {error && <p className="error-message">{error}</p>}
+          </div>
+        )}
+      </div>
+
+      {showSuccessModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>¡Reserva realizada con éxito!</h2>
+            <p>Te hemos enviado un correo de confirmación a <strong>{currentUser.email}</strong>.</p>
+            <button
+              className="btn-close"
+              onClick={() => { setShowSuccessModal(false); navigate('/'); }}
+            >
+              Volver al inicio
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-export default Checkout;

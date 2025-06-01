@@ -12,7 +12,7 @@ from email.utils import formataddr
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-from models.trips.trip_pydantic import TripOut
+from app.models.trips.trip_pydantic import TripOut
 
 router = APIRouter()
 
@@ -62,7 +62,7 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
         <ul>{html_items}</ul>
         <p>Por favor, confirma o rechaza tu reserva:</p>
         <p>
-            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/aceptar?user_name={to_name}&user_email={trip.user_email}"
+            <a href="http://127.0.0.1:3000/pago?tripId={trip.id}""
                 style="padding:12px 25px; margin-right:10px; background-color:#28a745; color:#fff; text-decoration:none; border-radius:6px;">
                 Confirmar Reserva
             </a>
@@ -224,6 +224,7 @@ def send_paid_ticket_with_qr(to_email: str, trip: TripOut):
         logger.success(f"Correo con billete enviado a {to_email}")
     except Exception as e:
         logger.error(f"Error al enviar billete confirmado: {e}")
+
 
 def send_verification_email(to_email: str, to_name: str, verification_link: str):
     subject = "Confirma tu correo electrónico - WayFinder"

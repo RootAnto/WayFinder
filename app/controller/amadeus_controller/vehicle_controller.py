@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from amadeus import Client
 import random
 from fastapi import APIRouter, HTTPException
-from models.amadeus_pydantic.vehicle import (
+from app.models.amadeus_pydantic.vehicle import (
     VehicleSearchQuery,
     VehicleSearchResponse,
     VehicleInfo
