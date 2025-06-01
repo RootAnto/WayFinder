@@ -1,11 +1,27 @@
 import stripe
 from sqlalchemy.orm import Session
+from app.database.db import get_db
 from app.models.trips.trip_db import Trip
 from app.models.trips.trip_pydantic import TripStatus
 from fastapi import HTTPException
 from loguru import logger
+from fastapi import APIRouter, Depends, HTTPException, Request
+from sqlalchemy.orm import Session
 
 stripe.api_key = "sk_test_51RTl1TQdIRsrFscj0OC26WaAxd6HpzFhYkz98Ka3sp8Ae7s4G1SHXwupDBqBCBM7jrRScxNWRUr8F5agzOBt2OeE00QE4O6Xej"
+
+router = APIRouter()
+
+@router.post("/payments/payment-intent")
+def payment_intent(trip_id: str, db: Session = Depends(get_db)):
+    try:
+        client_secret = create_payment_intent_from_trip(trip_id, db)
+        return {"client_secret": client_secret}
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 def create_payment_intent_from_trip(trip_id: str, db: Session) -> str:
     trip = db.query(Trip).filter(Trip.id == trip_id).first()

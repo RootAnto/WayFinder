@@ -13,88 +13,120 @@ function StripeCheckout() {
   const location = useLocation();
 
   const [clientSecret, setClientSecret] = useState(null);
+  const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  // Extraer tripId de la URL
   const queryParams = new URLSearchParams(location.search);
   const tripId = queryParams.get('tripId');
 
   useEffect(() => {
-    const fetchClientSecret = async () => {
-      console.log('tripId from URL:', tripId);
-      if (!tripId) {
-        console.warn('No tripId found in URL, skipping client secret fetch.');
-        return;
-      }
+    if (!tripId) {
+      setError('ID del viaje no proporcionado en la URL.');
+      return;
+    }
 
+    let isMounted = true;
+
+    const fetchClientSecret = async () => {
       try {
         const res = await fetch(`http://localhost:8000/payments/payment-intent?trip_id=${tripId}`, {
           method: 'POST',
         });
-
         const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.detail || 'Error al obtener client secret');
-        }
-
-        setClientSecret(data.client_secret);
-        console.log('Client secret set:', data.client_secret);
+        if (!res.ok) throw new Error(data.detail || 'Error al obtener client secret.');
+        if (isMounted) setClientSecret(data.client_secret);
       } catch (err) {
-        console.error('Error fetching client secret:', err.message);
-        setError(err.message);
+        if (isMounted) setError(err.message);
+      }
+    };
+
+    const fetchUserData = async () => {
+      try {
+        const res = await fetch(`http://localhost:8000/trips/get-email-from-trip?trip_id=${tripId}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Error al obtener datos del usuario.');
+        if (isMounted) {
+          setUserEmail(data.user_email);
+          setUserName(data.user_name || 'Cliente');
+        }
+      } catch (err) {
+        if (isMounted) setError(err.message);
       }
     };
 
     fetchClientSecret();
+    fetchUserData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [tripId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('handleSubmit called');
+    setError(null);
+    setSuccessMessage(null);
 
-    if (!stripe) {
-      console.warn('Stripe has not loaded yet.');
+    const emailToUse = userEmail || currentUser?.email;
+
+    if (!emailToUse) {
+      setError('Debe proporcionarse un correo electrónico para completar el pago.');
       return;
     }
-    if (!elements) {
-      console.warn('Stripe Elements has not loaded yet.');
+
+    if (!stripe || !elements) {
+      setError('Stripe aún no está listo. Intenta más tarde.');
       return;
     }
+
     if (!clientSecret) {
-      console.warn('Client secret is null, cannot proceed.');
+      setError('No se pudo obtener el client secret. Recarga la página.');
       return;
     }
 
     setLoading(true);
-    setError(null);
 
     try {
       const cardElement = elements.getElement(CardElement);
-      console.log('Card element:', cardElement);
+      if (!cardElement) throw new Error('No se encontró el elemento de la tarjeta.');
 
-      const result = await stripe.confirmCardPayment(clientSecret, {
+      const { error: paymentError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
           billing_details: {
-            name: currentUser?.nombre || currentUser?.email,
+            name: userName || currentUser?.nombre || emailToUse,
+            email: emailToUse,
           },
         },
       });
 
-      if (result.error) {
-        console.error('Payment error:', result.error.message);
-        setError(result.error.message);
-        setLoading(false);
-      } else if (result.paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded!');
+      if (paymentError) throw new Error(paymentError.message);
+
+      if (paymentIntent.status === 'succeeded') {
+        // Confirmar la reserva en backend
+        const confirmResponse = await fetch(
+          `http://localhost:8000/trips/confirm-trip?trip_id=${tripId}&user_email=${encodeURIComponent(emailToUse)}`,
+          {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+
+        const confirmData = await confirmResponse.json();
+
+        if (!confirmResponse.ok) throw new Error(confirmData.detail || 'Error al confirmar la reserva.');
+
+        setSuccessMessage('¡Pago y reserva confirmados con éxito!');
         clearCart();
-        navigate('/PaymentSuccess');
+
+        setTimeout(() => navigate('/PaymentSuccess'), 2000);
       }
     } catch (err) {
-      console.error('Error in payment processing:', err);
-      setError(err.message);
+      setError(err.message || 'Error procesando el pago.');
+    } finally {
       setLoading(false);
     }
   };
@@ -102,14 +134,39 @@ function StripeCheckout() {
   return (
     <div className="checkout-form-container">
       <h2>Pago con Tarjeta</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
+      {successMessage && <p style={{ color: 'green', marginBottom: '1rem' }}>{successMessage}</p>}
 
       <form onSubmit={handleSubmit} className="checkout-form">
-        <div className="form-group">
-          <CardElement />
+        <div className="form-group" style={{ marginBottom: '1rem' }}>
+          <CardElement
+            options={{
+              style: {
+                base: {
+                  fontSize: '16px',
+                  color: '#32325d',
+                  '::placeholder': { color: '#a0aec0' },
+                },
+                invalid: { color: '#fa755a' },
+              },
+            }}
+          />
         </div>
 
-        <button type="submit" disabled={!stripe || loading} className="submit-payment-btn">
+        <button
+          type="submit"
+          disabled={!stripe || loading}
+          className="submit-payment-btn"
+          style={{
+            backgroundColor: loading ? '#94d3a2' : '#28a745',
+            color: '#fff',
+            padding: '12px 25px',
+            border: 'none',
+            borderRadius: '6px',
+            cursor: loading ? 'not-allowed' : 'pointer',
+          }}
+        >
           {loading ? 'Procesando...' : 'Pagar con Tarjeta'}
         </button>
       </form>

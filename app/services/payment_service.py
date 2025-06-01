@@ -5,7 +5,7 @@ from fastapi import APIRouter
 
 router = APIRouter()
 
-endpoint_secret = "whsec_..."  # Pon aquí tu webhook secret de Stripe
+endpoint_secret = "whsec_46d80c5bae125132c385417f6215d106ea9"
 
 @router.post("/webhook")
 async def stripe_webhook(request: Request):

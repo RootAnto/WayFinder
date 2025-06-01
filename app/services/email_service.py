@@ -62,7 +62,7 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
         <ul>{html_items}</ul>
         <p>Por favor, confirma o rechaza tu reserva:</p>
         <p>
-            <a href="http://127.0.0.1:3000/pago?tripId={trip.id}""
+            <a href="http://127.0.0.1:3000/pago?tripId={trip.id}"
                 style="padding:12px 25px; margin-right:10px; background-color:#28a745; color:#fff; text-decoration:none; border-radius:6px;">
                 Confirmar Reserva
             </a>
