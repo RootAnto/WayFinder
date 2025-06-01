@@ -254,6 +254,7 @@
 .checkout-btn {
   display: block;
   width: 100%;
+  border: none;
   background: #27ae60;
   color: white;
   text-align: center;
@@ -261,6 +262,7 @@
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
+  font-size: 1.1rem;
   margin-top: 25px;
   transition: background 0.3s ease;
 }

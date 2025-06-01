@@ -780,3 +780,145 @@
 2025-05-30 18:07:42.789 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
 2025-05-30 18:07:44.989 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
 2025-05-30 18:21:00.092 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-01 16:03:41.461 | ERROR    | app.database.firebase:<module>:31 - Error initializing Firebase: [Errno 2] No such file or directory: 'C:\\Users\\jonyD\\OneDrive\\Documentos\\WayFinder\\app\\database\\serviceAccountKey.json'
+Traceback (most recent call last):
+
+  File "<string>", line 1, in <module>
+    from multiprocessing.spawn import spawn_main; spawn_main(parent_pid=25140, pipe_handle=552)
+                                      │           └ <function spawn_main at 0x0000014ED9A25EE0>
+                                      └ <function spawn_main at 0x0000014ED9A25EE0>
+  File "C:\Users\jonyD\Lib\multiprocessing\spawn.py", line 122, in spawn_main
+    exitcode = _main(fd, parent_sentinel)
+               │     │   └ 296
+               │     └ 3
+               └ <function _main at 0x0000014ED9A25F80>
+  File "C:\Users\jonyD\Lib\multiprocessing\spawn.py", line 135, in _main
+    return self._bootstrap(parent_sentinel)
+           │    │          └ 296
+           │    └ <function BaseProcess._bootstrap at 0x0000014ED9742FC0>
+           └ <SpawnProcess name='SpawnProcess-1' parent=25140 started>
+  File "C:\Users\jonyD\Lib\multiprocessing\process.py", line 313, in _bootstrap
+    self.run()
+    │    └ <function BaseProcess.run at 0x0000014ED9742520>
+    └ <SpawnProcess name='SpawnProcess-1' parent=25140 started>
+  File "C:\Users\jonyD\Lib\multiprocessing\process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+    │    │        │    │        │    └ {'config': <uvicorn.config.Config object at 0x0000014EDBB1AA50>, 'target': <bound method Server.run of <uvicorn.server.Server...
+    │    │        │    │        └ <SpawnProcess name='SpawnProcess-1' parent=25140 started>
+    │    │        │    └ ()
+    │    │        └ <SpawnProcess name='SpawnProcess-1' parent=25140 started>
+    │    └ <function subprocess_started at 0x0000014EDBB99940>
+    └ <SpawnProcess name='SpawnProcess-1' parent=25140 started>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+    │              └ [<socket.socket fd=552, family=2, type=1, proto=6, laddr=('127.0.0.1', 8000)>]
+    └ <bound method Server.run of <uvicorn.server.Server object at 0x0000014EDBB1ABA0>>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\server.py", line 66, in run
+    return asyncio.run(self.serve(sockets=sockets))
+           │       │   │    │             └ [<socket.socket fd=552, family=2, type=1, proto=6, laddr=('127.0.0.1', 8000)>]
+           │       │   │    └ <function Server.serve at 0x0000014EDBB98AE0>
+           │       │   └ <uvicorn.server.Server object at 0x0000014EDBB1ABA0>
+           │       └ <function run at 0x0000014EDB3B6980>
+           └ <module 'asyncio' from 'C:\\Users\\jonyD\\Lib\\asyncio\\__init__.py'>
+  File "C:\Users\jonyD\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           │      │   └ <coroutine object Server.serve at 0x0000014EDBB85C40>
+           │      └ <function Runner.run at 0x0000014EDB873060>
+           └ <asyncio.runners.Runner object at 0x0000014EDBB1B8C0>
+  File "C:\Users\jonyD\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<Server.serve() running at C:\Users\jonyD\Lib\site-packages\uvicorn\server.py:70> cb=[_run_u...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x0000014EDB870C20>
+           │    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x0000014EDBB1B8C0>
+  File "C:\Users\jonyD\Lib\asyncio\base_events.py", line 712, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x0000014EDB870B80>
+    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+  File "C:\Users\jonyD\Lib\asyncio\base_events.py", line 683, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x0000014EDB872980>
+    └ <_WindowsSelectorEventLoop running=True closed=False debug=False>
+  File "C:\Users\jonyD\Lib\asyncio\base_events.py", line 2040, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x0000014EDB395BC0>
+    └ <Handle <_asyncio.TaskStepMethWrapper object at 0x0000014EDB44EE30>()>
+  File "C:\Users\jonyD\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle <_asyncio.TaskStepMethWrapper object at 0x0000014EDB44EE30>()>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle <_asyncio.TaskStepMethWrapper object at 0x0000014EDB44EE30>()>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle <_asyncio.TaskStepMethWrapper object at 0x0000014EDB44EE30>()>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\server.py", line 70, in serve
+    await self._serve(sockets)
+          │    │      └ [<socket.socket fd=552, family=2, type=1, proto=6, laddr=('127.0.0.1', 8000)>]
+          │    └ <function Server._serve at 0x0000014EDBB98B80>
+          └ <uvicorn.server.Server object at 0x0000014EDBB1ABA0>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\server.py", line 77, in _serve
+    config.load()
+    │      └ <function Config.load at 0x0000014EDBB4A200>
+    └ <uvicorn.config.Config object at 0x0000014EDBB1AA50>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\config.py", line 435, in load
+    self.loaded_app = import_from_string(self.app)
+    │                 │                  │    └ 'app.app:app'
+    │                 │                  └ <uvicorn.config.Config object at 0x0000014EDBB1AA50>
+    │                 └ <function import_from_string at 0x0000014EDBAE45E0>
+    └ <uvicorn.config.Config object at 0x0000014EDBB1AA50>
+  File "C:\Users\jonyD\Lib\site-packages\uvicorn\importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+             │         │             └ 'app.app'
+             │         └ <function import_module at 0x0000014ED99DADE0>
+             └ <module 'importlib' from 'C:\\Users\\jonyD\\Lib\\importlib\\__init__.py'>
+  File "C:\Users\jonyD\Lib\importlib\__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           │          │           │    │        │        └ 0
+           │          │           │    │        └ None
+           │          │           │    └ 0
+           │          │           └ 'app.app'
+           │          └ <function _gcd_import at 0x0000014ED93304A0>
+           └ <module '_frozen_importlib' (frozen)>
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+
+  File "C:\Users\jonyD\OneDrive\Documentos\WayFinder\app\app.py", line 11, in <module>
+    from app.controller.firebase_controller import router as auth_router
+
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+
+  File "C:\Users\jonyD\OneDrive\Documentos\WayFinder\app\controller\firebase_controller.py", line 10, in <module>
+    from app.database.firebase import (
+
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+
+> File "C:\Users\jonyD\OneDrive\Documentos\WayFinder\app\database\firebase.py", line 24, in <module>
+    cred = credentials.Certificate(str(SERVICE_ACCOUNT_PATH))
+           │           │               └ WindowsPath('C:/Users/jonyD/OneDrive/Documentos/WayFinder/app/database/serviceAccountKey.json')
+           │           └ <class 'firebase_admin.credentials.Certificate'>
+           └ <module 'firebase_admin.credentials' from 'C:\\Users\\jonyD\\Lib\\site-packages\\firebase_admin\\credentials.py'>
+
+  File "C:\Users\jonyD\Lib\site-packages\firebase_admin\credentials.py", line 97, in __init__
+    with open(cert) as json_file:
+              └ 'C:\\Users\\jonyD\\OneDrive\\Documentos\\WayFinder\\app\\database\\serviceAccountKey.json'
+
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\jonyD\\OneDrive\\Documentos\\WayFinder\\app\\database\\serviceAccountKey.json'
+2025-06-01 16:05:10.933 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-01 16:06:21.433 | DEBUG    | app.database.firebase:update_user:121 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 6, 1, 16, 6, 21, 433098)}
+2025-06-01 16:06:21.531 | SUCCESS  | app.database.firebase:update_user:123 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-01 16:06:21.532 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: jonydz3x@gmail.com
+2025-06-01 16:06:21.601 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$vtkouipnw1lybd4HVDGgGOqNQshKmfnE9ktlaCVfAZRBB9MrzGb1i', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 31, 18, 2, 12, 323044, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-01', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 6, 1, 16, 6, 21, 433098, tzinfo=datetime.timezone.utc), 'email': 'jonydz3x@gmail.com', 'nombre': 'Jonathan daz', 'email_verified': True, 'firebase_uid': 'IWSCnewDmBNfFgjkmjhzvGehjii1', 'id': 'M5h9l8eyOqfyRFOvLx6L'}
+2025-06-01 16:06:21.891 | DEBUG    | app.database.firebase:update_user:121 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'last_login': datetime.datetime(2025, 6, 1, 16, 6, 21, 891151)}
+2025-06-01 16:06:21.985 | SUCCESS  | app.database.firebase:update_user:123 - User M5h9l8eyOqfyRFOvLx6L updated successfully

@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Cart.css';
-import { FaTrash, FaPlane, FaHotel, FaCar, FaBox } from 'react-icons/fa';
+import { FaTrash, FaPlane, FaHotel, FaCar, FaLock, FaBox } from 'react-icons/fa';
 import SuccessModal from '../components/SuccessModal';
 
 export default function CartPage() {
@@ -13,6 +13,10 @@ export default function CartPage() {
   const { currentUser } = useAuth();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const navigate = useNavigate();
+
+  const calculateTotal = () => {
+    return cartItems.reduce((acc, item) => acc + Number(item.price), 0);
+  };
 
   // Cálculo de totales
   const subtotal = cartItems.reduce((sum, item) => sum + Number(item.price), 0);
@@ -201,7 +205,7 @@ export default function CartPage() {
                   </div>
 
                   <div className="item-price">
-                    <span>{item.price} {item.currency}</span>
+                    <span>{Number(item.price).toFixed(2)} {item.currency}</span>
                     <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
                       <FaTrash />
                     </button>
@@ -211,17 +215,28 @@ export default function CartPage() {
             ))
           )}
         </div>
-      </div>
+      
 
       {cartItems.length > 0 && (
-        <div className="checkout-section">
-          <div className="summary">
-            <p>Subtotal: {subtotal.toFixed(2)} EUR</p>
-            <p>IVA (21%): {tax.toFixed(2)} EUR</p>
-            <p><strong>Total: {total.toFixed(2)} EUR</strong></p>
-          </div>
-          <button className="checkout-button" onClick={handleCheckout}>
+        <div className="cart-summary">
+          <h3>Resumen del Pedido</h3>
+            <div className="summary-row">
+              <span>Subtotal:</span>
+              <span>{calculateTotal().toFixed(2)} €</span>
+            </div>
+            <div className="summary-row">
+              <span>Impuestos:</span>
+              <span>{(calculateTotal() * 0.21).toFixed(2)} €</span>
+            </div>
+            <div className="summary-row total">
+              <span>Total:</span>
+              <span>{(calculateTotal() * 1.21).toFixed(2)} €</span>
+            </div>
+          <button className="checkout-btn" onClick={handleCheckout}>
             Finalizar Reserva
+            <span className="secure-checkout">
+              <FaLock /> Pago seguro
+            </span>
           </button>
         </div>
       )}
@@ -232,6 +247,7 @@ export default function CartPage() {
           onPay={() => navigate('/pago')}
         />
       )}
+      </div>
     </div>
   );
 }
