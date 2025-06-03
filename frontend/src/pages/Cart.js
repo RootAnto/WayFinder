@@ -184,7 +184,7 @@ export default function CartPage() {
                     </h3>
 
                     {item.type === 'flight' && (
-                      <div className="flight-details">
+                      <div className="flight-detailss">
                         <span>{item.departure}</span>
                         {item.returnDate && <span> - {item.returnDate}</span>}
                       </div>

@@ -10,6 +10,43 @@ const formatTime = (dateTimeStr) => {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
+const ChatBotWidget = () => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <div 
+        className="chatbot-button" 
+        onClick={() => setOpen(!open)}
+        title="¿Necesitas ayuda?"
+      >
+        💬
+      </div>
+
+      {open && (
+        <div className="chatbot-window">
+          <div className="chatbot-header">
+            <span>Asistente Virtual</span>
+            <button onClick={() => setOpen(false)}>✖</button>
+          </div>
+
+          <div className="chatbot-content">
+            <div className="chatbot-body">
+              <p>¡Hola! ¿En qué puedo ayudarte?</p>
+            </div>
+
+            <div className="chatbot-input">
+              <input type="text" placeholder="Escribe tu mensaje..." />
+              <button>Enviar</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+
 function App() {
   const navigate = useNavigate();
   const [mensaje, setMensaje] = useState('');
@@ -194,6 +231,8 @@ function App() {
           )}
         </div>
       </main>
+
+      <ChatBotWidget />
 
       <Footer />
     </div>
