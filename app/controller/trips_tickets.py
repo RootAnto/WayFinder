@@ -5,11 +5,25 @@ from app.services.email_service import *
 from app.models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
 from app.models.trips.trip_db import Trip
 from app.database.db import get_db
-from typing import List
+from typing import List, Optional
 import uuid
 from fastapi import Query
 
 router = APIRouter(prefix="/trips", tags=["Trips"])
+
+from fastapi import Query
+
+@router.get("/get-email-from-trip")
+def get_user_data_from_trip(trip_id: str = Query(...), db: Session = Depends(get_db)):
+    trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    if not trip:
+        raise HTTPException(status_code=404, detail=f"Trip with id '{trip_id}' not found")
+
+    return {
+        "user_email": trip.user_email,
+        "user_name": trip.user_name or "Cliente"
+    }
+
 
 @router.post("/", response_model=TripOut)
 def create_trip(
@@ -124,8 +138,6 @@ def confirmar_pago(trip_id: str, db: Session = Depends(get_db)):
     return {"mensaje": "Reserva aceptada, ticket generado y correo enviado", "ticket_id": ticket.id}
 
 
-
-
 @router.get("/reservas/{trip_id}/rechazar")
 def rechazar_reserva(trip_id: str, db: Session = Depends(get_db)):
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
@@ -149,8 +161,6 @@ def rechazar_reserva(trip_id: str, db: Session = Depends(get_db)):
     return {"mensaje": "Reserva rechazada y correo enviado"}
 
 
-
-
 @router.get("/confirm-trip")
 def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)) -> dict[str, str]:
     '''
@@ -163,27 +173,53 @@ def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)) -
     @throws HTTPException 404 if the trip is not found.
 
     @note If the trip is already confirmed, it returns an informational message.
-          Otherwise, it marks the trip as confirmed, saves changes, and
-          sends a ticket email.
+          Otherwise, it marks the trip as confirmed, sets status to 'aceptada',
+          saves changes, and sends a ticket email.
 
     @return Dictionary with confirmation or status message.
     '''
+    logger.info(f"Intentando confirmar reserva: trip_id={trip_id}, user_email={user_email}")
+
+    # Limpia espacios del trip_id y log de todos los trips para debug
+    trip_id = trip_id.strip()
+    all_ids = db.query(Trip.id).all()
+    logger.debug(f"IDs disponibles en DB: {[id[0] for id in all_ids]}")
+
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
+
     if not trip:
+        logger.warning(f"Reserva no encontrada para trip_id={trip_id}")
         raise HTTPException(status_code=404, detail="Reserva no encontrada")
+
+    if not trip.user_email:
+        logger.error(f"Reserva sin email registrado: trip_id={trip_id}")
+        raise HTTPException(status_code=400, detail="Reserva no tiene correo asignado")
+
+    if trip.user_email.lower() != user_email.lower():
+        logger.error(f"El correo '{user_email}' no coincide con la reserva del viaje '{trip.user_email}'")
+        raise HTTPException(status_code=400, detail="El correo no coincide con la reserva")
+
     if trip.confirmed:
+        logger.info(f"Reserva ya estaba confirmada: trip_id={trip_id}")
         return {"message": "Reserva ya confirmada."}
 
+    # Confirmar reserva y actualizar estado
     trip.confirmed = True
+    trip.status = TripStatus.aceptada  # ✅ Actualiza el estado a "aceptada"
     db.commit()
+    logger.success(f"Reserva confirmada y aceptada: trip_id={trip_id}")
 
-    # Reenvía el viaje como TripOut
+    # Preparar trip para el correo
     trip_out = TripOut.from_orm(trip)
 
-    # Envía el correo con los billetes
-    send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
+    try:
+        send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
+        logger.info(f"Correo enviado correctamente a {user_email} con los billetes del viaje.")
+    except Exception as e:
+        logger.exception(f"Error al enviar el correo de confirmación a {user_email}: {e}")
 
     return {"message": "Reserva confirmada. Se han enviado los billetes al correo."}
+
 
 
 @router.get("/{trip_id}", response_model=TripOut)

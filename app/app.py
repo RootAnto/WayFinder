@@ -9,13 +9,13 @@ from app.controller.amadeus_controller.vehicle_controller import router as vehic
 from app.controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
 from app.controller.trips_tickets import router as trips_tickets_route
 from app.controller.firebase_controller import router as auth_router
-from app.services.payment_service import router as paymetn_route
+from app.controller.payments.payments import router as paymetn_route
 from loguru import logger
 
 app = FastAPI()
 
 @app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     logger.info(f"Validation error for request: {request.method} {request.url}")
     logger.info(f"Errors: {exc.errors()}")
     # Aquí puedes regresar una respuesta custom si quieres

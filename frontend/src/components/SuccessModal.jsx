@@ -10,7 +10,7 @@ export default function SuccessModal({ onClose }) {
           className="btn-close"
           onClick={() => {
             onClose();
-            window.location.href = '/';  // Redirige directamente sin alert
+            window.location.href = '/';
           }}
         >
           Volver al inicio
