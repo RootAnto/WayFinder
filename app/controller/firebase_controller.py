@@ -8,7 +8,6 @@ from app.services.email_service import send_verification_email
 from fastapi import Body
 
 from app.database.firebase import (
-    email_exists,
     create_user,
     get_user_by_email,
     update_user,
@@ -18,23 +17,32 @@ from app.database.firebase import (
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Registro de usuario con verificación de correo
 @router.post("/register")
 async def register_user(user: UserCreate):
+    '''
+    @brief Registers a new user in the system.
+
+    @param user The user data including name, email, password, birthdate, etc.
+    @return A dictionary with the new user's ID, email, and name.
+
+    This endpoint creates a user in Firebase Authentication, hashes the password
+    for internal storage, generates a verification email, stores user data in
+    the application database, and sends a verification email to the user.
+    '''
     try:
-        # 1. Crear usuario en Firebase Authentication
+
         firebase_user = auth.create_user(
             email=user.email,
             password=user.password,
             display_name=user.nombre
         )
 
-        # 2. Generar enlace de verificación de Firebase
+
         verification_link = auth.generate_email_verification_link(user.email)
 
         hashed_password = pwd_context.hash(user.password)
 
-        # 3. Guardar datos en Firestore
+
         user_data = {
             "firebase_uid": firebase_user.uid,
             "email": user.email,
@@ -42,7 +50,7 @@ async def register_user(user: UserCreate):
             "password": hashed_password,
             "birthdate": user.birthdate,
             "acceptTerms": user.acceptTerms,
-            "email_verified": False,  # Inicialmente no verificado
+            "email_verified": False,
             "created_at": datetime.now(),
             "active": True,
             "last_login": None,
@@ -51,7 +59,6 @@ async def register_user(user: UserCreate):
 
         user_id = create_user(user_data)
 
-        # 4. Enviar el enlace de verificación
         send_verification_email(to_email=user.email, to_name=user.nombre, verification_link=verification_link)
 
         return {"id": user_id, "email": user.email, "nombre": user.nombre}
@@ -62,34 +69,40 @@ async def register_user(user: UserCreate):
         auth.delete_user(firebase_user.uid)
         raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
 
-# Inicio de sesión con verificación de correo
+
 @router.post("/login")
 async def login_user(credentials: UserLogin):
+    '''
+    @brief Authenticates a user using Firebase and internal password verification.
+
+    @param credentials UserLogin object containing email and password.
+    @return A dictionary with the user's ID, email, and name if authentication succeeds.
+
+    This endpoint checks the user's email verification status in Firebase,
+    verifies the password against the stored hash, updates login metadata,
+    and returns the basic user info upon successful login.
+    '''
     try:
-        # 1. Verificar usuario en Firebase Auth (esto autentica las credenciales)
+
         firebase_user = auth.get_user_by_email(credentials.email)
 
-        # 2. Verificar si el correo está confirmado
         if not firebase_user.email_verified:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Debes verificar tu correo electrónico primero"
             )
 
-        # 3. Sincronizar Firestore con el estado de Firebase Auth
         user_ref = db.collection("usuarios").where("firebase_uid", "==", firebase_user.uid).get()[0]
         update_user(user_ref.id, {
             "email_verified": firebase_user.email_verified,
             "last_login": datetime.now()
         })
 
-        # 4. Obtener datos del usuario para la respuesta
         user_data = get_user_by_email(credentials.email)
 
         if not pwd_context.verify(credentials.password, user_data["password"]):
             raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
-        # 5. Actualizar último login
         update_user(user_ref.id, {"last_login": datetime.now()})
 
         return {"id": user_ref.id, "email": user_data["email"], "nombre": user_data["nombre"]}
@@ -101,15 +114,22 @@ async def login_user(credentials: UserLogin):
 
 @router.post("/google-login")
 async def google_login(email: str = Body(...), nombre: str = Body(...), uid: str = Body(...)):
+    '''
+    @brief Authenticates a user using Firebase and internal database.
+
+    @param credentials: A UserLogin object containing the email and password.
+    @return dict: Contains user ID, email, and name on successful login.
+
+    This endpoint verifies the user's Firebase account and checks that the email
+    is verified. Then, it validates the password against the hashed value in
+    Firestore, updates the last login timestamp, and returns basic user info.
+    '''
     try:
-        # Verificar que el UID exista en Firebase Auth
         firebase_user = auth.get_user(uid)
 
-        # Buscar usuario en Firestore
         existing_user = get_user_by_email(email)
 
         if not existing_user:
-            # Crear nuevo usuario si no existe
             user_data = {
                 "firebase_uid": uid,
                 "email": email,

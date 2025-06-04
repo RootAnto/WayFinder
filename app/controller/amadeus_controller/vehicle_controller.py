@@ -24,6 +24,17 @@ router = APIRouter(
 
 @router.post("/vehicle-search", response_model=VehicleSearchResponse)
 async def search_vehicles(query: VehicleSearchQuery) -> VehicleSearchResponse:
+    '''
+    @brief Simulates a vehicle search based on user-provided city and preferences.
+
+    @param query VehicleSearchQuery object containing search parameters such as location, vehicle type, and result limit.
+    @return A list of simulated vehicles available in the specified location.
+
+    This endpoint generates a mocked list of vehicles by:
+      - Matching a predefined set of vehicles by city code.
+      - Randomizing prices, models, and vehicle attributes (fuel type, transmission, etc.).
+      - Returning a structured response with vehicle info.
+    '''
     try:
         city_vehicles = {
             "MAD": [("SEAT", "Ibiza"), ("Renault", "Clio"), ("BMW", "X1")],

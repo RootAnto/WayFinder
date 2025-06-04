@@ -22,11 +22,22 @@ router = APIRouter(
     },
 )
 
+
 @router.post("/trip-search", response_model=TripSearchResponse)
 async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
-    """
-    Realiza una búsqueda combinada de vuelos, hoteles y vehículos.
-    """
+    '''
+    @brief Performs a comprehensive search for flights, hotels, and rental vehicles based on user input.
+
+    @param query The user's trip search query, containing flight, hotel, and vehicle preferences.
+    @return A response containing available flights, hotels, vehicles, and a total cost summary.
+
+    This endpoint:
+      - Validates the provided travel dates.
+      - Searches for flight offers using the Amadeus API.
+      - Retrieves available hotels by city.
+      - Simulates available rental vehicles based on city.
+      - Calculates total costs for each component and returns a structured response.
+    '''
     try:
         # ---------------------- VALIDACIÓN DE FECHAS ----------------------
         check_in = datetime.strptime(query.checkInDate, "%Y-%m-%d")
