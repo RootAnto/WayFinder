@@ -106,7 +106,6 @@ function StripeCheckout() {
       if (paymentError) throw new Error(paymentError.message);
 
       if (paymentIntent.status === 'succeeded') {
-        // Confirmar la reserva en backend
         const confirmResponse = await fetch(
           `http://localhost:8000/trips/confirm-trip?trip_id=${tripId}&user_email=${encodeURIComponent(emailToUse)}`,
           {
@@ -117,12 +116,19 @@ function StripeCheckout() {
 
         const confirmData = await confirmResponse.json();
 
-        if (!confirmResponse.ok) throw new Error(confirmData.detail || 'Error al confirmar la reserva.');
+        if (!confirmResponse.ok) {
+          throw new Error(confirmData.detail || 'Error al confirmar la reserva.');
+        }
 
-        setSuccessMessage('¡Pago y reserva confirmados con éxito!');
-        clearCart();
+        const msg = confirmData.message || '';
 
-        setTimeout(() => navigate('/PaymentSuccess'), 2000);
+        if (msg.includes('confirmada') && msg.includes('tickets')) {
+          setSuccessMessage(msg);
+          clearCart();
+          setTimeout(() => navigate('/PaymentSuccess'), 3000);
+        } else {
+          setError(msg);
+        }
       }
     } catch (err) {
       setError(err.message || 'Error procesando el pago.');
@@ -135,8 +141,15 @@ function StripeCheckout() {
     <div className="checkout-form-container">
       <h2>Pago con Tarjeta</h2>
 
-      {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
-      {successMessage && <p style={{ color: 'green', marginBottom: '1rem' }}>{successMessage}</p>}
+      {error && (
+        <div style={{ color: 'red', marginBottom: '1rem', textAlign: 'center' }}>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {successMessage && (
+        <p style={{ color: 'green', marginBottom: '1rem', textAlign: 'center' }}>{successMessage}</p>
+      )}
 
       <form onSubmit={handleSubmit} className="checkout-form">
         <div className="form-group" style={{ marginBottom: '1rem' }}>
@@ -165,11 +178,28 @@ function StripeCheckout() {
             border: 'none',
             borderRadius: '6px',
             cursor: loading ? 'not-allowed' : 'pointer',
+            marginBottom: '1rem',
           }}
         >
           {loading ? 'Procesando...' : 'Pagar con Tarjeta'}
         </button>
       </form>
+
+      <div style={{ textAlign: 'center' }}>
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            padding: '10px 20px',
+            backgroundColor: '#007bff',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
+          Ir a Wayfinder
+        </button>
+      </div>
     </div>
   );
 }

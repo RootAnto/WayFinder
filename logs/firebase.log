@@ -1277,3 +1277,30 @@ FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\jonyD\\OneDr
 2025-06-04 18:53:09.550 | INFO     | app.controller.trips_tickets:confirm_trip:149 - Reserva ya confirmada: trip_id=9264b658-9dd9-4397-b8bf-ee280c5af90c
 2025-06-04 18:53:58.867 | INFO     | app.controller.trips_tickets:reject_reservation:196 - Starting rejection process for reservation 9264b658-9dd9-4397-b8bf-ee280c5af90c
 2025-06-04 18:53:58.949 | INFO     | app.controller.trips_tickets:reject_reservation:209 - Cannot reject reservation 9264b658-9dd9-4397-b8bf-ee280c5af90c - already accepted or confirmed/paid
+2025-06-05 12:06:11.220 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:06:14.799 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:07:00.620 | INFO     | app.controller.trips_tickets:confirm_trip:123 - Intentando confirmar la reserva: trip_id=58f5c72f-16ca-4054-abbb-1674216a54b9, user_email=antoniollorentecuenca@hotmail.com
+2025-06-05 12:07:00.695 | INFO     | app.controller.trips_tickets:confirm_trip:155 - Reserva rechazada: trip_id=58f5c72f-16ca-4054-abbb-1674216a54b9
+2025-06-05 12:07:09.601 | INFO     | app.controller.trips_tickets:reject_reservation:214 - Starting rejection process for reservation 58f5c72f-16ca-4054-abbb-1674216a54b9
+2025-06-05 12:07:09.690 | INFO     | app.controller.trips_tickets:reject_reservation:224 - Reservation 58f5c72f-16ca-4054-abbb-1674216a54b9 has already been rejected
+2025-06-05 12:07:45.293 | DEBUG    | app.database.firebase:update_user:125 - Updating user SqPVDglDUt3jtFK108hf with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 6, 5, 12, 7, 45, 293007)}
+2025-06-05 12:07:45.407 | SUCCESS  | app.database.firebase:update_user:127 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-06-05 12:07:45.407 | DEBUG    | app.database.firebase:get_user_by_email:95 - Searching for user with email: antoniollorentecuenca@hotmail.com
+2025-06-05 12:07:45.513 | DEBUG    | app.database.firebase:get_user_by_email:102 - User found: {'password': '$2b$12$niS7owb7t0k7gCWLwCUKbeEWfvEJOISdtHqJIYL6QmhIkFW590gaO', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 30, 10, 8, 49, 899374, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-07', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 6, 5, 12, 7, 45, 293007, tzinfo=datetime.timezone.utc), 'email': 'antoniollorentecuenca@hotmail.com', 'nombre': 'antoiko lroeer', 'email_verified': True, 'firebase_uid': 'LsSig8tRl8PKguXYtJvCkpbaEhl2', 'id': 'SqPVDglDUt3jtFK108hf'}
+2025-06-05 12:07:45.811 | DEBUG    | app.database.firebase:update_user:125 - Updating user SqPVDglDUt3jtFK108hf with data: {'last_login': datetime.datetime(2025, 6, 5, 12, 7, 45, 811554)}
+2025-06-05 12:07:45.891 | SUCCESS  | app.database.firebase:update_user:127 - User SqPVDglDUt3jtFK108hf updated successfully
+2025-06-05 12:08:02.542 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:02.542 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 6b6cd0f3-1b49-442f-984e-5a4e4ca8577c
+2025-06-05 12:08:02.806 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 6b6cd0f3-1b49-442f-984e-5a4e4ca8577c
+2025-06-05 12:08:02.810 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:04.435 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:04.436 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:26.056 | INFO     | app.controller.trips_tickets:confirm_trip:123 - Intentando confirmar la reserva: trip_id=6b6cd0f3-1b49-442f-984e-5a4e4ca8577c, user_email=antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:26.303 | SUCCESS  | app.controller.trips_tickets:confirm_trip:181 - Reserva confirmada: trip_id=6b6cd0f3-1b49-442f-984e-5a4e4ca8577c
+2025-06-05 12:08:26.545 | INFO     | app.services.email_service:send_paid_ticket_with_qr:255 - Enviando billete con QR a antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:28.159 | SUCCESS  | app.services.email_service:send_paid_ticket_with_qr:259 - Correo con billete enviado a antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:28.160 | INFO     | app.controller.trips_tickets:confirm_trip:186 - Correo enviado a antoniollorentecuenca@hotmail.com
+2025-06-05 12:08:43.657 | INFO     | app.controller.trips_tickets:reject_reservation:214 - Starting rejection process for reservation 6b6cd0f3-1b49-442f-984e-5a4e4ca8577c
+2025-06-05 12:08:43.755 | INFO     | app.controller.trips_tickets:reject_reservation:235 - Cannot reject reservation 6b6cd0f3-1b49-442f-984e-5a4e4ca8577c - already accepted or confirmed/paid
+2025-06-05 12:09:00.697 | INFO     | app.controller.trips_tickets:confirm_trip:123 - Intentando confirmar la reserva: trip_id=6b6cd0f3-1b49-442f-984e-5a4e4ca8577c, user_email=antoniollorentecuenca@hotmail.com
+2025-06-05 12:09:00.795 | INFO     | app.controller.trips_tickets:confirm_trip:163 - Reserva ya confirmada: trip_id=6b6cd0f3-1b49-442f-984e-5a4e4ca8577c

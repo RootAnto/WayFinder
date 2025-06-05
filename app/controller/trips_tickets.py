@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from sqlalchemy.orm import Session
 from app.services.email_service import *
 from app.models.trips.trip_pydantic import TripCreate, TripOut, TripStatus
@@ -119,61 +119,99 @@ def get_user_data_from_trip(trip_id: str = Query(...), db: Session = Depends(get
 
 
 @router.get("/confirm-trip")
-def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)) -> dict[str, str]:
+def confirm_trip(trip_id: str, user_email: str, db: Session = Depends(get_db)) -> JSONResponse:
+    """
+    @brief Confirms a reservation for a trip using the provided trip ID and user email.
+    @route GET /confirm-trip
+    @param trip_id The ID of the trip to be confirmed.
+    @param user_email The email of the user attempting to confirm the reservation.
+    @param db SQLAlchemy database session dependency.
+    @return JSONResponse indicating success, failure, or status of the reservation.
+
+    The function performs several checks:
+    - Validates that the reservation exists.
+    - Validates that the reservation has an email assigned.
+    - Confirms that the provided email matches the one associated with the reservation.
+    - Ensures the reservation hasn't already been rejected or confirmed.
+    - Updates the reservation status to "accepted" and sends a confirmation email with tickets.
+
+    Possible response statuses:
+    - 200: Reservation confirmed or already confirmed/rejected.
+    - 400: Email mismatch, invalid state for confirmation.
+    - 404: Reservation not found.
+    """
     logger.info(f"Intentando confirmar la reserva: trip_id={trip_id}, user_email={user_email}")
 
     trip_id = trip_id.strip()
-
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
 
     if not trip:
         logger.warning(f"Reserva no encontrada para trip_id={trip_id}")
-        raise HTTPException(status_code=404, detail="Reserva no encontrada")
+        return JSONResponse(status_code=404, content={
+            "status": "error",
+            "message": "Reserva no encontrada.",
+            "showReturnHome": True
+        })
 
     if not trip.user_email:
         logger.error(f"La reserva no tiene email registrado: trip_id={trip_id}")
-        raise HTTPException(status_code=400, detail="Reserva sin email asignado")
+        return JSONResponse(status_code=400, content={
+            "status": "error",
+            "message": "La reserva no tiene email registrado.",
+            "showReturnHome": True
+        })
 
     if trip.user_email.lower() != user_email.lower():
-        logger.error(f"Email proporcionado '{user_email}' no coincide con email de la reserva '{trip.user_email}'")
-        raise HTTPException(status_code=400, detail="El email no coincide con la reserva")
+        logger.error(f"Email proporcionado '{user_email}' no coincide con '{trip.user_email}'")
+        return JSONResponse(status_code=400, content={
+            "status": "error",
+            "message": "El email no coincide con la reserva.",
+            "showReturnHome": True
+        })
 
-    # Aquí la comparación con .value para comparar strings
     status = trip.status.value if hasattr(trip.status, "value") else trip.status
 
     if status == TripStatus.rechazada:
-        logger.info(f"No se puede confirmar una reserva rechazada: trip_id={trip_id}")
-        return {"message": "No se puede confirmar una reserva rechazada."}
+        logger.info(f"Reserva rechazada: trip_id={trip_id}")
+        return JSONResponse(status_code=200, content={
+            "status": "rejected",
+            "message": "La reserva ha sido rechazada previamente. No es posible confirmarla.",
+            "showReturnHome": True
+        })
 
     if status == TripStatus.aceptada:
         logger.info(f"Reserva ya confirmada: trip_id={trip_id}")
-        return {"message": "Reserva ya confirmada."}
+        return JSONResponse(status_code=200, content={
+            "status": "success",
+            "message": "Reserva ya confirmada.",
+            "showReturnHome": True
+        })
 
     if status != TripStatus.pendiente:
-        logger.info(f"Reserva en estado inválido para confirmar: {status}")
-        return {"message": f"No se puede confirmar una reserva en estado '{status}'."}
+        logger.info(f"Estado inválido para confirmar: {status}")
+        return JSONResponse(status_code=400, content={
+            "status": "error",
+            "message": f"No se puede confirmar una reserva en estado '{status}'.",
+            "showReturnHome": True
+        })
 
-    # Confirmar la reserva
     trip.confirmed = True
     trip.status = TripStatus.aceptada
     db.commit()
-    logger.success(f"Reserva confirmada y marcada como aceptada: trip_id={trip_id}")
+    logger.success(f"Reserva confirmada: trip_id={trip_id}")
 
     trip_out = TripOut.from_orm(trip)
-
     try:
         send_paid_ticket_with_qr(to_email=user_email, trip=trip_out)
-        logger.info(f"Correo con tickets enviado correctamente a {user_email}")
+        logger.info(f"Correo enviado a {user_email}")
     except Exception as e:
-        logger.exception(f"Error enviando correo de confirmación a {user_email}: {e}")
+        logger.exception(f"Error enviando correo: {e}")
 
-    return {"message": "Reserva confirmada. Los tickets han sido enviados al correo proporcionado."}
-
-
-
-
-
-
+    return JSONResponse(status_code=200, content={
+        "status": "success",
+        "message": "Reserva confirmada. Los tickets han sido enviados al correo proporcionado.",
+        "showReturnHome": True
+    })
 
 
 @router.get("/reservations/{trip_id}/reject")
@@ -196,18 +234,34 @@ def reject_reservation(trip_id: str, db: Session = Depends(get_db)):
     logger.info(f"Starting rejection process for reservation {trip_id}")
 
     trip = db.query(Trip).filter(Trip.id == trip_id).first()
+    status = trip.status.value if hasattr(trip.status, "value") else trip.status
 
     if not trip:
         logger.warning(f"Reservation not found: {trip_id}")
         raise HTTPException(status_code=404, detail="Reservation not found")
 
-    if trip.status == TripStatus.rechazada:
+    if status == TripStatus.rechazada:
         logger.info(f"Reservation {trip_id} has already been rejected")
-        return {"message": "The reservation has already been rejected"}
+        return HTMLResponse(content=f"""
+            <html>
+                <body style="font-family: Arial, sans-serif; text-align:center; margin-top: 50px;">
+                    <h2>Reserva ya rechazada</h2>
+                    <p>Hola {trip.user_name or 'cliente'}, tu reserva con ID <strong>{trip.id}</strong> ya había sido rechazada previamente.</p>
+                </body>
+            </html>
+        """)
 
-    if trip.status == TripStatus.aceptada or trip.confirmed:
+    if status == TripStatus.aceptada or trip.confirmed:
         logger.info(f"Cannot reject reservation {trip_id} - already accepted or confirmed/paid")
-        return {"message": "Cannot reject a reservation that is already accepted or confirmed/paid."}
+        return HTMLResponse(content=f"""
+            <html>
+                <body style="font-family: Arial, sans-serif; text-align:center; margin-top: 50px;">
+                    <h2>No es posible rechazar la reserva</h2>
+                    <p>Hola {trip.user_name or 'cliente'}, tu reserva con ID <strong>{trip.id}</strong> ya ha sido aceptada y no puede ser rechazada.</p>
+                </body>
+            </html>
+        """)
+
 
     logger.info(f"Changing status to 'rejected' for reservation {trip_id}")
     trip.status = TripStatus.rechazada
