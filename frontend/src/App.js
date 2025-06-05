@@ -13,10 +13,13 @@ import TripSuggestionPage from './pages/TripSuggestion';
 import CartPage from './pages/Cart';
 import CheckoutPage from './pages/Checkout';
 import PaymentSuccessPage from './pages/PaymentSuccess';
-import StripeCheckout from './components/StripeCheckout';  // Importa el componente que quieres usar
+import StripeCheckout from './components/StripeCheckout';
 
 import PrivateRoute from './components/PrivateRoute';
 import MyBookings from './pages/MyBookings';
+
+// Importa el nuevo componente de modificar reserva
+import ModifyBooking from './pages/ModifyBooking';
 
 function App() {
   return (
@@ -32,7 +35,6 @@ function App() {
             <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
             <Route path="/Cart" element={<CartPage />} />
 
-            {/* Ruta protegida para reservas */}
             <Route
               path="/my-bookings"
               element={
@@ -42,7 +44,16 @@ function App() {
               }
             />
 
-            {/* Aquí usas StripeCheckout envuelto en Elements */}
+            {/* Nueva ruta para modificar reserva */}
+            <Route
+              path="/modificar-reserva"
+              element={
+                <PrivateRoute>
+                  <ModifyBooking />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/pago"
               element={

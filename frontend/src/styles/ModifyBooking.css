@@ -1,0 +1,103 @@
+/* Contenedor general de ModifyBooking */
+.modifybooking-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Título */
+.modifybooking-container h2 {
+  font-size: 2rem;
+  color: #003580; /* Azul del header */
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Mensaje de error o info */
+.modifybooking-message {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  border: 1px solid #cc0000;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Resumen de reserva */
+.modifybooking-summary {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Títulos dentro del resumen */
+.modifybooking-summary h3 {
+  font-size: 1.25rem;
+  color: #003580;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+/* Formulario */
+.modifybooking-form label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #333;
+}
+
+.modifybooking-form input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.modifybooking-form input:focus {
+  border-color: #003580;
+  outline: none;
+}
+
+/* Botón de guardar cambios */
+.modifybooking-form button {
+  margin-top: 20px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 119, 204, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+.modifybooking-form button:hover {
+  background-color: #005fa3;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modifybooking-container {
+    padding: 15px;
+  }
+
+  .modifybooking-summary {
+    padding: 15px 20px;
+  }
+
+  .modifybooking-form button {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+}
