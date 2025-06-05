@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
 
-// Función para formatear la hora (añade esto fuera del componente App)
 const formatTime = (dateTimeStr) => {
   if (!dateTimeStr) return '';
   const date = new Date(dateTimeStr);
@@ -48,7 +47,7 @@ function App() {
           originLocationCode: searchParams.from,
           destinationLocationCode: searchParams.to,
           departureDate: searchParams.departure,
-          returnDate: searchParams.return,
+          returnDate: searchParams.return || searchParams.departure,
           adults: 1,
           max: 1,
           cityCode: searchParams.to,
@@ -64,7 +63,6 @@ function App() {
       if (!response.ok) throw new Error('Error al obtener sugerencia de viaje');
       const data = await response.json();
 
-      // Redirigir a la página de sugerencia con los datos
       navigate('/TripSuggestion', {
         state: {
           searchParams: searchParams,
@@ -81,17 +79,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Datos comunes para las peticiones
-      const commonData = {
-        location: searchParams.to,
-        departureDate: searchParams.departure,
-        returnDate: searchParams.return || searchParams.departure,
-        adults: 1
-      };
-
-      // Realizar las 3 peticiones simultáneamente con Promise.all
       const [flightsResponse, hotelsResponse, vehiclesResponse] = await Promise.all([
-        // Petición de vuelos
         fetch("http://localhost:8000/flight-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -104,7 +92,6 @@ function App() {
             max: 5
           })
         }),
-        // Petición de hoteles
         fetch("http://localhost:8000/hotel-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -117,7 +104,6 @@ function App() {
             defaultPrice: 100
           })
         }),
-        // Petición de vehículos
         fetch("http://localhost:8000/vehicle-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -132,19 +118,16 @@ function App() {
         })
       ]);
 
-      // Verificar que todas las respuestas sean OK
       if (!flightsResponse.ok || !hotelsResponse.ok || !vehiclesResponse.ok) {
         throw new Error('Error en una o más peticiones');
       }
 
-      // Procesar las respuestas
       const [flightsData, hotelsData, vehiclesData] = await Promise.all([
         flightsResponse.json(),
         hotelsResponse.json(),
         vehiclesResponse.json()
       ]);
 
-      // Redirigir a FlightResults con todos los datos
       navigate('/FlightResults', {
         state: {
           searchParams: searchParams,
@@ -153,7 +136,7 @@ function App() {
           vehicleResults: vehiclesData.cars || []
         }
       });
-      
+
     } catch (error) {
       console.error("Error en la búsqueda:", error);
       setMensaje(error.message || 'Error al realizar la búsqueda');
@@ -168,7 +151,7 @@ function App() {
 
       <main className="main-content">
         <div className="container">
-          <h1>Millones de vuelos baratos. Tu eligues tu próximo destino.</h1>
+          <h1>Millones de vuelos baratos. Tú eliges tu próximo destino.</h1>
           <br/>
 
           <SearchForm
@@ -180,7 +163,6 @@ function App() {
 
           <ServicesSection />
 
-          {/* Mensajes de error */}
           {mensaje && (
             <div className="alert alert-error">
               {mensaje}
@@ -200,18 +182,88 @@ function App() {
   );
 }
 
+const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip }) => {
+  const navigate = useNavigate();
+
+  const handleGoToBookings = () => {
+    navigate('/my-bookings');
+  };
+
+  return (
+    <>
+      <h3>Crea una ruta con múltiples destinos</h3>
+      <form className="search-form">
+        <div className="form-row">
+          <div className="form-group">
+            <label>Desde</label>
+            <input type="text" name="from" value={searchParams.from} onChange={onInputChange} />
+          </div>
+          <div className="form-group">
+            <label>A</label>
+            <input type="text" name="to" value={searchParams.to} onChange={onInputChange} placeholder="País, ciudad o aeropuerto..." />
+          </div>
+          <div className="form-group">
+            <label>Ida</label>
+            <input type="date" name="departure" value={searchParams.departure} onChange={onInputChange} />
+          </div>
+          <div className="form-group">
+            <label>Vuelta</label>
+            <input type="date" name="return" value={searchParams.return} onChange={onInputChange} />
+          </div>
+          <div className="form-group">
+            <label>Viajeros y clase de cabina</label>
+            <select name="passengers" value={searchParams.passengers} onChange={onInputChange}>
+              <option>1 Adulto, Turista</option>
+              <option>2 Adultos, Turista</option>
+              <option>1 Adulto, Business</option>
+              <option>Familia (2 Adultos + 2 Niños)</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="checkbox-group">
+            <input type="checkbox" id="nearby-airports-from" name="nearbyFrom" checked={searchParams.nearbyFrom} onChange={onInputChange} />
+            <label htmlFor="nearby-airports-from">Añade aeropuertos cercanos</label>
+          </div>
+
+          <div className="checkbox-group">
+            <input type="checkbox" id="nearby-airports-to" name="nearbyTo" checked={searchParams.nearbyTo} onChange={onInputChange} />
+            <label htmlFor="nearby-airports-to">Añade aeropuertos cercanos</label>
+          </div>
+
+          <div className="checkbox-group">
+            <input type="checkbox" id="direct-flights" name="directOnly" checked={searchParams.directOnly} onChange={onInputChange} />
+            <label htmlFor="direct-flights">Vuelos directos</label>
+          </div>
+
+          <div style={{ flexGrow: 1, justifyContent: 'right', display: 'flex', gap: '10px' }}>
+            <button type="button" className="my-bookings-button" onClick={handleGoToBookings}>
+              Mis reservas
+            </button>
+            <button type="button" className="suggest-button" onClick={onSuggestTrip}>
+              Sugerir viaje completo
+            </button>
+            <button type="submit" className="search-button" onClick={onSubmit}>
+              Buscar vuelos
+            </button>
+          </div>
+        </div>
+      </form>
+    </>
+  );
+};
+
 const Header = () => {
   const { currentUser, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  //cuando clicke fuera se cierra
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (isMenuOpen && !e.target.closest('.user-menu-container')) {
         setIsMenuOpen(false);
       }
     };
-
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
@@ -230,25 +282,17 @@ const Header = () => {
         <div className="auth-buttons">
           {currentUser ? (
             <div className="user-menu-container">
-              <button 
-                className="user-menu-trigger"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-              >
-                <span className="user-avatar">
-                  {currentUser.nombre.charAt(0).toUpperCase()}
-                </span>
+              <button className="user-menu-trigger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <span className="user-avatar">{currentUser.nombre.charAt(0).toUpperCase()}</span>
                 <span className="user-welcome">{currentUser.nombre}</span>
                 <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
               </button>
-              
+
               {isMenuOpen && (
                 <div className="user-dropdown">
-                  <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>
-                    Mi perfil
-                  </Link>
-                  <button className="logout-btn" onClick={logout}>
-                    Cerrar sesión
-                  </button>
+                  <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>Mi perfil</Link>
+                  <Link to="/my-bookings" className="perfil" onClick={() => setIsMenuOpen(false)}>Mis reservas</Link>
+                  <button className="logout-btn" onClick={logout}>Cerrar sesión</button>
                 </div>
               )}
             </div>
@@ -264,122 +308,15 @@ const Header = () => {
   );
 };
 
-const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip  }) => (
-  <>
-    <h3>Crea una ruta con múltiples destinos</h3>
-    <form className="search-form">
-      <div className="form-row">
-        <div className="form-group">
-          <label>Desde</label>
-          <input
-            type="text"
-            name="from"
-            value={searchParams.from}
-            onChange={onInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>A</label>
-          <input
-            type="text"
-            name="to"
-            value={searchParams.to}
-            onChange={onInputChange}
-            placeholder="País, ciudad o aeropuerto..."
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Ida</label>
-          <input
-            type="date"
-            name="departure"
-            value={searchParams.departure}
-            onChange={onInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Vuelta</label>
-          <input
-            type="date"
-            name="return"
-            value={searchParams.return}
-            onChange={onInputChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Viajeros y clase de cabina</label>
-          <select
-            name="passengers"
-            value={searchParams.passengers}
-            onChange={onInputChange}
-          >
-            <option>1 Adulto, Turista</option>
-            <option>2 Adultos, Turista</option>
-            <option>1 Adulto, Business</option>
-            <option>Familia (2 Adultos + 2 Niños)</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="checkbox-group">
-          <input
-            type="checkbox"
-            id="nearby-airports-from"
-            name="nearbyFrom"
-            checked={searchParams.nearbyFrom}
-            onChange={onInputChange}
-          />
-          <label htmlFor="nearby-airports-from">Añade aeropuertos cercanos</label>
-        </div>
-
-        <div className="checkbox-group">
-          <input
-            type="checkbox"
-            id="nearby-airports-to"
-            name="nearbyTo"
-            checked={searchParams.nearbyTo}
-            onChange={onInputChange}
-          />
-          <label htmlFor="nearby-airports-to">Añade aeropuertos cercanos</label>
-        </div>
-
-        <div className="checkbox-group">
-          <input
-            type="checkbox"
-            id="direct-flights"
-            name="directOnly"
-            checked={searchParams.directOnly}
-            onChange={onInputChange}
-          />
-          <label htmlFor="direct-flights">Vuelos directos</label>
-        </div>
-
-        <div style={{flexGrow: 1, justifyContent: 'right', display: 'flex', gap: '10px'}}>
-          <button type="button" className="suggest-button" onClick={onSuggestTrip}>Sugerir viaje completo</button>
-          <button type="submit" className="search-button" onClick={onSubmit}>Buscar vuelos</button>
-        </div>
-      </div>
-    </form>
-  </>
-);
-
 const ServicesSection = () => (
   <>
     <hr className="divider" />
-
     <div className="options-section">
       <a href="#" className="option-link">Hoteles</a>
       <a href="#" className="option-link">Alquiler de coches</a>
       <a href="#" className="option-link">Explora cualquier lugar</a>
     </div>
-
     <hr className="divider" />
-    
   </>
 );
 
@@ -396,7 +333,6 @@ const Footer = () => (
             <li><a href="#">Blog</a></li>
           </ul>
         </div>
-
         <div className="footer-column">
           <h4>Asistencia</h4>
           <ul>
@@ -406,7 +342,6 @@ const Footer = () => (
             <li><a href="#">Términos y condiciones</a></li>
           </ul>
         </div>
-
         <div className="footer-column">
           <h4>Recursos</h4>
           <ul>
@@ -416,7 +351,6 @@ const Footer = () => (
             <li><a href="#">Mapa del sitio</a></li>
           </ul>
         </div>
-
         <div className="footer-column">
           <h4>Suscríbete</h4>
           <p>Recibe ofertas exclusivas en tu correo</p>
@@ -431,7 +365,6 @@ const Footer = () => (
           </div>
         </div>
       </div>
-
       <div className="footer-bottom">
         <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
       </div>

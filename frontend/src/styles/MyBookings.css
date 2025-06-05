@@ -1,0 +1,151 @@
+/* Contenedor general de reservas en MyBookings */
+.mybookings-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Título */
+.mybookings-container h2 {
+  font-size: 2rem;
+  color: #003580; /* Azul del header */
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Mensaje de error o info */
+.mybookings-message {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  border: 1px solid #cc0000;
+  border-radius: 8px;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Lista de tarjetas de reservas */
+.mybookings-reservation-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Tarjeta individual */
+.mybookings-reservation-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px 25px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+
+.mybookings-reservation-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Título destino/origen */
+.mybookings-reservation-card h3 {
+  font-size: 1.25rem;
+  color: #003580;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+/* Datos secundarios */
+.mybookings-reservation-card p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+/* Sección de botones */
+.mybookings-reservation-actions {
+  margin-top: auto; /* Empuja botones abajo */
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+/* Botón confirmar: verde claro */
+.mybookings-confirm-btn {
+  background-color: #48bb78;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(72, 187, 120, 0.4);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mybookings-confirm-btn:hover {
+  background-color: #38a169;
+}
+
+/* Botón rechazar: rojo suave */
+.mybookings-reject-btn {
+  background-color: #f56565;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  box-shadow: 0 3px 6px rgba(245, 101, 101, 0.4);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.mybookings-reject-btn:hover {
+  background-color: #c53030;
+}
+
+/* Texto cuando no hay reservas */
+.mybookings-no-reservations {
+  font-size: 1.1rem;
+  color: #666;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.mybookings-modify-btn {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  margin-left: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.mybookings-modify-btn:hover {
+  background-color: #005fa3;
+}
+
+
+/* Responsive */
+@media (max-width: 480px) {
+  .mybookings-reservation-card {
+    padding: 15px 20px;
+  }
+
+  .mybookings-reservation-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mybookings-confirm-btn, .mybookings-reject-btn {
+    width: 100%;
+    font-size: 1rem;
+  }
+}

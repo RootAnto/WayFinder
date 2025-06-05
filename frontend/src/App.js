@@ -13,8 +13,10 @@ import TripSuggestionPage from './pages/TripSuggestion';
 import CartPage from './pages/Cart';
 import CheckoutPage from './pages/Checkout';
 import PaymentSuccessPage from './pages/PaymentSuccess';
-
 import StripeCheckout from './components/StripeCheckout';  // Importa el componente que quieres usar
+
+import PrivateRoute from './components/PrivateRoute';
+import MyBookings from './pages/MyBookings';
 
 function App() {
   return (
@@ -29,6 +31,16 @@ function App() {
             <Route path="/FlightResults" element={<FlightResultsPage />} />
             <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
             <Route path="/Cart" element={<CartPage />} />
+
+            {/* Ruta protegida para reservas */}
+            <Route
+              path="/my-bookings"
+              element={
+                <PrivateRoute>
+                  <MyBookings />
+                </PrivateRoute>
+              }
+            />
 
             {/* Aquí usas StripeCheckout envuelto en Elements */}
             <Route
