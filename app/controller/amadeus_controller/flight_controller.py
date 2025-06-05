@@ -25,6 +25,17 @@ router = APIRouter(
 
 @router.post("/flight-search", response_model=FlightSearchResponse)
 async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
+    '''
+    @brief Searches for flight offers using the Amadeus API.
+
+    @param query Flight search parameters including origin, destination, dates, number of adults, and result limit.
+    @return A response model containing flight offers, total count, and currency.
+
+    This function:
+      - Sends a search request to the Amadeus API using the provided query.
+      - Parses the response and structures it into defined Pydantic models.
+      - Handles API and internal errors gracefully.
+    '''
     try:
         params = {
             "originLocationCode": query.originLocationCode,
