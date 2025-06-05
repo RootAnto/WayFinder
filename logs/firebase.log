@@ -1169,3 +1169,7 @@ FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\jonyD\\OneDr
 2025-06-05 13:41:57.935 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
 2025-06-05 13:41:58.023 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
 2025-06-05 13:41:58.024 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: abf651b4-d64e-4740-9ba1-046218085305
+2025-06-05 13:41:58.274 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: abf651b4-d64e-4740-9ba1-046218085305
+2025-06-05 13:41:58.278 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 13:41:59.700 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 13:41:59.700 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
