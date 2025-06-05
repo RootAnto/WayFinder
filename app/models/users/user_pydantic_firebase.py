@@ -1,16 +1,7 @@
 from pydantic import BaseModel
 
+# Modelos Pydantic
 class UserCreate(BaseModel):
-    """
-    Model for creating a new user.
-
-    Attributes:
-        email (str): User's email address.
-        password (str): User's password.
-        nombre (str): User's full name.
-        birthdate (str): User's birth date as a string.
-        acceptTerms (bool): Whether the user has accepted terms and conditions.
-    """
     email: str
     password: str
     nombre: str
@@ -18,12 +9,5 @@ class UserCreate(BaseModel):
     acceptTerms: bool
 
 class UserLogin(BaseModel):
-    """
-    Model for user login credentials.
-
-    Attributes:
-        email (str): User's email address.
-        password (str): User's password.
-    """
     email: str
     password: str

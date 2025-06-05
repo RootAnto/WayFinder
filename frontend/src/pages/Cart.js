@@ -1,5 +1,3 @@
-// src/pages/CartPage.jsx
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
@@ -12,6 +10,8 @@ export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const { currentUser } = useAuth();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const calculateTotal = () => {
@@ -23,81 +23,127 @@ export default function CartPage() {
   const tax = subtotal * 0.21;
   const total = subtotal + tax;
 
+  const buildTripPayload = ({
+    user,
+    flight,
+    hotel,
+    vehicle,
+    isPackage = false,
+    totalPrice = 0,
+    currency = 'EUR',
+  }) => {
+    const departure = new Date(flight.departure);
+    const returnDate = flight.returnDate ? new Date(flight.returnDate) : null;
+    const hotelNights = hotel.nights || (returnDate ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24)) : 1);
+    const vehicleDays = vehicle?.days || hotelNights;
+
+    return {
+      user_id: String(user.id),
+      origin: flight.origin,
+      destination: flight.destination,
+      departure_date: flight.departure,
+      return_date: flight.returnDate || null,
+      adults: 1,
+      children: 0,
+      user_email: user.email || '',
+      user_name: user.nombre || user.name || '',
+
+      flight_id: String(flight.id || ''),
+      hotel_id: String(hotel.id || ''),
+      vehicle_id: vehicle ? String(vehicle.id) : '',
+
+      flight_price: parseFloat(flight.price),
+      flight_name: flight.airline || flight.name || '',
+
+      hotel_name: hotel.name || '',
+      hotel_price: parseFloat(hotel.price),
+      hotel_nights: hotelNights,
+
+      vehicle_model: vehicle?.model || vehicle?.name || '',
+      vehicle_price: vehicle ? parseFloat(vehicle.price) : 0,
+      vehicle_days: vehicleDays,
+
+      total_price: parseFloat(totalPrice),
+      currency: currency,
+      is_package: isPackage
+    };
+  };
+
   const handleCheckout = async () => {
+    setIsSubmitting(true);
+    setError(null);
+
     try {
       if (!currentUser?.email) {
-        throw new Error('Usuario no autenticado');
+        throw new Error('Debes iniciar sesión para completar la reserva');
       }
 
-      const flight = cartItems.find(i => i.type === 'flight');
-      const hotel = cartItems.find(i => i.type === 'hotel');
-      const vehicle = cartItems.find(i => i.type === 'vehicle');
+      const urlBase = 'http://localhost:8000/trips/';
+      const emailParam = `?user_email=${currentUser.email}`;
 
-      const hotelNights = hotel?.nights ?? (
-        flight?.returnDate && flight?.departure
-          ? Math.ceil((new Date(flight.returnDate) - new Date(flight.departure)) / (1000 * 60 * 60 * 24))
-          : 1
-      );
-      const vehicleDays = vehicle?.days ?? hotelNights;
+      const packageItems = cartItems.filter(item => item.isPackage);
+      const individualItems = cartItems.filter(item => !item.isPackage);
 
-      const tripPayload = {
-        user_id: String(currentUser.id),
-        user_email: currentUser.email,
-        user_name: currentUser.nombre ?? currentUser.name ?? '',
-        origin: flight?.origin ?? '',
-        destination: flight?.destination ?? '',
-        departure_date: flight?.departure ?? '',
-        return_date: flight?.returnDate ?? null,
-        adults: 1,
-        children: 0,
-        hotel_limit: 5,
-        vehicle_limit: 5,
-        max_price: null,
+      const payloads = [];
 
-        flight_id: flight?.id ? String(flight.id) : null,
-        flight_name: flight?.airline ?? flight?.name ?? '',
-        flight_price: parseFloat(flight?.price ?? 0),
-
-        hotel_id: hotel?.id ? String(hotel.id) : null,
-        hotel_name: hotel?.name ?? '',
-        hotel_price: parseFloat(hotel?.price ?? 0),
-        hotel_nights: hotelNights,
-
-        vehicle_id: vehicle?.id ? String(vehicle.id) : null,
-        vehicle_model: vehicle?.model ?? vehicle?.name ?? '',
-        vehicle_price: parseFloat(vehicle?.price ?? 0),
-        vehicle_days: vehicleDays,
-
-        total_price: parseFloat((
-          Number(flight?.price ?? 0) +
-          Number(hotel?.price ?? 0) +
-          Number(vehicle?.price ?? 0)
-        ).toFixed(2)),
-        currency: flight?.currency ?? hotel?.currency ?? vehicle?.currency ?? 'EUR'
-      };
-
-      const url = new URL('http://localhost:8000/trips/');
-      url.searchParams.append('user_email', currentUser.email);
-
-      const response = await fetch(url.toString(), {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tripPayload),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Error backend:', errorText);
-        throw new Error('Error al crear la reserva');
+      // Procesar paquetes
+      for (const pkg of packageItems) {
+        const payload = buildTripPayload({
+          user: currentUser,
+          flight: pkg.details.flight,
+          hotel: pkg.details.hotel,
+          vehicle: pkg.details.vehicle,
+          isPackage: true,
+          totalPrice: pkg.price,
+          currency: pkg.currency || 'EUR'
+        });
+        payloads.push(payload);
       }
 
-      await response.json();
+      // Procesar items individuales (vuelo + hotel + vehículo)
+      const flight = individualItems.find(i => i.type === 'flight');
+      const hotel = individualItems.find(i => i.type === 'hotel');
+      const vehicle = individualItems.find(i => i.type === 'vehicle');
+
+      if (flight && hotel) {
+        const totalPrice = parseFloat(flight.price) + 
+                          parseFloat(hotel.price) + 
+                          (vehicle ? parseFloat(vehicle.price) : 0);
+
+        const payload = buildTripPayload({
+          user: currentUser,
+          flight,
+          hotel,
+          vehicle,
+          isPackage: false,
+          totalPrice,
+          currency: flight.currency || hotel.currency || vehicle?.currency || 'EUR'
+        });
+
+        payloads.push(payload);
+      }
+
+      // Enviar todas las reservas al backend
+      for (const tripPayload of payloads) {
+        const response = await fetch(urlBase + emailParam, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(tripPayload),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Error al crear la reserva');
+        }
+      }
+
       clearCart();
       setShowSuccessModal(true);
-
     } catch (err) {
       console.error('Error en checkout:', err);
-      alert('Hubo un error al procesar tu reserva: ' + err.message);
+      setError('Error al procesar la reserva: ' + err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

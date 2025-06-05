@@ -16,31 +16,18 @@ from app.models.trips.trip_pydantic import TripOut
 
 router = APIRouter()
 
+# 🔐 En producción, usa variables de entorno seguras
 GMAIL_USER = "antoniollorentecuenca@gmail.com"
 GMAIL_PASSWORD = "pdjt inoj ycbu opdr"
 
 def json_serial(obj):
-    """
-    @brief JSON serializer for objects not serializable by default json code.
-    Handles date and datetime objects by converting them to ISO format string.
-
-    @param obj: Object to serialize (expected datetime or date)
-    @return ISO format string representation of the date/datetime
-    @throws TypeError if object type is not supported
-    """
     if isinstance(obj, (datetime.date, datetime.datetime)):
         return obj.isoformat()
     raise TypeError(f"Tipo no serializable: {type(obj)}")
 
 
+# 📩 1. Email al crear la reserva (pendiente de confirmar)
 def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
-    """
-    @brief Generate dynamic HTML email body with trip details and action buttons.
-
-    @param trip TripOut object containing trip details.
-    @param to_name Recipient's name to personalize the email.
-    @return HTML string ready to be used as email body.
-    """
     details = [
         ("Origen", trip.origin),
         ("Destino", trip.destination),
@@ -79,7 +66,7 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
                 style="padding:12px 25px; margin-right:10px; background-color:#28a745; color:#fff; text-decoration:none; border-radius:6px;">
                 Confirmar Reserva
             </a>
-            <a href="http://127.0.0.1:8000/trips/reservations/{trip.id}/reject?user_name={to_name}&user_email={trip.user_email}"
+            <a href="http://127.0.0.1:8000/trips/reservas/{trip.id}/rechazar?user_name={to_name}&user_email={trip.user_email}"
                 style="padding:12px 25px; background-color:#dc3545; color:#fff; text-decoration:none; border-radius:6px;">
                 Rechazar Reserva
             </a>
@@ -91,12 +78,6 @@ def generate_dynamic_html_body(trip: TripOut, to_name: str) -> str:
     """
 
 def generate_ticket_pdf(trip: TripOut) -> bytes:
-    """
-    @brief Generate a simple PDF ticket with trip information.
-
-    @param trip TripOut object containing trip data.
-    @return PDF file as bytes.
-    """
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
@@ -119,15 +100,7 @@ def generate_ticket_pdf(trip: TripOut) -> bytes:
     c.save()
     return buffer.getvalue()
 
-def send_confirmation_ticket(to_email: str, to_name: str, trip: TripOut) -> None:
-    """
-    @brief Sends an email to the user with a confirmation ticket PDF attached.
-    The email informs that the booking is pending confirmation.
-
-    @param to_email Recipient email address.
-    @param to_name Recipient name for personalization.
-    @param trip TripOut object with the trip details to include.
-    """
+def send_confirmation_ticket(to_email: str, to_name: str, trip: TripOut):
     subject = "Tu reserva en WayFinder - Confirmación pendiente"
     sender_email = GMAIL_USER
     receiver_email = to_email
@@ -156,13 +129,8 @@ def send_confirmation_ticket(to_email: str, to_name: str, trip: TripOut) -> None
         logger.error(f"Error al enviar correo de confirmación: {e}")
 
 
+# 📩 2. Email tras el pago (con QR)
 def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
-    """
-    @brief Generate a PDF ticket with embedded QR code containing trip information.
-
-    @param trip TripOut object with trip details to encode in the QR.
-    @return PDF file bytes including QR code image.
-    """
     qr_payload = {
         "user_id": trip.user_id,
         "trip_id": trip.id,
@@ -184,13 +152,13 @@ def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
     qr = qrcode.QRCode(version=1, box_size=10, border=4)
     qr.add_data(qr_data)
     qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+    img = qr.make_image(fill_color="black", back_color="white").convert("RGB")  # Asegura formato RGB
 
     img_buffer = BytesIO()
     img.save(img_buffer, format="PNG")
     img_buffer.seek(0)
 
-    image_reader = ImageReader(img_buffer)
+    image_reader = ImageReader(img_buffer)  # 👈 CORRECTO para ReportLab
 
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=letter)
@@ -208,7 +176,10 @@ def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
     c.drawString(50, height - 190, f"Adultos: {trip.adults}")
     c.drawString(50, height - 210, f"Niños: {trip.children}")
     c.drawString(50, height - 230, f"Estado: {trip.status.capitalize()}")
+
+    # ✅ Usa ImageReader en lugar de BytesIO
     c.drawImage(image_reader, 50, height - 400, 150, 150)
+
     c.showPage()
     c.save()
 
@@ -216,13 +187,7 @@ def generate_ticket_pdf_with_qr(trip: TripOut) -> bytes:
     return buffer.getvalue()
 
 
-def send_paid_ticket_with_qr(to_email: str, trip: TripOut) -> None:
-    """
-    @brief Sends a confirmation email with an attached PDF ticket containing a QR code.
-
-    @param to_email Recipient email address.
-    @param trip TripOut object with trip details to include.
-    """
+def send_paid_ticket_with_qr(to_email: str, trip: TripOut):
     subject = "🎟️ Tu billete WayFinder ha sido confirmado"
     sender_email = GMAIL_USER
     receiver_email = to_email
@@ -261,19 +226,7 @@ def send_paid_ticket_with_qr(to_email: str, trip: TripOut) -> None:
         logger.error(f"Error al enviar billete confirmado: {e}")
 
 
-def send_verification_email(to_email: str, to_name: str, verification_link: str) -> None:
-    """
-    @brief Sends a verification email to a new user with a confirmation link.
-
-    This function sends an HTML email to the specified email address,
-    asking the user to confirm their email by clicking the provided link.
-
-    @param to_email Recipient's email address.
-    @param to_name Recipient's name to personalize the email greeting.
-    @param verification_link URL for the user to confirm their email address.
-
-    @throws Exception Logs an error if sending the email fails.
-    """
+def send_verification_email(to_email: str, to_name: str, verification_link: str):
     subject = "Confirma tu correo electrónico - WayFinder"
     sender_email = GMAIL_USER
     receiver_email = to_email
@@ -306,52 +259,3 @@ def send_verification_email(to_email: str, to_name: str, verification_link: str)
         logger.success(f"Email de verificación enviado a {to_email}")
     except Exception as e:
         logger.error(f"Error al enviar email de verificación: {e}")
-
-
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.utils import formataddr
-import smtplib
-from loguru import logger
-
-def send_rejection_email(to_email: str, to_name: str, trip_id: str, reason: str = None):
-    """
-    @brief Sends an email notification informing the user that their trip reservation was rejected.
-
-    @param to_email Recipient's email address.
-    @param to_name Recipient's name for personalization.
-    @param trip_id The ID of the rejected trip reservation.
-    @param reason Optional reason for rejection to provide context to the user.
-    """
-    subject = "Reserva cancelada - WayFinder"
-    sender_email = GMAIL_USER
-    receiver_email = to_email
-
-    reason_text = f"<p><strong>Reason for cancellation:</strong> {reason}</p>" if reason else ""
-
-    html_body = f"""
-    <html>
-    <body style="font-family: Arial, sans-serif; color: #333;">
-        <p>Hola <strong>{to_name}</strong>,</p>
-        <p>Lamentamos informarte que tu reserva con ID <strong>{trip_id}</strong> ha sido cancelada.</p>
-        {reason_text}
-        <p>Si tienes alguna pregunta o necesitas asistencia, no dudes en contactarnos.</p>
-        <p>Saludos,<br>Equipo WayFinder</p>
-    </body>
-    </html>
-    """
-
-    message = MIMEMultipart("alternative")
-    message["From"] = formataddr(("WayFinder", sender_email))
-    message["To"] = receiver_email
-    message["Subject"] = subject
-    message.attach(MIMEText(html_body, "html"))
-
-    try:
-        logger.info(f"Sending reservation rejection email to {to_email}")
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(GMAIL_USER, GMAIL_PASSWORD)
-            server.sendmail(sender_email, receiver_email, message.as_string())
-        logger.success(f"Rejection email sent successfully to {to_email}")
-    except Exception as e:
-        logger.error(f"Failed to send rejection email: {e}")

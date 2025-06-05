@@ -1019,3 +1019,153 @@ FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\jonyD\\OneDr
 2025-06-01 22:22:33.957 | INFO     | app.services.email_service:send_paid_ticket_with_qr:220 - Enviando billete con QR a antoniollorentecuenca@hotmail.com
 2025-06-01 22:22:35.376 | SUCCESS  | app.services.email_service:send_paid_ticket_with_qr:224 - Correo con billete enviado a antoniollorentecuenca@hotmail.com
 2025-06-01 22:22:35.376 | INFO     | app.controller.trips_tickets:confirm_trip:217 - Correo enviado correctamente a antoniollorentecuenca@hotmail.com con los billetes del viaje.
+2025-06-05 09:59:57.895 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 10:01:06.842 | DEBUG    | app.database.firebase:update_user:125 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 6, 5, 10, 1, 6, 842213)}
+2025-06-05 10:01:06.937 | SUCCESS  | app.database.firebase:update_user:127 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 10:01:06.938 | DEBUG    | app.database.firebase:get_user_by_email:95 - Searching for user with email: jonydz3x@gmail.com
+2025-06-05 10:01:07.035 | DEBUG    | app.database.firebase:get_user_by_email:102 - User found: {'password': '$2b$12$vtkouipnw1lybd4HVDGgGOqNQshKmfnE9ktlaCVfAZRBB9MrzGb1i', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 31, 18, 2, 12, 323044, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-01', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 6, 5, 10, 1, 6, 842213, tzinfo=datetime.timezone.utc), 'email': 'jonydz3x@gmail.com', 'nombre': 'Jonathan daz', 'email_verified': True, 'firebase_uid': 'IWSCnewDmBNfFgjkmjhzvGehjii1', 'id': 'M5h9l8eyOqfyRFOvLx6L'}
+2025-06-05 10:01:07.339 | DEBUG    | app.database.firebase:update_user:125 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'last_login': datetime.datetime(2025, 6, 5, 10, 1, 7, 339419)}
+2025-06-05 10:01:07.425 | SUCCESS  | app.database.firebase:update_user:127 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 10:02:19.251 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 10:02:19.252 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: d0b43e30-07ac-497d-bb5f-61a97c07eded
+2025-06-05 10:02:20.740 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: d0b43e30-07ac-497d-bb5f-61a97c07eded
+2025-06-05 10:02:20.745 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 10:02:24.754 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:02:24.755 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 10:07:23.807 | INFO     | app.controller.trips_tickets:confirm_trip:123 - Intentando confirmar la reserva: trip_id=d0b43e30-07ac-497d-bb5f-61a97c07eded, user_email=jonydz3x@gmail.com
+2025-06-05 10:07:24.112 | SUCCESS  | app.controller.trips_tickets:confirm_trip:160 - Reserva confirmada y marcada como aceptada: trip_id=d0b43e30-07ac-497d-bb5f-61a97c07eded
+2025-06-05 10:07:24.550 | INFO     | app.services.email_service:send_paid_ticket_with_qr:255 - Enviando billete con QR a jonydz3x@gmail.com
+2025-06-05 10:07:26.174 | SUCCESS  | app.services.email_service:send_paid_ticket_with_qr:259 - Correo con billete enviado a jonydz3x@gmail.com
+2025-06-05 10:07:26.175 | INFO     | app.controller.trips_tickets:confirm_trip:166 - Correo con tickets enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:40:47.859 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 10:40:47.861 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 257a43b3-d446-489f-a64e-39650df5c734
+2025-06-05 10:40:48.170 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 257a43b3-d446-489f-a64e-39650df5c734
+2025-06-05 10:40:48.173 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 10:40:49.521 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:40:49.522 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 10:40:49.620 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 10:40:49.621 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 9ed8ccef-cd20-4e66-a8d9-f50f0dda22ec
+2025-06-05 10:40:49.930 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 9ed8ccef-cd20-4e66-a8d9-f50f0dda22ec
+2025-06-05 10:40:49.932 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 10:40:51.363 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:40:51.364 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 10:41:25.565 | INFO     | app.controller.trips_tickets:reject_reservation:196 - Starting rejection process for reservation 257a43b3-d446-489f-a64e-39650df5c734
+2025-06-05 10:41:25.663 | INFO     | app.controller.trips_tickets:reject_reservation:212 - Changing status to 'rejected' for reservation 257a43b3-d446-489f-a64e-39650df5c734
+2025-06-05 10:41:25.957 | INFO     | app.controller.trips_tickets:reject_reservation:221 - Sending rejection email to jonydz3x@gmail.com
+2025-06-05 10:41:25.958 | INFO     | app.services.email_service:send_rejection_email:351 - Sending reservation rejection email to jonydz3x@gmail.com
+2025-06-05 10:41:26.634 | SUCCESS  | app.services.email_service:send_rejection_email:355 - Rejection email sent successfully to jonydz3x@gmail.com
+2025-06-05 10:41:35.025 | INFO     | app.controller.trips_tickets:reject_reservation:196 - Starting rejection process for reservation 9ed8ccef-cd20-4e66-a8d9-f50f0dda22ec
+2025-06-05 10:41:35.130 | INFO     | app.controller.trips_tickets:reject_reservation:212 - Changing status to 'rejected' for reservation 9ed8ccef-cd20-4e66-a8d9-f50f0dda22ec
+2025-06-05 10:41:35.432 | INFO     | app.controller.trips_tickets:reject_reservation:221 - Sending rejection email to jonydz3x@gmail.com
+2025-06-05 10:41:35.432 | INFO     | app.services.email_service:send_rejection_email:351 - Sending reservation rejection email to jonydz3x@gmail.com
+2025-06-05 10:41:36.528 | SUCCESS  | app.services.email_service:send_rejection_email:355 - Rejection email sent successfully to jonydz3x@gmail.com
+2025-06-05 10:47:29.175 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 10:47:29.176 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 8b4d66eb-ac8f-47b9-8f56-fef61cd018ff
+2025-06-05 10:47:29.491 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 8b4d66eb-ac8f-47b9-8f56-fef61cd018ff
+2025-06-05 10:47:29.495 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 10:47:30.903 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:47:30.904 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 10:48:17.296 | INFO     | app.controller.trips_tickets:reject_reservation:196 - Starting rejection process for reservation 8b4d66eb-ac8f-47b9-8f56-fef61cd018ff
+2025-06-05 10:48:17.391 | INFO     | app.controller.trips_tickets:reject_reservation:212 - Changing status to 'rejected' for reservation 8b4d66eb-ac8f-47b9-8f56-fef61cd018ff
+2025-06-05 10:48:17.696 | INFO     | app.controller.trips_tickets:reject_reservation:221 - Sending rejection email to jonydz3x@gmail.com
+2025-06-05 10:48:17.697 | INFO     | app.services.email_service:send_rejection_email:351 - Sending reservation rejection email to jonydz3x@gmail.com
+2025-06-05 10:48:18.431 | SUCCESS  | app.services.email_service:send_rejection_email:355 - Rejection email sent successfully to jonydz3x@gmail.com
+2025-06-05 10:58:47.988 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 10:58:47.989 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 6dead150-2027-497e-ab6e-0c3ef2071fda
+2025-06-05 10:58:48.306 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 6dead150-2027-497e-ab6e-0c3ef2071fda
+2025-06-05 10:58:48.310 | INFO     | app.services.email_service:send_confirmation_ticket:150 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 10:58:49.861 | SUCCESS  | app.services.email_service:send_confirmation_ticket:154 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 10:58:49.862 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 11:30:57.358 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 11:47:06.540 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:09:24.738 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:20:10.637 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:20:10.639 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 87a759d9-e7ed-4ef0-bd02-a6f3b98cdbcd
+2025-06-05 12:20:11.960 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 87a759d9-e7ed-4ef0-bd02-a6f3b98cdbcd
+2025-06-05 12:20:11.964 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:20:13.843 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:20:13.844 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:24:14.132 | DEBUG    | app.database.firebase:update_user:125 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 6, 5, 12, 24, 14, 132602)}
+2025-06-05 12:24:14.234 | SUCCESS  | app.database.firebase:update_user:127 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 12:24:14.235 | DEBUG    | app.database.firebase:get_user_by_email:95 - Searching for user with email: jonydz3x@gmail.com
+2025-06-05 12:24:14.329 | DEBUG    | app.database.firebase:get_user_by_email:102 - User found: {'password': '$2b$12$vtkouipnw1lybd4HVDGgGOqNQshKmfnE9ktlaCVfAZRBB9MrzGb1i', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 31, 18, 2, 12, 323044, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-01', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 6, 5, 12, 24, 14, 132602, tzinfo=datetime.timezone.utc), 'email': 'jonydz3x@gmail.com', 'nombre': 'Jonathan daz', 'email_verified': True, 'firebase_uid': 'IWSCnewDmBNfFgjkmjhzvGehjii1', 'id': 'M5h9l8eyOqfyRFOvLx6L'}
+2025-06-05 12:24:14.622 | DEBUG    | app.database.firebase:update_user:125 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'last_login': datetime.datetime(2025, 6, 5, 12, 24, 14, 622803)}
+2025-06-05 12:24:14.706 | SUCCESS  | app.database.firebase:update_user:127 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 12:24:57.290 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:24:57.291 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: df6b1ba0-6741-45dd-9b8c-1c5973309544
+2025-06-05 12:24:57.565 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: df6b1ba0-6741-45dd-9b8c-1c5973309544
+2025-06-05 12:24:57.568 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:25:01.303 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:25:01.304 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:25:36.762 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:31:47.562 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:33:19.578 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:33:19.579 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: c62a4e5b-b2d4-43f1-834d-07efa4c6747a
+2025-06-05 12:33:21.075 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: c62a4e5b-b2d4-43f1-834d-07efa4c6747a
+2025-06-05 12:33:21.080 | INFO     | app.services.email_service:send_confirmation_ticket:253 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:33:22.416 | SUCCESS  | app.services.email_service:send_confirmation_ticket:257 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:33:22.417 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:36:07.704 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:37:00.885 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:37:00.886 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: a175b49f-1baa-4caa-b20e-a466bb96df11
+2025-06-05 12:37:01.993 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: a175b49f-1baa-4caa-b20e-a466bb96df11
+2025-06-05 12:37:01.998 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:37:03.586 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:37:03.587 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:37:03.689 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:37:03.691 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: b747266d-d31c-4909-bc0e-8ad8f7b9e8b9
+2025-06-05 12:37:03.960 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: b747266d-d31c-4909-bc0e-8ad8f7b9e8b9
+2025-06-05 12:37:03.963 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:37:05.296 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:37:05.296 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:46:34.874 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:50:33.008 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 12:54:19.726 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:54:19.728 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 455eb40c-5744-4349-bfe5-bd0afaa2b6ef
+2025-06-05 12:54:20.732 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 455eb40c-5744-4349-bfe5-bd0afaa2b6ef
+2025-06-05 12:54:20.736 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:54:22.102 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:54:22.103 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:54:22.188 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 12:54:22.188 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: b09cf886-b6bd-4274-83c6-7f8f4a40f9c3
+2025-06-05 12:54:22.429 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: b09cf886-b6bd-4274-83c6-7f8f4a40f9c3
+2025-06-05 12:54:22.431 | INFO     | app.services.email_service:send_confirmation_ticket:233 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 12:54:23.978 | SUCCESS  | app.services.email_service:send_confirmation_ticket:237 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 12:54:23.980 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 12:54:40.874 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 13:01:49.086 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 13:02:59.128 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 13:02:59.129 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: f80c5afa-d6e6-4303-b611-daf3f669b660
+2025-06-05 13:03:00.434 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: f80c5afa-d6e6-4303-b611-daf3f669b660
+2025-06-05 13:03:00.438 | INFO     | app.services.email_service:send_confirmation_ticket:229 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 13:03:01.926 | SUCCESS  | app.services.email_service:send_confirmation_ticket:233 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 13:03:01.927 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 13:03:02.016 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 13:03:02.017 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 66acaaee-8a99-40aa-a684-cd1cea80407d
+2025-06-05 13:03:02.268 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 66acaaee-8a99-40aa-a684-cd1cea80407d
+2025-06-05 13:03:02.271 | INFO     | app.services.email_service:send_confirmation_ticket:229 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 13:03:03.769 | SUCCESS  | app.services.email_service:send_confirmation_ticket:233 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 13:03:03.770 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 13:14:27.317 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 13:20:39.847 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 13:21:30.098 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 13:21:30.099 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: dd67d975-ad6e-4f88-b686-0dffe992b06a
+2025-06-05 13:21:31.343 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: dd67d975-ad6e-4f88-b686-0dffe992b06a
+2025-06-05 13:21:31.347 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 13:21:32.775 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 13:21:32.776 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 13:30:23.250 | DEBUG    | app.database.firebase:update_user:121 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'email_verified': True, 'last_login': datetime.datetime(2025, 6, 5, 13, 30, 23, 250114)}
+2025-06-05 13:30:23.341 | SUCCESS  | app.database.firebase:update_user:123 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 13:30:23.342 | DEBUG    | app.database.firebase:get_user_by_email:92 - Searching for user with email: jonydz3x@gmail.com
+2025-06-05 13:30:23.452 | DEBUG    | app.database.firebase:get_user_by_email:99 - User found: {'password': '$2b$12$vtkouipnw1lybd4HVDGgGOqNQshKmfnE9ktlaCVfAZRBB9MrzGb1i', 'acceptTerms': True, 'created_at': DatetimeWithNanoseconds(2025, 5, 31, 18, 2, 12, 323044, tzinfo=datetime.timezone.utc), 'active': True, 'birthdate': '2025-05-01', 'roles': ['user'], 'last_login': DatetimeWithNanoseconds(2025, 6, 5, 13, 30, 23, 250114, tzinfo=datetime.timezone.utc), 'email': 'jonydz3x@gmail.com', 'nombre': 'Jonathan daz', 'email_verified': True, 'firebase_uid': 'IWSCnewDmBNfFgjkmjhzvGehjii1', 'id': 'M5h9l8eyOqfyRFOvLx6L'}
+2025-06-05 13:30:23.744 | DEBUG    | app.database.firebase:update_user:121 - Updating user M5h9l8eyOqfyRFOvLx6L with data: {'last_login': datetime.datetime(2025, 6, 5, 13, 30, 23, 744732)}
+2025-06-05 13:30:23.854 | SUCCESS  | app.database.firebase:update_user:123 - User M5h9l8eyOqfyRFOvLx6L updated successfully
+2025-06-05 13:33:11.869 | SUCCESS  | app.database.firebase:<module>:29 - Firebase initialized successfully
+2025-06-05 13:41:55.179 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 13:41:55.180 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: 038ae361-cbae-441a-a4bd-0aaa3540eff9
+2025-06-05 13:41:56.389 | SUCCESS  | app.controller.trips_tickets:create_trip:79 - Trip successfully created and saved to the database. Trip ID: 038ae361-cbae-441a-a4bd-0aaa3540eff9
+2025-06-05 13:41:56.394 | INFO     | app.services.email_service:send_confirmation_ticket:123 - Enviando correo de confirmación a jonydz3x@gmail.com
+2025-06-05 13:41:57.933 | SUCCESS  | app.services.email_service:send_confirmation_ticket:127 - Correo enviado correctamente a jonydz3x@gmail.com
+2025-06-05 13:41:57.935 | INFO     | app.controller.trips_tickets:create_trip:89 - Confirmation ticket sent to user: jonydz3x@gmail.com
+2025-06-05 13:41:58.023 | INFO     | app.controller.trips_tickets:create_trip:33 - Starting trip creation process for user: jonydz3x@gmail.com
+2025-06-05 13:41:58.024 | DEBUG    | app.controller.trips_tickets:create_trip:52 - Trip metadata prepared. Trip ID: abf651b4-d64e-4740-9ba1-046218085305
