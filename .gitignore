@@ -36,3 +36,4 @@ logs/
 # Otros
 # ========================
 .DS_Store
+logs/firebase.log
