@@ -4,35 +4,35 @@
     color: white;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   .header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
+
   .logo {
     font-size: 24px;
     font-weight: bold;
     color: white;
   }
-  
+
   .nav {
     display: flex;
     gap: 20px;
   }
-  
+
   .nav-link {
     color: white;
     text-decoration: none;
     font-weight: 500;
     transition: opacity 0.3s;
   }
-  
+
   .nav-link:hover {
     opacity: 0.8;
   }
-  
+
   .login-btn, .register-btn {
     padding: 8px 16px;
     border-radius: 4px;
@@ -59,13 +59,13 @@
     align-items: center;
     gap: 8px;
   }
-  
+
   .auth-buttons {
     display: flex;
     align-items: center;
     gap: 10px;
   }
-  
+
   /* Menú de usuario desplegable */
   .user-menu-container {
     position: relative;
@@ -589,12 +589,12 @@
     align-items: flex-start;
     gap: 15px;
   }
-  
+
   .duration-block {
     width: 100%;
     padding: 15px 0;
   }
-  
+
   .duration-line {
     margin: 5px 0;
   }
@@ -603,4 +603,57 @@
   .vehicle-image {
     height: 200px;
   }
+}
+
+.loading-screen {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error-message {
+  background-color: #ffe4e1;
+  border: 1px solid #ff4d4f;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #a94442;
+}
+
+.go-to-cart-link {
+  text-decoration: none;
+}
+
+.go-to-cart-btn {
+  margin-top: 10px;
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.go-to-cart-btn:hover {
+  background-color: #e60023;
 }

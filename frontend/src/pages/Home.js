@@ -2,38 +2,32 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
-const formatTime = (dateTimeStr) => {
-  if (!dateTimeStr) return '';
-  const date = new Date(dateTimeStr);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-};
+const Toast = ({ message, onClose }) => (
+  <div className="toast">
+    <span>{message}</span>
+    <button onClick={onClose}>✖</button>
+  </div>
+);
 
 const ChatBotWidget = () => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <div 
-        className="chatbot-button" 
-        onClick={() => setOpen(!open)}
-        title="¿Necesitas ayuda?"
-      >
-        💬
-      </div>
-
+      <div className="chatbot-button" onClick={() => setOpen(!open)} title="¿Necesitas ayuda?">💬</div>
       {open && (
         <div className="chatbot-window">
           <div className="chatbot-header">
             <span>Asistente Virtual</span>
             <button onClick={() => setOpen(false)}>✖</button>
           </div>
-
           <div className="chatbot-content">
             <div className="chatbot-body">
               <p>¡Hola! ¿En qué puedo ayudarte?</p>
             </div>
-
             <div className="chatbot-input">
               <input type="text" placeholder="Escribe tu mensaje..." />
               <button>Enviar</button>
@@ -45,10 +39,11 @@ const ChatBotWidget = () => {
   );
 };
 
-
 function App() {
   const navigate = useNavigate();
   const [mensaje, setMensaje] = useState('');
+  const [toastMessage, setToastMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({
     from: 'MAD',
     to: 'NYC',
@@ -66,6 +61,11 @@ function App() {
       .then(data => setMensaje(data.message));
   }, []);
 
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 5000);
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setSearchParams({
@@ -76,6 +76,7 @@ function App() {
 
   const handleSuggestTrip = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await fetch("http://localhost:8000/trip-search", {
         method: "POST",
@@ -101,20 +102,19 @@ function App() {
       const data = await response.json();
 
       navigate('/TripSuggestion', {
-        state: {
-          searchParams: searchParams,
-          tripData: data
-        }
+        state: { searchParams, tripData: data }
       });
 
     } catch (error) {
-      console.error("Error en la sugerencia de viaje:", error);
-      setMensaje(error.message || 'Error al obtener sugerencia de viaje');
+      showToast(error.message || 'Error al obtener sugerencia');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const [flightsResponse, hotelsResponse, vehiclesResponse] = await Promise.all([
         fetch("http://localhost:8000/flight-search", {
@@ -167,7 +167,7 @@ function App() {
 
       navigate('/FlightResults', {
         state: {
-          searchParams: searchParams,
+          searchParams,
           flightResults: flightsData.offers || [],
           hotelResults: hotelsData.results || [],
           vehicleResults: vehiclesData.cars || []
@@ -175,8 +175,9 @@ function App() {
       });
 
     } catch (error) {
-      console.error("Error en la búsqueda:", error);
-      setMensaje(error.message || 'Error al realizar la búsqueda');
+      showToast(error.message || 'Error al realizar búsqueda');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -184,27 +185,33 @@ function App() {
 
   return (
     <div className="app">
+      {loading && (
+        <div className="loading-overlay">
+          <div className="spinner" />
+          <p>Procesando tu solicitud...</p>
+        </div>
+      )}
+
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+
       <Header />
 
       <main className="main-content">
         <div className="container">
           <h1>Millones de vuelos baratos. Tú eliges tu próximo destino.</h1>
-          <br/>
+          <br />
 
           <SearchForm
             searchParams={searchParams}
             onInputChange={handleInputChange}
             onSubmit={handleSubmit}
             onSuggestTrip={handleSuggestTrip}
+            loading={loading}
           />
 
           <ServicesSection />
 
-          {mensaje && (
-            <div className="alert alert-error">
-              {mensaje}
-            </div>
-          )}
+          {mensaje && <div className="alert alert-info">{mensaje}</div>}
 
           {currentUser && (
             <div className="user-greeting">
@@ -215,18 +222,14 @@ function App() {
       </main>
 
       <ChatBotWidget />
-
       <Footer />
     </div>
   );
 }
 
-const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip }) => {
+const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip, loading }) => {
   const navigate = useNavigate();
-
-  const handleGoToBookings = () => {
-    navigate('/my-bookings');
-  };
+  const handleGoToBookings = () => navigate('/my-bookings');
 
   return (
     <>
@@ -239,7 +242,7 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip }) =>
           </div>
           <div className="form-group">
             <label>A</label>
-            <input type="text" name="to" value={searchParams.to} onChange={onInputChange} placeholder="País, ciudad o aeropuerto..." />
+            <input type="text" name="to" value={searchParams.to} onChange={onInputChange} />
           </div>
           <div className="form-group">
             <label>Ida</label>
@@ -262,88 +265,32 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip }) =>
 
         <div className="form-row">
           <div className="checkbox-group">
-            <input type="checkbox" id="nearby-airports-from" name="nearbyFrom" checked={searchParams.nearbyFrom} onChange={onInputChange} />
-            <label htmlFor="nearby-airports-from">Añade aeropuertos cercanos</label>
+            <input type="checkbox" id="nearby-from" name="nearbyFrom" checked={searchParams.nearbyFrom} onChange={onInputChange} />
+            <label htmlFor="nearby-from">Añade aeropuertos cercanos</label>
           </div>
-
           <div className="checkbox-group">
-            <input type="checkbox" id="nearby-airports-to" name="nearbyTo" checked={searchParams.nearbyTo} onChange={onInputChange} />
-            <label htmlFor="nearby-airports-to">Añade aeropuertos cercanos</label>
+            <input type="checkbox" id="nearby-to" name="nearbyTo" checked={searchParams.nearbyTo} onChange={onInputChange} />
+            <label htmlFor="nearby-to">Añade aeropuertos cercanos</label>
           </div>
-
           <div className="checkbox-group">
-            <input type="checkbox" id="direct-flights" name="directOnly" checked={searchParams.directOnly} onChange={onInputChange} />
-            <label htmlFor="direct-flights">Vuelos directos</label>
+            <input type="checkbox" id="direct-only" name="directOnly" checked={searchParams.directOnly} onChange={onInputChange} />
+            <label htmlFor="direct-only">Vuelos directos</label>
           </div>
 
           <div style={{ flexGrow: 1, justifyContent: 'right', display: 'flex', gap: '10px' }}>
-            <button type="button" className="my-bookings-button" onClick={handleGoToBookings}>
+            <button type="button" disabled={loading} className="my-bookings-button" onClick={handleGoToBookings}>
               Mis reservas
             </button>
-            <button type="button" className="suggest-button" onClick={onSuggestTrip}>
+            <button type="button" disabled={loading} className="suggest-button" onClick={onSuggestTrip}>
               Sugerir viaje completo
             </button>
-            <button type="submit" className="search-button" onClick={onSubmit}>
+            <button type="submit" disabled={loading} className="search-button" onClick={onSubmit}>
               Buscar vuelos
             </button>
           </div>
         </div>
       </form>
     </>
-  );
-};
-
-const Header = () => {
-  const { currentUser, logout } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (isMenuOpen && !e.target.closest('.user-menu-container')) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [isMenuOpen]);
-
-  return (
-    <header className="header">
-      <div className="container">
-        <div className="logo">WayFinder</div>
-        <nav className="nav">
-          <a href="#" className="nav-link">Inicio</a>
-          <a href="#" className="nav-link">Vuelos</a>
-          <a href="#" className="nav-link">Hoteles</a>
-          <a href="#" className="nav-link">Ofertas</a>
-          <a href="#" className="nav-link">Contacto</a>
-        </nav>
-        <div className="auth-buttons">
-          {currentUser ? (
-            <div className="user-menu-container">
-              <button className="user-menu-trigger" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                <span className="user-avatar">{currentUser.nombre.charAt(0).toUpperCase()}</span>
-                <span className="user-welcome">{currentUser.nombre}</span>
-                <span className={`dropdown-arrow ${isMenuOpen ? 'open' : ''}`}>▼</span>
-              </button>
-
-              {isMenuOpen && (
-                <div className="user-dropdown">
-                  <Link to="/profile" className="perfil" onClick={() => setIsMenuOpen(false)}>Mi perfil</Link>
-                  <Link to="/my-bookings" className="perfil" onClick={() => setIsMenuOpen(false)}>Mis reservas</Link>
-                  <button className="logout-btn" onClick={logout}>Cerrar sesión</button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="login-btn">Iniciar sesión</Link>
-              <Link to="/Register" className="register-btn">Registrarse</Link>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
   );
 };
 
@@ -357,58 +304,6 @@ const ServicesSection = () => (
     </div>
     <hr className="divider" />
   </>
-);
-
-const Footer = () => (
-  <footer className="footer">
-    <div className="container">
-      <div className="footer-columns">
-        <div className="footer-column">
-          <h4>Compañía</h4>
-          <ul>
-            <li><a href="#">Sobre nosotros</a></li>
-            <li><a href="#">Carreras</a></li>
-            <li><a href="#">Prensa</a></li>
-            <li><a href="#">Blog</a></li>
-          </ul>
-        </div>
-        <div className="footer-column">
-          <h4>Asistencia</h4>
-          <ul>
-            <li><a href="#">Centro de ayuda</a></li>
-            <li><a href="#">Contáctanos</a></li>
-            <li><a href="#">Política de privacidad</a></li>
-            <li><a href="#">Términos y condiciones</a></li>
-          </ul>
-        </div>
-        <div className="footer-column">
-          <h4>Recursos</h4>
-          <ul>
-            <li><a href="#">Guías de viaje</a></li>
-            <li><a href="#">Aerolíneas</a></li>
-            <li><a href="#">Aeropuertos</a></li>
-            <li><a href="#">Mapa del sitio</a></li>
-          </ul>
-        </div>
-        <div className="footer-column">
-          <h4>Suscríbete</h4>
-          <p>Recibe ofertas exclusivas en tu correo</p>
-          <div className="newsletter-form">
-            <input type="email" placeholder="Tu email" />
-            <button>Suscribirse</button>
-          </div>
-          <div className="social-links">
-            <a href="#"><i className="fab fa-facebook"></i></a>
-            <a href="#"><i className="fab fa-twitter"></i></a>
-            <a href="#"><i className="fab fa-instagram"></i></a>
-          </div>
-        </div>
-      </div>
-      <div className="footer-bottom">
-        <p>© 2023 VuelaBarato. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
 );
 
 export default App;

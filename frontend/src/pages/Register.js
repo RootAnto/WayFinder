@@ -13,7 +13,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     birthdate: '',
-    acceptTerms: false
+    acceptTerms: false,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,9 +21,9 @@ const Register = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -48,7 +48,6 @@ const Register = () => {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Aquí puedes hacer una llamada a tu backend para registrar o autenticar al usuario con su UID de Firebase
       const response = await axios.post('http://localhost:8000/auth/google-login', {
         email: user.email,
         nombre: user.displayName,
@@ -56,7 +55,7 @@ const Register = () => {
       });
 
       console.log('Inicio con Google exitoso:', response.data);
-      navigate('/login'); // o a donde desees llevarlo
+      navigate('/login'); // Puedes cambiar la ruta si quieres redirigir a otro lado
 
     } catch (error) {
       console.error('Error con Google Sign-In:', error);
@@ -78,7 +77,7 @@ const Register = () => {
         password: formData.password,
         nombre: `${formData.firstName} ${formData.lastName}`,
         birthdate: formData.birthdate,
-        acceptTerms: formData.acceptTerms
+        acceptTerms: formData.acceptTerms,
       };
 
       const response = await axios.post('http://localhost:8000/auth/register', userData);
@@ -87,10 +86,9 @@ const Register = () => {
       navigate('/login', {
         state: {
           registrationSuccess: true,
-          email: formData.email
-        }
+          email: formData.email,
+        },
       });
-
     } catch (err) {
       console.error('Error en el registro:', err);
       setError(err.response?.data?.detail || 'Error al registrar el usuario');
@@ -102,7 +100,9 @@ const Register = () => {
   return (
     <div className="register-container">
       <header className="register-header">
-        <Link to="/" className="register-logo">WayFinder</Link>
+        <Link to="/" className="register-logo">
+          WayFinder
+        </Link>
       </header>
 
       <div className="register-content">
@@ -114,7 +114,9 @@ const Register = () => {
           <form onSubmit={handleSubmit} className="register-form">
             <div className="register-name-fields">
               <div className="register-form-group">
-                <label htmlFor="firstName" className="register-label">Nombre</label>
+                <label htmlFor="firstName" className="register-label">
+                  Nombre
+                </label>
                 <input
                   type="text"
                   id="firstName"
@@ -127,7 +129,9 @@ const Register = () => {
               </div>
 
               <div className="register-form-group">
-                <label htmlFor="lastName" className="register-label">Apellidos</label>
+                <label htmlFor="lastName" className="register-label">
+                  Apellidos
+                </label>
                 <input
                   type="text"
                   id="lastName"
@@ -141,7 +145,9 @@ const Register = () => {
             </div>
 
             <div className="register-form-group">
-              <label htmlFor="email" className="register-label">Correo electrónico</label>
+              <label htmlFor="email" className="register-label">
+                Correo electrónico
+              </label>
               <input
                 type="email"
                 id="email"
@@ -155,7 +161,9 @@ const Register = () => {
             </div>
 
             <div className="register-form-group">
-              <label htmlFor="password" className="register-label">Contraseña</label>
+              <label htmlFor="password" className="register-label">
+                Contraseña
+              </label>
               <input
                 type="password"
                 id="password"
@@ -170,7 +178,9 @@ const Register = () => {
             </div>
 
             <div className="register-form-group">
-              <label htmlFor="confirmPassword" className="register-label">Confirmar contraseña</label>
+              <label htmlFor="confirmPassword" className="register-label">
+                Confirmar contraseña
+              </label>
               <input
                 type="password"
                 id="confirmPassword"
@@ -185,7 +195,9 @@ const Register = () => {
             </div>
 
             <div className="register-form-group">
-              <label htmlFor="birthdate" className="register-label">Fecha de nacimiento</label>
+              <label htmlFor="birthdate" className="register-label">
+                Fecha de nacimiento
+              </label>
               <input
                 type="date"
                 id="birthdate"
@@ -208,16 +220,18 @@ const Register = () => {
                 required
               />
               <label htmlFor="acceptTerms" className="register-terms-label">
-                Acepto los <Link to="/terms" className="register-link">Términos y condiciones</Link> y la
-                <Link to="/privacy" className="register-link">Política de privacidad</Link>
+                Acepto los{' '}
+                <Link to="/terms" className="register-link">
+                  Términos y condiciones
+                </Link>{' '}
+                y la{' '}
+                <Link to="/privacy" className="register-link">
+                  Política de privacidad
+                </Link>
               </label>
             </div>
 
-            <button
-              type="submit"
-              className="register-button"
-              disabled={loading}
-            >
+            <button type="submit" className="register-button" disabled={loading}>
               {loading ? 'Registrando...' : 'Registrarse'}
             </button>
           </form>
@@ -227,77 +241,32 @@ const Register = () => {
           </div>
 
           <div className="register-social">
-            <button
-              type="button"
-              className="register-social-button"
-              onClick={handleGoogleLogin}
-            >
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google" />
+            <button type="button" className="register-social-button" onClick={handleGoogleLogin}>
+              <img
+                src="https://developers.google.com/identity/images/g-logo.png"
+                alt="Google"
+                style={{ width: 18, height: 18, marginRight: 8 }}
+              />
               Continuar con Google
             </button>
             <button type="button" className="register-social-button">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple" />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
+                alt="Apple"
+                style={{ width: 18, height: 18, marginRight: 8 }}
+              />
               Continuar con Apple
             </button>
           </div>
 
           <div className="register-footer">
-            ¿Ya tienes una cuenta? <Link to="/login" className="register-link">Inicia sesión</Link>
+            ¿Ya tienes una cuenta?{' '}
+            <Link to="/login" className="register-link">
+              Inicia sesión
+            </Link>
           </div>
         </div>
       </div>
-
-      <footer className="register-page-footer">
-        <div className="footer-columns">
-          <div className="footer-column">
-            <h3>Compañía</h3>
-            <ul>
-              <li><Link to="/assistance">Asistencia</Link></li>
-              <li><Link to="/resources">Recursos</Link></li>
-              <li><Link to="/subscribe">Suscríbete</Link></li>
-            </ul>
-          </div>
-
-          <div className="footer-column">
-            <h3>Sobre nosotros</h3>
-            <ul>
-              <li><Link to="/careers">Carreras</Link></li>
-              <li><Link to="/press">Prensa</Link></li>
-              <li><Link to="/blog">Blog</Link></li>
-            </ul>
-          </div>
-
-          <div className="footer-column">
-            <h3>Centro de ayuda</h3>
-            <ul>
-              <li><Link to="/contact">Contáctanos</Link></li>
-              <li><Link to="/privacy">Política de privacidad</Link></li>
-              <li><Link to="/terms">Términos y condiciones</Link></li>
-            </ul>
-          </div>
-
-          <div className="footer-column">
-            <h3>Guías de viaje</h3>
-            <ul>
-              <li><Link to="/airlines">Aerolíneas</Link></li>
-              <li><Link to="/airports">Aeropuertos</Link></li>
-              <li><Link to="/sitemap">Mapa del sitio</Link></li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="footer-newsletter">
-          <h3>Recibe ofertas exclusivas en tu correo</h3>
-          <form className="newsletter-form">
-            <input type="email" placeholder="Tu email" className="newsletter-input" />
-            <button type="submit" className="newsletter-button">Suscribirse</button>
-          </form>
-        </div>
-
-        <div className="footer-copyright">
-          © 2023 VuelaBarato. Todos los derechos reservados.
-        </div>
-      </footer>
     </div>
   );
 };

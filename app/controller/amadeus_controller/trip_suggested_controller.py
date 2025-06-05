@@ -7,7 +7,7 @@ from app.models.amadeus_pydantic.hotel import HotelInfo
 from app.models.amadeus_pydantic.vehicle import VehicleInfo
 from app.models.amadeus_pydantic.flight import FlightOffer, FlightSegment, FlightItinerary, FlightPrice
 
-# Configuración del cliente Amadeus
+# Amadeus client configuration
 amadeus = Client(
     client_id='GIsfA7oZrgp2EvhFPAOxZec3BNbb3glg',
     client_secret='0Bf6uymrGEPfB2Vr'
@@ -24,18 +24,22 @@ router = APIRouter(
 
 @router.post("/trip-search", response_model=TripSearchResponse)
 async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
-    """
-    Realiza una búsqueda combinada de vuelos, hoteles y vehículos.
-    """
+    '''
+    Performs a combined search for flights, hotels, and vehicles.
+
+    @param query: TripSearchQuery object containing trip details.
+    @return: TripSearchResponse containing the flight, hotel, vehicle data, and cost summary.
+    @raises HTTPException: If invalid parameters or API errors occur.
+    '''
     try:
-        # ---------------------- VALIDACIÓN DE FECHAS ----------------------
+        # ---------------------- DATE VALIDATION ----------------------
         check_in = datetime.strptime(query.checkInDate, "%Y-%m-%d")
         check_out = datetime.strptime(query.checkOutDate, "%Y-%m-%d")
         nights = (check_out - check_in).days
         if nights <= 0:
-            raise HTTPException(status_code=400, detail="La fecha de salida debe ser posterior a la de entrada.")
+            raise HTTPException(status_code=400, detail="Check-out date must be after check-in date.")
 
-        # ------------------------ BÚSQUEDA DE VUELOS ------------------------
+        # ------------------------ FLIGHT SEARCH ------------------------
         flight_response = amadeus.shopping.flight_offers_search.get(
             originLocationCode=query.originLocationCode,
             destinationLocationCode=query.destinationLocationCode,
@@ -81,7 +85,7 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
 
         currency = flight_offers[0].price.currency if flight_offers else "EUR"
 
-        # ------------------------ BÚSQUEDA DE HOTELES ------------------------
+        # ------------------------ HOTEL SEARCH ------------------------
         hotel_response = amadeus.reference_data.locations.hotels.by_city.get(cityCode=query.cityCode)
 
         hotels = []
@@ -102,7 +106,7 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
                 nights=nights
             ))
 
-        # ------------------------ SIMULACIÓN DE VEHÍCULOS ------------------------
+        # ------------------------ VEHICLE SIMULATION ------------------------
         city_vehicles = {
             "MAD": [("SEAT", "Ibiza"), ("Renault", "Clio"), ("BMW", "X1")],
             "BCN": [("Ford", "Focus"), ("Volkswagen", "Golf"), ("Tesla", "Model 3")],
@@ -136,7 +140,7 @@ async def search_trip(query: TripSearchQuery) -> TripSearchResponse:
                 fuelType=random.choice(["Gasoline", "Electric"])
             ))
 
-        # ------------------------ RESUMEN DEL COSTO TOTAL ------------------------
+        # ------------------------ TOTAL COST SUMMARY ------------------------
         grand_total = total_flight_price + total_hotel_price + total_vehicle_price
 
         summary = TripCostSummary(
