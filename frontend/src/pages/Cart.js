@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Cart.css';
 import { FaTrash, FaPlane, FaHotel, FaCar, FaLock, FaBox } from 'react-icons/fa';
 import SuccessModal from '../components/SuccessModal';
+import LoadingSpinner from '../components/LoadingSpinner'; // <-- Importar spinner
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
@@ -106,8 +107,8 @@ export default function CartPage() {
       const vehicle = individualItems.find(i => i.type === 'vehicle');
 
       if (flight && hotel) {
-        const totalPrice = parseFloat(flight.price) + 
-                          parseFloat(hotel.price) + 
+        const totalPrice = parseFloat(flight.price) +
+                          parseFloat(hotel.price) +
                           (vehicle ? parseFloat(vehicle.price) : 0);
 
         const payload = buildTripPayload({
@@ -261,38 +262,40 @@ export default function CartPage() {
             ))
           )}
         </div>
-      
 
-      {cartItems.length > 0 && (
-        <div className="cart-summary">
-          <h3>Resumen del Pedido</h3>
-            <div className="summary-row">
-              <span>Subtotal:</span>
-              <span>{calculateTotal().toFixed(2)} €</span>
-            </div>
-            <div className="summary-row">
-              <span>Impuestos:</span>
-              <span>{(calculateTotal() * 0.21).toFixed(2)} €</span>
-            </div>
-            <div className="summary-row total">
-              <span>Total:</span>
-              <span>{(calculateTotal() * 1.21).toFixed(2)} €</span>
-            </div>
-          <button className="checkout-btn" onClick={handleCheckout}>
-            Finalizar Reserva
-            <span className="secure-checkout">
-              <FaLock /> Pago seguro
-            </span>
-          </button>
-        </div>
-      )}
+        {cartItems.length > 0 && (
+          <div className="cart-summary">
+            <h3>Resumen del Pedido</h3>
+              <div className="summary-row">
+                <span>Subtotal:</span>
+                <span>{calculateTotal().toFixed(2)} €</span>
+              </div>
+              <div className="summary-row">
+                <span>Impuestos:</span>
+                <span>{(calculateTotal() * 0.21).toFixed(2)} €</span>
+              </div>
+              <div className="summary-row total">
+                <span>Total:</span>
+                <span>{(calculateTotal() * 1.21).toFixed(2)} €</span>
+              </div>
+            <button className="checkout-btn" onClick={handleCheckout}>
+              Finalizar Reserva
+              <span className="secure-checkout">
+                <FaLock /> Pago seguro
+              </span>
+            </button>
+          </div>
+        )}
 
-      {showSuccessModal && (
-        <SuccessModal
-          onClose={() => setShowSuccessModal(false)}
-          onPay={() => navigate('/pago')}
-        />
-      )}
+        {showSuccessModal && (
+          <SuccessModal
+            onClose={() => setShowSuccessModal(false)}
+            onPay={() => navigate('/pago')}
+          />
+        )}
+
+        {/* Aquí mostramos el overlay del spinner cuando se está enviando */}
+        {isSubmitting && <LoadingSpinner message="Procesando tu reserva, por favor espera..." />}
       </div>
     </div>
   );

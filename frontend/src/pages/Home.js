@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import LoadingSpinner from '../components/LoadingSpinner';  // IMPORTAR spinner componente
 
 const Toast = ({ message, onClose }) => (
   <div className="toast">
@@ -185,12 +186,7 @@ function App() {
 
   return (
     <div className="app">
-      {loading && (
-        <div className="loading-overlay">
-          <div className="spinner" />
-          <p>Procesando tu solicitud...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner message="Procesando tu solicitud..." />}
 
       {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
 
