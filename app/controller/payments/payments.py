@@ -5,10 +5,11 @@ from app.models.trips.trip_db import Trip
 from app.models.trips.trip_pydantic import TripStatus
 from fastapi import HTTPException
 from loguru import logger
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.config import settings
 
-stripe.api_key = "sk_test_51RTl1TQdIRsrFscj0OC26WaAxd6HpzFhYkz98Ka3sp8Ae7s4G1SHXwupDBqBCBM7jrRScxNWRUr8F5agzOBt2OeE00QE4O6Xej"
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 router = APIRouter()
 

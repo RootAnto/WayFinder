@@ -2,10 +2,11 @@
 from fastapi import Request, HTTPException
 import stripe
 from fastapi import APIRouter
+from app.config import settings
 
 router = APIRouter()
 
-endpoint_secret = "whsec_46d80c5bae125132c385417f6215d106ea9"
+endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
 @router.post("/webhook")
 async def stripe_webhook(request: Request):

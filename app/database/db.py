@@ -1,17 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
-'''
-@brief Database connection URL for SQLAlchemy using MySQL Connector.
-
-@details
-The URL includes username, password, host, port, and database name.
-'''
-SQLALCHEMY_DATABASE_URL = (
-    "mysql+mysqlconnector://root:vWqSlDAMeDnLeCTPGRhezUFbcWhSLUfd"
-    "@nozomi.proxy.rlwy.net:38342/railway"
-)
+from app.config import settings
 
 '''
 @brief SQLAlchemy Engine instance.
@@ -19,7 +9,7 @@ SQLALCHEMY_DATABASE_URL = (
 @details
 Creates a connection pool and manages connections to the database.
 '''
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(settings.SQLALCHEMY_DATABASE_URL)
 
 '''
 @brief SQLAlchemy session factory.
