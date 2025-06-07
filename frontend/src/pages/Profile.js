@@ -8,6 +8,7 @@ function Profile() {
   const [activeTab, setActiveTab] = useState('overview');
   const [editMode, setEditMode] = useState(false);
   const [userData, setUserData] = useState(null); // Inicialmente null
+  const [travelHistory, setTravelHistory] = useState([]);
   
   useEffect(() => {
     if (currentUser) {
@@ -19,42 +20,26 @@ function Profile() {
         passport: 'AB1234567',
         nationality: 'Española'
       });
+      fetch(`http://localhost:8000/trips/user/${encodeURIComponent(currentUser.email)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setTravelHistory(data);
+        } else {
+          console.warn("La respuesta no es un array:", data);
+          setTravelHistory([]);
+        }
+      })
+      .catch(err => {
+        console.error("Error al cargar viajes:", err);
+        setTravelHistory([]);
+      });
     }
   }, [currentUser]);
 
   if (loading || !userData) {
     return <div>Cargando perfil...</div>;
   }
-
-  const travelHistory = [
-    {
-      id: 1,
-      route: 'MAD → BCN',
-      date: '15 Jun 2023',
-      airline: 'Vueling',
-      flight: 'VY 1234',
-      price: '€78.50',
-      status: 'completed'
-    },
-    {
-      id: 2,
-      route: 'BCN → PMI',
-      date: '22 Ago 2023',
-      airline: 'Air Europa',
-      flight: 'UX 4567',
-      price: '€102.00',
-      status: 'completed'
-    },
-    {
-      id: 3,
-      route: 'MAD → LIS',
-      date: '05 Oct 2023',
-      airline: 'Iberia',
-      flight: 'IB 7890',
-      price: '€89.00',
-      status: 'upcoming'
-    }
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -220,21 +205,15 @@ function Profile() {
               <div className="travel-list">
                 {travelHistory.map(trip => (
                   <div key={trip.id} className={`trip-card ${trip.status}`}>
-                    <div className="trip-main">
-                      <div className="trip-route">
-                        <span className="route">{trip.route}</span>
-                        <span className="date">{trip.date}</span>
-                      </div>
-                      <div className="trip-airline">
-                        <span>{trip.airline}</span>
-                        <span className="flight">{trip.flight}</span>
-                      </div>
+                    <div className="flight-header">
+                      <h3>{trip.origin} → {trip.destination}</h3>
+                      <span className="trip-status">{trip.status.toUpperCase()}</span>
                     </div>
-                    <div className="trip-footer">
-                      <span className="price">{trip.price}</span>
-                      <button className="trip-details-btn">
-                        Ver detalles <i className="fas fa-chevron-right"></i>
-                      </button>
+
+                    <div className="trip-details">
+                      <p><strong>Fechas:</strong> {trip.departure_date} – {trip.return_date || 'N/A'}</p>
+                      <p><strong>Hotel:</strong> {trip.hotel_name}</p>
+                      <p><strong>Total:</strong> {trip.total_price} {trip.currency}</p>
                     </div>
                   </div>
                 ))}

@@ -15,6 +15,8 @@
   margin: 0 auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--dark);
+  padding: 0 20px;
+  margin: 20px auto;
 }
 
 /* Header */
@@ -255,7 +257,7 @@
 .trip-card {
   background: white;
   border-radius: 8px;
-  padding: 1.5rem;
+  padding: 1.1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s;
   border-left: 4px solid var(--primary);
@@ -321,29 +323,176 @@
   gap: 0.3rem;
 }
 
-/* Responsive */
+.trip-status{
+  color: #00b894;
+}
+
+.trip-details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.trip-details p {
+  margin: 0;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Header responsive */
+@media (max-width: 1024px) {
+  .profile-header {
+    padding: 1.5rem 0;
+  }
+  
+  .avatar-circle {
+    width: 70px;
+    height: 70px;
+    font-size: 1.8rem;
+  }
+  
+  .avatar-info h1 {
+    font-size: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .profile-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1.5rem;
+    padding: 1.5rem 0;
   }
   
+  .profile-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Nav responsive */
+@media (max-width: 768px) {
   .profile-nav {
     overflow-x: auto;
     padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
   }
   
-  .info-grid {
-    grid-template-columns: 1fr;
+  .nav-item {
+    padding: 0.8rem 1rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
   }
-  
-  .trip-main {
+}
+
+/* Contenido responsive */
+@media (max-width: 768px) {
+  .section-header {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
   }
   
-  .trip-airline {
+  .travel-filters {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .filter-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+}
+
+/* Ajustes para móviles pequeños */
+@media (max-width: 480px) {
+  .profile-app {
+    padding: 0 15px;
+  }
+  
+  .avatar-info h1 {
+    font-size: 1.3rem;
+  }
+  
+  .info-field p, 
+  .info-field input {
+    padding: 0.7rem;
+  }
+  
+  .trip-card {
+    padding: 0.9rem;
+  }
+  
+  .trip-details {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  
+  .trip-details p {
+    padding: 8px;
     text-align: left;
   }
+}
+
+/* Mejoras de margen y espaciado */
+.tab-content {
+  margin-top: 1.5rem;
+}
+
+.overview-section, 
+.travel-section {
+  margin-bottom: 2.5rem;
+}
+
+.info-grid {
+  margin-top: 1rem;
+}
+
+.travel-list {
+  margin-top: 1.5rem;
+}
+
+/* Scroll personalizado para navegación en móvil */
+.profile-nav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.profile-nav::-webkit-scrollbar-track {
+  background: var(--gray);
+}
+
+.profile-nav::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 2px;
+}
+
+/* Mejoras de accesibilidad */
+button:focus {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--primary);
+  font-size: 1.1rem;
 }

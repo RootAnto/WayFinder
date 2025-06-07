@@ -194,7 +194,13 @@ function FlightResults() {
           <div className="breadcrumb">
             <div><Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
             <div className="cart-icon">
-              <Link to="/cart">{/* ícono de carrito */}</Link>
+              <Link to="/cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+              </Link>
             </div>
           </div>
 
@@ -241,18 +247,26 @@ function FlightResults() {
                               </div>
                             </div>
                             <div className="flight-footer">
-                              <button className="select-btn" onClick={() => addToCart({
-                                type: 'flight',
-                                id: flight.id,
-                                airline: firstSegment.carrierCode,
-                                origin: searchParams.from,
-                                destination: searchParams.to,
-                                departure: searchParams.departure,
-                                returnDate: searchParams.return,
-                                price: flight.price.total,
-                                currency: flight.price.currency,
-                                duration: flight.itineraries[0].duration
-                              })}>
+                              <button 
+                                className="select-btn" 
+                                onClick={() => {
+                                  // Alert antes de agregar
+                                  alert(`¡Vuelo agregado al carrito!`);
+                                  
+                                  addToCart({
+                                    type: 'flight',
+                                    id: flight.id,
+                                    airline: firstSegment.carrierCode,
+                                    origin: searchParams.from,
+                                    destination: searchParams.to,
+                                    departure: searchParams.departure,
+                                    returnDate: searchParams.return,
+                                    price: flight.price.total,
+                                    currency: flight.price.currency,
+                                    duration: flight.itineraries[0].duration
+                                  });
+                                }}
+                              >
                                 Seleccionar
                               </button>
                             </div>
@@ -278,14 +292,20 @@ function FlightResults() {
                             <p>{hotel.cityCode}</p>
                             <p>Precio: {hotel.price} {hotel.currency}</p>
                           </div>
-                          <button className="select-btn" onClick={() => addToCart({
-                            type: 'hotel',
-                            id: hotel.hotelId,
-                            name: hotel.name,
-                            city: hotel.cityCode,
-                            price: hotel.price,
-                            currency: hotel.currency
-                          })}>
+                          <button 
+                            className="select-btn" 
+                            onClick={() => {
+                              alert("¡Hotel agregado al carrito!");
+                              addToCart({
+                                type: 'hotel',
+                                id: hotel.hotelId,
+                                name: hotel.name,
+                                city: hotel.cityCode,
+                                price: hotel.price,
+                                currency: hotel.currency
+                              });
+                            }}
+                          >
                             Reservar
                           </button>
                         </div>
@@ -322,6 +342,7 @@ function FlightResults() {
                             const pickUp = new Date(searchParams.departure);
                             const dropOff = new Date(searchParams.return || searchParams.departure);
                             const days = Math.ceil((dropOff - pickUp) / (1000 * 60 * 60 * 24));
+                            alert("Vehiculo agregado al carrito!");
                             addToCart({
                               type: 'vehicle',
                               vehicleId: vehicle.vehicleId,

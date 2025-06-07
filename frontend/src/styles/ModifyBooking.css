@@ -1,27 +1,42 @@
+/* Variables de color */
+:root {
+  --primary: #003580;
+  --primary-light: #0071c2;
+  --secondary: #ff5722;
+  --dark: #2d3436;
+  --light: #f5f6fa;
+  --gray: #dfe6e9;
+  --success: #00b894;
+  --warning: #fdcb6e;
+  --danger: #d63031;
+}
+
 /* Contenedor general de ModifyBooking */
 .modifybooking-container {
   max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 2rem auto;
+  padding: 1.5rem;
 }
 
 /* Título */
 .modifybooking-container h2 {
-  font-size: 2rem;
-  color: #003580; /* Azul del header */
+  font-size: 1.8rem;
+  color: var(--primary);
   margin-bottom: 1.5rem;
   font-weight: 700;
+  text-align: center;
 }
 
 /* Mensaje de error o info */
 .modifybooking-message {
   background-color: #ffe6e6;
-  color: #cc0000;
-  border: 1px solid #cc0000;
+  color: var(--danger);
+  border: 1px solid var(--danger);
   border-radius: 8px;
-  padding: 12px 15px;
-  margin-bottom: 20px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
+  text-align: center;
 }
 
 /* Resumen de reserva */
@@ -29,75 +44,133 @@
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 20px 25px;
-  margin-bottom: 25px;
-  font-weight: 500;
-  color: #555;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-/* Títulos dentro del resumen */
 .modifybooking-summary h3 {
-  font-size: 1.25rem;
-  color: #003580;
+  font-size: 1.3rem;
+  color: var(--primary);
   margin-bottom: 1rem;
   font-weight: 700;
+  border-bottom: 1px solid var(--gray);
+  padding-bottom: 0.5rem;
+}
+
+.modifybooking-summary p {
+  margin: 0.7rem 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modifybooking-summary strong {
+  color: var(--dark);
+  margin-right: 1rem;
 }
 
 /* Formulario */
+.modifybooking-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+}
+
 .modifybooking-form label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 1rem;
   font-weight: 600;
-  color: #333;
+  color: var(--dark);
 }
 
 .modifybooking-form input {
   width: 100%;
-  padding: 8px;
-  margin-top: 4px;
+  padding: 0.8rem;
+  margin-top: 0.5rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
+  border: 1px solid var(--gray);
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s;
 }
 
 .modifybooking-form input:focus {
-  border-color: #003580;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(0, 113, 194, 0.2);
   outline: none;
+}
+
+.modifybooking-form input[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
 }
 
 /* Botón de guardar cambios */
 .modifybooking-form button {
-  margin-top: 20px;
-  background-color: #0077cc;
+  grid-column: 1 / -1;
+  margin-top: 1rem;
+  background-color: var(--primary);
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 1rem;
   border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0, 119, 204, 0.4);
-  transition: background-color 0.3s ease;
+  transition: all 0.3s;
 }
 
 .modifybooking-form button:hover {
-  background-color: #005fa3;
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
 }
 
-/* Responsive */
-@media (max-width: 480px) {
+/* Responsive para Tablet */
+@media (max-width: 768px) {
   .modifybooking-container {
-    padding: 15px;
+    padding: 1rem;
   }
-
-  .modifybooking-summary {
-    padding: 15px 20px;
+  
+  .modifybooking-form {
+    grid-template-columns: 1fr 1fr;
   }
+}
 
+/* Responsive para Móvil */
+@media (max-width: 480px) {
+  .modifybooking-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .modifybooking-summary h3 {
+    font-size: 1.2rem;
+  }
+  
+  .modifybooking-form {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+  
+  .modifybooking-summary p {
+    flex-direction: column;
+  }
+  
+  .modifybooking-summary strong {
+    margin-bottom: 0.3rem;
+  }
+  
   .modifybooking-form button {
-    width: 100%;
+    padding: 0.8rem;
     font-size: 1.1rem;
   }
+}
+
+/* Loading state */
+.loading-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--primary);
+  font-size: 1.1rem;
 }

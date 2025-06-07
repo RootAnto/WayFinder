@@ -1,151 +1,222 @@
-/* Contenedor general de reservas en MyBookings */
+/* Variables de color */
+:root {
+  --primary: #003580;
+  --primary-light: #0071c2;
+  --secondary: #ff5722;
+  --success: #48bb78;
+  --success-dark: #38a169;
+  --danger: #f56565;
+  --danger-dark: #c53030;
+  --warning: #f6ad55;
+  --dark: #2d3436;
+  --light: #f5f6fa;
+  --gray: #dfe6e9;
+}
+
+/* Contenedor general */
 .mybookings-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
 }
 
 /* Título */
 .mybookings-container h2 {
-  font-size: 2rem;
-  color: #003580; /* Azul del header */
+  font-size: 1.8rem;
+  color: var(--primary);
   margin-bottom: 1.5rem;
   font-weight: 700;
+  text-align: center;
 }
 
-/* Mensaje de error o info */
+/* Mensajes */
 .mybookings-message {
   background-color: #ffe6e6;
-  color: #cc0000;
-  border: 1px solid #cc0000;
+  color: var(--danger);
+  border: 1px solid var(--danger);
   border-radius: 8px;
-  padding: 12px 15px;
-  margin-bottom: 20px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   font-weight: 600;
+  text-align: center;
 }
 
-/* Lista de tarjetas de reservas */
+.mybookings-no-reservations {
+  font-size: 1.1rem;
+  color: var(--dark);
+  font-weight: 500;
+  text-align: center;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Lista de reservas */
 .mybookings-reservation-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
-/* Tarjeta individual */
+/* Tarjeta de reserva */
 .mybookings-reservation-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 20px 25px;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  cursor: default;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: all 0.3s ease;
 }
 
 .mybookings-reservation-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* Título destino/origen */
 .mybookings-reservation-card h3 {
-  font-size: 1.25rem;
-  color: #003580;
-  margin-bottom: 0.75rem;
-  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--gray);
 }
 
-/* Datos secundarios */
 .mybookings-reservation-card p {
-  color: #555;
+  margin: 0.5rem 0;
   font-size: 0.95rem;
-  margin-bottom: 0.4rem;
-  font-weight: 500;
+  color: var(--dark);
+  display: flex;
+  justify-content: space-between;
 }
 
-/* Sección de botones */
+.mybookings-reservation-card strong {
+  color: var(--primary);
+  margin-right: 0.5rem;
+}
+
+/* Estado de la reserva */
+.mybookings-status-message {
+  font-size: 0.9rem;
+  color: var(--dark);
+  text-align: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background: var(--light);
+  border-radius: 4px;
+}
+
+/* Botones */
 .mybookings-reservation-actions {
-  margin-top: auto; /* Empuja botones abajo */
+  margin-top: 1.5rem;
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
-/* Botón confirmar: verde claro */
-.mybookings-confirm-btn {
-  background-color: #48bb78;
-  color: white;
+.mybookings-confirm-btn,
+.mybookings-reject-btn,
+.mybookings-modify-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.8rem;
   border: none;
-  padding: 10px 20px;
+  border-radius: 6px;
   font-weight: 600;
   font-size: 0.9rem;
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(72, 187, 120, 0.4);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mybookings-confirm-btn {
+  background: var(--success);
+  color: white;
 }
 
 .mybookings-confirm-btn:hover {
-  background-color: #38a169;
+  background: var(--success-dark);
 }
 
-/* Botón rechazar: rojo suave */
 .mybookings-reject-btn {
-  background-color: #f56565;
+  background: var(--danger);
   color: white;
-  border: none;
-  padding: 10px 20px;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(245, 101, 101, 0.4);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
 .mybookings-reject-btn:hover {
-  background-color: #c53030;
-}
-
-/* Texto cuando no hay reservas */
-.mybookings-no-reservations {
-  font-size: 1.1rem;
-  color: #666;
-  font-weight: 600;
-  text-align: center;
-  margin-top: 2rem;
+  background: var(--danger-dark);
 }
 
 .mybookings-modify-btn {
-  background-color: #0077cc;
+  background: var(--primary-light);
   color: white;
-  border: none;
-  padding: 10px 16px;
-  margin-left: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.2s ease;
 }
 
 .mybookings-modify-btn:hover {
-  background-color: #005fa3;
+  background: var(--primary);
 }
 
-
-/* Responsive */
-@media (max-width: 480px) {
-  .mybookings-reservation-card {
-    padding: 15px 20px;
+/* Responsive para Tablet */
+@media (max-width: 768px) {
+  .mybookings-container {
+    padding: 1rem;
   }
+  
+  .mybookings-reservation-list {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 
+/* Responsive para Móvil */
+@media (max-width: 480px) {
+  .mybookings-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .mybookings-reservation-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .mybookings-reservation-card {
+    padding: 1.2rem;
+  }
+  
+  .mybookings-reservation-card p {
+    flex-direction: column;
+  }
+  
   .mybookings-reservation-actions {
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.8rem;
   }
-
-  .mybookings-confirm-btn, .mybookings-reject-btn {
+  
+  .mybookings-confirm-btn,
+  .mybookings-reject-btn,
+  .mybookings-modify-btn {
     width: 100%;
-    font-size: 1rem;
   }
+}
+
+/* Loading state */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-message {
+  margin-top: 1rem;
+  color: var(--primary);
+  font-weight: 500;
 }

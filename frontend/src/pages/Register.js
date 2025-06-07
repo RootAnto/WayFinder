@@ -99,12 +99,6 @@ const Register = () => {
 
   return (
     <div className="register-container">
-      <header className="register-header">
-        <Link to="/" className="register-logo">
-          WayFinder
-        </Link>
-      </header>
-
       <div className="register-content">
         <div className="register-card">
           <h1 className="register-title">Crear una cuenta</h1>
@@ -249,14 +243,6 @@ const Register = () => {
               />
               Continuar con Google
             </button>
-            <button type="button" className="register-social-button">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-                alt="Apple"
-                style={{ width: 18, height: 18, marginRight: 8 }}
-              />
-              Continuar con Apple
-            </button>
           </div>
 
           <div className="register-footer">
@@ -265,6 +251,13 @@ const Register = () => {
               Inicia sesión
             </Link>
           </div>
+          <button
+            type="button"
+            className="login-back-button"
+            onClick={() => navigate('/')}
+          >
+            Volver al inicio
+          </button>
         </div>
       </div>
     </div>

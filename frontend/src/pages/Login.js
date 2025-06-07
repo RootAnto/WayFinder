@@ -126,13 +126,6 @@ const Login = () => {
               />
               Continuar con Google
             </button>
-            <button type="button" className="login-social-button">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
-                alt="Apple"
-              />
-              Continuar con Apple
-            </button>
           </div>
           <div className="login-footer">
             ¿No tienes una cuenta? <Link to="/register" className="login-link">Regístrate</Link>

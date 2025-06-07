@@ -466,24 +466,6 @@
     font-size: 14px;
   }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .header .container {
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .nav {
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .form-group {
-      min-width: 100%;
-    }
-  }
-
-
 
 .loading-overlay {
   position: fixed;
@@ -532,4 +514,193 @@
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
+}
+
+/* Añadir estas reglas al final del archivo CSS */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 15px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-group {
+    min-width: 100%;
+  }
+
+  .checkbox-group {
+    margin-top: 5px;
+  }
+
+  .search-button, .suggest-button, .my-bookings-button {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .options-section {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chatbot-window {
+    width: 280px;
+    height: 350px;
+  }
+    .chatbot-window {
+    width: 300px;
+    height: 380px;
+    bottom: 85px;
+    right: 20px;
+  }
+  
+  .chatbot-button {
+    width: 55px;
+    height: 55px;
+    font-size: 22px;
+  }
+}
+
+/* Móvil (hasta 767px) */
+@media (max-width: 767px) {
+  .container {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .search-form {
+    padding: 15px;
+  }
+
+  .form-row {
+    margin-bottom: 10px;
+  }
+
+  input, select {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .options-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .option-link {
+    font-size: 14px;
+  }
+
+  .chatbot-button {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    bottom: 15px;
+    right: 15px;
+  }
+
+  .chatbot-window {
+    width: 55%;
+    right: 5%;
+    bottom: 80px;
+    height: 35vh;
+  }
+
+  .footer-columns {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .footer-column {
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  /* Ajustes para botones en móvil */
+  .search-button, .suggest-button, .my-bookings-button {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  /* Ajustar el formulario de búsqueda */
+  .form-group {
+    margin-bottom: 8px;
+  }
+
+  /* Ajustar el header */
+  .header .container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .auth-buttons {
+    margin-top: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+    .chatbot-button {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+/* Pequeños móviles (hasta 480px) */
+@media (max-width: 480px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  .search-form {
+    padding: 10px;
+  }
+
+  .chatbot-window {
+    height: 50vh;
+  }
+
+  .toast {
+    width: 90%;
+    left: 5%;
+    right: auto;
+    text-align: center;
+  }
+    .chatbot-button {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+    bottom: 15px;
+    right: 15px;
+  }
+  
+  .chatbot-window {
+    width: 80%;
+    right: 15px;
+    bottom: 70px;
+    height: 45vh;
+  }
+  
+  .chatbot-header {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
 }

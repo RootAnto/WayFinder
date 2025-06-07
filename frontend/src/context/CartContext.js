@@ -9,7 +9,7 @@ export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
   // Cargar/limpiar carrito al cambiar de usuario
-  useEffect(() => {
+ useEffect(() => {
     if (currentUser) {
       const key = `cart_${currentUser.id}`;
       const savedCart = localStorage.getItem(key);
@@ -17,7 +17,7 @@ export function CartProvider({ children }) {
     } else {
       setCartItems([]); // Limpiar si no hay usuario
     }
-  }, [currentUser]);
+  }, [currentUser]); 
 
   // Guardar en localStorage
   useEffect(() => {
@@ -38,7 +38,10 @@ export function CartProvider({ children }) {
   // Limpiar el carrito al cerrar sesión
   const clearCart = () => {
     setCartItems([]);
-    localStorage.removeItem('cart');
+    if (currentUser) {
+      const key = `cart_${currentUser.id}`;
+      localStorage.removeItem(key);
+    }
   };
 
   return (

@@ -286,6 +286,25 @@ def reject_reservation(trip_id: str, db: Session = Depends(get_db)):
         </html>
     """)
 
+@router.get("/user/{user_email}", response_model=List[TripOut])
+def get_trips_by_user(user_email: str, db: Session = Depends(get_db)) -> List[TripOut]:
+    """
+    @brief Returns all confirmed trips for a given user by email.
+
+    @param user_email The email of the user to filter trips.
+    @param db SQLAlchemy session.
+
+    @return List of confirmed TripOut objects.
+    """
+    trips = db.query(Trip).filter(
+        Trip.user_email == user_email,
+        Trip.status == TripStatus.aceptada
+    ).all()
+
+    if not trips:
+        return []
+
+    return trips
 
 
 @router.get("/{trip_id}", response_model=TripOut)
@@ -396,3 +415,4 @@ def clear_trips(db: Session = Depends(get_db)):
         db.rollback()
         logger.exception("Failed to clear trips from the database.")
         raise HTTPException(status_code=500, detail="An error occurred while clearing trips.")
+

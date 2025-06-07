@@ -128,7 +128,7 @@ function TripSuggestion() {
       };
 
       addToCart(packageItem);
-      navigate('/cart');
+      alert("Se ha añadido el paquete al carrito");
     } catch (error) {
       setErrorMessage('Error al reservar el paquete. Inténtalo de nuevo.');
     } finally {
@@ -259,19 +259,22 @@ function TripSuggestion() {
             </div>
           )}
 
-          <div className="total-price">
-            <h3>Precio total paquete:</h3>
-            <p>{(flightPrice + hotelPrice + vehiclePrice).toFixed(2)} {currency}</p>
+          <div className="summary-card">
+            <div className="total-price">
+              <h3>Precio total</h3>
+              <p>Paquete: {(flightPrice + hotelPrice + vehiclePrice).toFixed(2)} {currency}</p>
+            </div>
           </div>
 
-          <button
-            className="select-btn"
-            onClick={handleBookTrip}
-            disabled={loading}
-          >
-            {loading ? 'Reservando...' : 'Reservar paquete completo'}
-          </button>
-
+          <div className="div-select-btn">
+            <button
+              className="select-btn"
+              onClick={handleBookTrip}
+              disabled={loading}
+            >
+              {loading ? 'Reservando...' : 'Reservar paquete completo'}
+            </button>
+          </div>
           {errorMessage && (
             <div className="error-message">
               <strong>{errorMessage}</strong>
