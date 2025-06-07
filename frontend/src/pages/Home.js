@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Home.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import LoadingSpinner from '../components/LoadingSpinner';  // IMPORTAR spinner componente
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Toast = ({ message, onClose }) => (
   <div className="toast">
