@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/Cart.css';
 import { FaTrash, FaPlane, FaHotel, FaCar, FaLock, FaBox } from 'react-icons/fa';
 import SuccessModal from '../components/SuccessModal';
-import LoadingSpinner from '../components/LoadingSpinner'; // <-- Importar spinner
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
@@ -71,95 +71,104 @@ export default function CartPage() {
   };
 
   const handleCheckout = async () => {
-    setIsSubmitting(true);
-    setError(null);
+  setIsSubmitting(true);
+  setError(null);
 
-    try {
-      if (!currentUser?.email) {
-        throw new Error('Debes iniciar sesión para completar la reserva');
-      }
-
-      const urlBase = 'http://localhost:8000/trips/';
-      const emailParam = `?user_email=${currentUser.email}`;
-
-      const packageItems = cartItems.filter(item => item.isPackage);
-      const individualItems = cartItems.filter(item => !item.isPackage);
-
-      const payloads = [];
-
-      // Procesar paquetes
-      for (const pkg of packageItems) {
-        const payload = buildTripPayload({
-          user: currentUser,
-          flight: pkg.details.flight,
-          hotel: pkg.details.hotel,
-          vehicle: pkg.details.vehicle,
-          isPackage: true,
-          totalPrice: pkg.price,
-          currency: pkg.currency || 'EUR'
-        });
-        payloads.push(payload);
-      }
-
-      // Procesar items individuales (vuelo + hotel + vehículo)
-      const flight = individualItems.find(i => i.type === 'flight');
-      const hotel = individualItems.find(i => i.type === 'hotel');
-      const vehicle = individualItems.find(i => i.type === 'vehicle');
-
-      if (flight && hotel) {
-        const totalPrice = parseFloat(flight.price) +
-                          parseFloat(hotel.price) +
-                          (vehicle ? parseFloat(vehicle.price) : 0);
-
-        const payload = buildTripPayload({
-          user: currentUser,
-          flight,
-          hotel,
-          vehicle,
-          isPackage: false,
-          totalPrice,
-          currency: flight.currency || hotel.currency || vehicle?.currency || 'EUR'
-        });
-
-        payloads.push(payload);
-      }
-
-      // Enviar todas las reservas al backend
-      for (const tripPayload of payloads) {
-        const response = await fetch(urlBase + emailParam, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(tripPayload),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.detail || 'Error al crear la reserva');
-        }
-      }
-
-      clearCart();
-      setShowSuccessModal(true);
-    } catch (err) {
-      console.error('Error en checkout:', err);
-      setError('Error al procesar la reserva: ' + err.message);
-    } finally {
-      setIsSubmitting(false);
+  try {
+    if (!currentUser?.email) {
+      throw new Error('Debes iniciar sesión para completar la reserva');
     }
-  };
+
+    const urlBase = 'http://localhost:8000/trips/';
+    const emailParam = `?user_email=${currentUser.email}`;
+
+    const packageItems = cartItems.filter(item => item.isPackage);
+    const individualItems = cartItems.filter(item => !item.isPackage);
+
+    const payloads = [];
+
+    // Procesar paquetes con total incluyendo impuestos (21%)
+    for (const pkg of packageItems) {
+      const totalPriceWithTax = parseFloat(pkg.price) * 1.21;
+
+      const payload = buildTripPayload({
+        user: currentUser,
+        flight: pkg.details.flight,
+        hotel: pkg.details.hotel,
+        vehicle: pkg.details.vehicle,
+        isPackage: true,
+        totalPrice: totalPriceWithTax,
+        currency: pkg.currency || 'EUR'
+      });
+      payloads.push(payload);
+    }
+
+    // Procesar items individuales (vuelo + hotel + vehículo) con total incluyendo impuestos (21%)
+    const flight = individualItems.find(i => i.type === 'flight');
+    const hotel = individualItems.find(i => i.type === 'hotel');
+    const vehicle = individualItems.find(i => i.type === 'vehicle');
+
+    if (flight && hotel) {
+      const subtotal = parseFloat(flight.price) +
+                       parseFloat(hotel.price) +
+                       (vehicle ? parseFloat(vehicle.price) : 0);
+
+      const totalPriceWithTax = subtotal * 1.21;
+
+      const payload = buildTripPayload({
+        user: currentUser,
+        flight,
+        hotel,
+        vehicle,
+        isPackage: false,
+        totalPrice: totalPriceWithTax,
+        currency: flight.currency || hotel.currency || vehicle?.currency || 'EUR'
+      });
+
+      payloads.push(payload);
+    }
+
+    // Enviar todas las reservas al backend
+    for (const tripPayload of payloads) {
+      const response = await fetch(urlBase + emailParam, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tripPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Error al crear la reserva');
+      }
+    }
+
+    clearCart();
+    setShowSuccessModal(true);
+  } catch (err) {
+    console.error('Error en checkout:', err);
+    setError('Error al procesar la reserva: ' + err.message);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
-    <div className="cart-page">
+    <div className="cart-page" role="main" aria-labelledby="cart-title">
       <div className="cart-header">
-        <h1>Resumen de tu Reserva</h1>
+        <h1 id="cart-title">Resumen de tu Reserva</h1>
         <div className="cart-stats">
-          <span>{cartItems.length} elemento{cartItems.length !== 1 && 's'}</span>
-          <Link to="/" className="continue-shopping">← Seguir comprando</Link>
+          <span aria-live="polite">
+            {cartItems.length} elemento{cartItems.length !== 1 && 's'}
+          </span>
+          <Link to="/" className="continue-shopping" aria-label="Volver a la página principal para seguir comprando">
+            ← Seguir comprando
+          </Link>
         </div>
       </div>
 
       <div className="cart-container">
-        <div className="cart-items">
+        <div className="cart-items" aria-live="polite">
           {cartItems.length === 0 ? (
             <div className="empty-cart">
               <h2>Tu carrito está vacío</h2>
@@ -168,8 +177,12 @@ export default function CartPage() {
           ) : (
             cartItems.map(item => (
               item.isPackage ? (
-                <div key={item.id} className="cart-item package-item">
-                  <div className="item-icon">
+                <div 
+                  key={item.id} 
+                  className="cart-item package-item"
+                  aria-label={`Paquete de viaje: ${item.name}`}
+                >
+                  <div className="item-icon" aria-hidden="true">
                     <FaBox />
                   </div>
 
@@ -181,7 +194,9 @@ export default function CartPage() {
 
                     <div className="package-details">
                       <div className="package-component">
-                        <span className="package-component-title"><FaPlane /> Vuelo:</span>
+                        <span className="package-component-title">
+                          <FaPlane aria-hidden="true" /> Vuelo:
+                        </span>
                         <span>{item.details.flight.origin} → {item.details.flight.destination}</span>
                         <span className="package-component-price">
                           {item.details.flight.price} {item.currency}
@@ -189,7 +204,9 @@ export default function CartPage() {
                       </div>
 
                       <div className="package-component">
-                        <span className="package-component-title"><FaHotel /> Hotel:</span>
+                        <span className="package-component-title">
+                          <FaHotel aria-hidden="true" /> Hotel:
+                        </span>
                         <span>{item.details.hotel.name} ({item.details.hotel.nights} noches)</span>
                         <span className="package-component-price">
                           {item.details.hotel.price} {item.currency}
@@ -198,7 +215,9 @@ export default function CartPage() {
 
                       {item.details.vehicle && (
                         <div className="package-component">
-                          <span className="package-component-title"><FaCar /> Vehículo:</span>
+                          <span className="package-component-title">
+                            <FaCar aria-hidden="true" /> Vehículo:
+                          </span>
                           <span>{item.details.vehicle.model} ({item.details.vehicle.days} días)</span>
                           <span className="package-component-price">
                             {item.details.vehicle.price} {item.currency}
@@ -210,14 +229,22 @@ export default function CartPage() {
 
                   <div className="item-price">
                     <span className="package-total">{item.price} {item.currency}</span>
-                    <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
-                      <FaTrash />
+                    <button 
+                      className="remove-btn" 
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label={`Eliminar paquete ${item.name} del carrito`}
+                    >
+                      <FaTrash aria-hidden="true" />
                     </button>
                   </div>
                 </div>
               ) : (
-                <div key={item.id} className="cart-item">
-                  <div className="item-icon">
+                <div 
+                  key={item.id} 
+                  className="cart-item"
+                  aria-label={`${item.type === 'flight' ? 'Vuelo' : item.type === 'hotel' ? 'Hotel' : 'Vehículo'}: ${item.name || `${item.origin} a ${item.destination}`}`}
+                >
+                  <div className="item-icon" aria-hidden="true">
                     {item.type === 'flight' && <FaPlane />}
                     {item.type === 'hotel' && <FaHotel />}
                     {item.type === 'vehicle' && <FaCar />}
@@ -253,8 +280,12 @@ export default function CartPage() {
 
                   <div className="item-price">
                     <span>{Number(item.price).toFixed(2)} {item.currency}</span>
-                    <button className="remove-btn" onClick={() => removeFromCart(item.id)}>
-                      <FaTrash />
+                    <button 
+                      className="remove-btn" 
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label={`Eliminar ${item.type === 'flight' ? 'vuelo' : item.type === 'hotel' ? 'hotel' : 'vehículo'} del carrito`}
+                    >
+                      <FaTrash aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -264,26 +295,40 @@ export default function CartPage() {
         </div>
 
         {cartItems.length > 0 && (
-          <div className="cart-summary">
-            <h3>Resumen del Pedido</h3>
-              <div className="summary-row">
-                <span>Subtotal:</span>
-                <span>{calculateTotal().toFixed(2)} €</span>
-              </div>
-              <div className="summary-row">
-                <span>Impuestos:</span>
-                <span>{(calculateTotal() * 0.21).toFixed(2)} €</span>
-              </div>
-              <div className="summary-row total">
-                <span>Total:</span>
-                <span>{(calculateTotal() * 1.21).toFixed(2)} €</span>
-              </div>
-            <button className="checkout-btn" onClick={handleCheckout}>
+          <div 
+            className="cart-summary"
+            role="region"
+            aria-labelledby="summary-title"
+          >
+            <h3 id="summary-title">Resumen del Pedido</h3>
+            <div className="summary-row">
+              <span>Subtotal:</span>
+              <span>{calculateTotal().toFixed(2)} €</span>
+            </div>
+            <div className="summary-row">
+              <span>Impuestos (21%):</span>
+              <span>{(calculateTotal() * 0.21).toFixed(2)} €</span>
+            </div>
+            <div className="summary-row total">
+              <span><strong>Total:</strong></span>
+              <span><strong>{(calculateTotal() * 1.21).toFixed(2)} €</strong></span>
+            </div>
+            <button 
+              className="checkout-btn" 
+              onClick={handleCheckout}
+              aria-label="Finalizar reserva y proceder al pago"
+              disabled={isSubmitting}
+            >
               Finalizar Reserva
               <span className="secure-checkout">
-                <FaLock /> Pago seguro
+                <FaLock aria-hidden="true" /> Pago seguro
               </span>
             </button>
+            {error && (
+              <div className="error-message" role="alert">
+                {error}
+              </div>
+            )}
           </div>
         )}
 
@@ -294,8 +339,12 @@ export default function CartPage() {
           />
         )}
 
-        {/* Aquí mostramos el overlay del spinner cuando se está enviando */}
-        {isSubmitting && <LoadingSpinner message="Procesando tu reserva, por favor espera..." />}
+        {isSubmitting && (
+          <LoadingSpinner 
+            message="Procesando tu reserva, por favor espera..." 
+            aria-live="polite"
+          />
+        )}
       </div>
     </div>
   );

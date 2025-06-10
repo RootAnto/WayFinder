@@ -502,7 +502,7 @@
   margin: 10px 0;
 }
 
-.features span {
+.features li {
   display: flex;
   align-items: center;
   gap: 3px;

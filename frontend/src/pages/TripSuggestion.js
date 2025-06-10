@@ -142,10 +142,15 @@ function TripSuggestion() {
         <Header />
         <main className="results-container">
           <div className="container">
-            <div className="breadcrumb">
-              <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje</span>
+            <nav aria-label="Migas de pan" className="breadcrumb">
+              <ol>
+                <li><Link to="/">Inicio</Link></li>
+                <li aria-current="page">Sugerencia de viaje</li>
+              </ol>
+            </nav>
+            <div className="error" role="alert">
+              No se encontraron datos de viaje. Por favor, inténtalo de nuevo.
             </div>
-            <div className="error">No se encontraron datos de viaje. Por favor, inténtalo de nuevo.</div>
           </div>
         </main>
         <Footer />
@@ -173,17 +178,24 @@ function TripSuggestion() {
     <div className="flight-results-app">
       <Header />
       {loading && (
-        <div className="loading-overlay">
-          <div className="spinner" />
+        <div 
+          className="loading-overlay" 
+          role="alert" 
+          aria-live="assertive"
+          aria-busy="true"
+        >
+          <div className="spinner" aria-hidden="true" />
           <p>Procesando tu reserva...</p>
         </div>
       )}
-      <main className="results-container" style={{ opacity: loading ? 0.5 : 1, pointerEvents: loading ? 'none' : 'auto' }}>
+      <main 
+        className="results-container" 
+        style={{ opacity: loading ? 0.5 : 1, pointerEvents: loading ? 'none' : 'auto' }}
+        aria-hidden={loading}
+      >
         <div className="container">
           <div className="breadcrumb">
-            <div>
-              <Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span>
-            </div>
+            <div><Link to="/">Inicio</Link> &gt; <span>Sugerencia de viaje completo</span></div>
             <div className="cart-icon">
               <Link to="/cart">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -196,25 +208,33 @@ function TripSuggestion() {
           </div>
 
           <div className="search-summary">
-            <h2>{searchParams.from} → {searchParams.to}</h2>
+            <h1>{searchParams.from} → {searchParams.to}</h1>
             <p>
-              {formatDate(searchParams.departure)} -
-              {searchParams.return && ` ${formatDate(searchParams.return)}`} |
-              {searchParams.passengers}
+              <time dateTime={searchParams.departure}>{formatDate(searchParams.departure)}</time> -
+              {searchParams.return && (
+                <>
+                  {' '}
+                  <time dateTime={searchParams.return}>{formatDate(searchParams.return)}</time>
+                </>
+              )} | {searchParams.passengers}
             </p>
           </div>
 
-          <div className="flight-card">
-            <h3>Vuelo seleccionado</h3>
+          <article className="flight-card">
+            <h2>Vuelo seleccionado</h2>
             {flight && (
               <>
                 <div className="flight-header">
                   <span className="airline">{flight.itineraries[0].segments[0].carrierCode}</span>
-                  <span className="price">{flight.price.total} {flight.price.currency}</span>
+                  <span className="price">
+                    {flight.price.total} {flight.price.currency}
+                  </span>
                 </div>
                 <div className="flight-details">
                   <div className="time-block">
-                    <span className="time">{formatTime(flight.itineraries[0].segments[0].departureTime)}</span>
+                    <time dateTime={flight.itineraries[0].segments[0].departureTime} className="time">
+                      {formatTime(flight.itineraries[0].segments[0].departureTime)}
+                    </time>
                     <span className="airport">{flight.itineraries[0].segments[0].departureAirport}</span>
                   </div>
                   <div className="duration-block">
@@ -226,57 +246,78 @@ function TripSuggestion() {
                     </span>
                   </div>
                   <div className="time-block">
-                    <span className="time">{formatTime(flight.itineraries[0].segments.slice(-1)[0].arrivalTime)}</span>
+                    <time dateTime={flight.itineraries[0].segments.slice(-1)[0].arrivalTime} className="time">
+                      {formatTime(flight.itineraries[0].segments.slice(-1)[0].arrivalTime)}
+                    </time>
                     <span className="airport">{flight.itineraries[0].segments.slice(-1)[0].arrivalAirport}</span>
                   </div>
                 </div>
               </>
             )}
-          </div>
+          </article>
 
-          <div className="hotel-card">
-            <h3>Hotel seleccionado</h3>
+          <article className="hotel-card">
             {hotel && (
               <>
                 <div className="hotel-header">
-                  <h4>{hotel.name}</h4>
+                  <h2>Hotel seleccionado</h2>
                   <span className="price">{hotel.price} EUR</span>
                 </div>
-                <p>{hotel.address}</p>
-                <p>Estrellas: {hotel.stars}</p>
+                <p>
+                  <span className="visually-hidden">Hotel: </span>
+                  {hotel.name}
+                </p>
                 <p>Noches: {hotelNights}</p>
+                <p>Precio por noche: {hotel.price / 10}</p>
               </>
             )}
-          </div>
+          </article>
 
           {vehicle && (
-            <div className="vehicle-card">
-              <h3>Coche de alquiler</h3>
-              <p>Modelo: {vehicle.name}</p>
-              <p>Días: {vehicleDays}</p>
-              <p>Precio por día: {vehicle.pricePerDay} EUR</p>
-              <p>Precio total: {(vehicle.pricePerDay * vehicleDays).toFixed(2)} EUR</p>
-            </div>
+            <article className="vehicle-card">
+              <div className="hotel-header">
+                <h2>Coche de alquiler</h2>
+                <span className="price">{(vehicle.pricePerDay * vehicleDays).toFixed(2)} EUR</span>
+              </div>
+              <p>
+                <span className="visually-hidden">Modelo: </span>
+                {vehicle.name}
+              </p>
+              <p>
+                <span className="visually-hidden">Días: {vehicleDays}</span>
+                
+              </p>
+              <p>
+                <span className="visually-hidden">Precio por día: </span>
+                {vehicle.pricePerDay} EUR
+              </p>
+            </article>
           )}
 
-          <div className="summary-card">
-            <div className="total-price">
-              <h3>Precio total</h3>
-              <p>Paquete: {(flightPrice + hotelPrice + vehiclePrice).toFixed(2)} {currency}</p>
+          <article className="summary-card">
+            <div className="hotel-header">
+              <h2>Precio total del paquete</h2>
+              <p>
+                <span className="price">{(flightPrice + hotelPrice + vehiclePrice).toFixed(2)} {currency}</span>
+              </p>
             </div>
-          </div>
+            <p>
+              *Este precio no incluye impuestos y tasas que se aplicarán en el proceso de reserva
+            </p>
+          </article>
 
           <div className="div-select-btn">
             <button
               className="select-btn"
               onClick={handleBookTrip}
               disabled={loading}
+              aria-busy={loading}
             >
               {loading ? 'Reservando...' : 'Reservar paquete completo'}
             </button>
           </div>
           {errorMessage && (
-            <div className="error-message">
+            <div className="error-message" role="alert">
               <strong>{errorMessage}</strong>
               {cartItems?.find(item => item.isPackage) && (
                 <div className="package-warning">

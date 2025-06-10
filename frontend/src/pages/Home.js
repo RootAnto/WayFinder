@@ -7,9 +7,19 @@ import Footer from '../components/Footer';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Toast = ({ message, onClose }) => (
-  <div className="toast">
+  <div 
+    className="toast" 
+    role="alert"
+    aria-live="assertive"
+    aria-atomic="true"
+  >
     <span>{message}</span>
-    <button onClick={onClose}>✖</button>
+    <button 
+      onClick={onClose}
+      aria-label="Cerrar notificación"
+    >
+      ✖
+    </button>
   </div>
 );
 
@@ -18,20 +28,43 @@ const ChatBotWidget = () => {
 
   return (
     <>
-      <div className="chatbot-button" onClick={() => setOpen(!open)} title="¿Necesitas ayuda?">💬</div>
+      <button 
+        className="chatbot-button" 
+        onClick={() => setOpen(!open)} 
+        aria-label="Abrir asistente virtual"
+        aria-expanded={open}
+        aria-haspopup="dialog"
+        title="¿Necesitas ayuda?"
+      >
+        💬
+      </button>
       {open && (
-        <div className="chatbot-window">
+        <div 
+          className="chatbot-window"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="chatbot-header-title"
+        >
           <div className="chatbot-header">
-            <span>Asistente Virtual</span>
-            <button onClick={() => setOpen(false)}>✖</button>
+            <span id="chatbot-header-title">Asistente Virtual</span>
+            <button 
+              onClick={() => setOpen(false)}
+              aria-label="Cerrar asistente virtual"
+            >
+              ✖
+            </button>
           </div>
           <div className="chatbot-content">
             <div className="chatbot-body">
               <p>¡Hola! ¿En qué puedo ayudarte?</p>
             </div>
             <div className="chatbot-input">
-              <input type="text" placeholder="Escribe tu mensaje..." />
-              <button>Enviar</button>
+              <input 
+                type="text" 
+                placeholder="Escribe tu mensaje..." 
+                aria-label="Escribe tu mensaje"
+              />
+              <button aria-label="Enviar mensaje">Enviar</button>
             </div>
           </div>
         </div>
@@ -207,7 +240,11 @@ function App() {
 
           <ServicesSection />
 
-          {mensaje && <div className="alert alert-info">{mensaje}</div>}
+          {mensaje && (
+            <div className="alert alert-info" role="status" aria-live="polite">
+              {mensaje}
+            </div>
+          )}
 
           {currentUser && (
             <div className="user-greeting">
@@ -229,59 +266,129 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip, load
 
   return (
     <>
-      <h3>Crea una ruta con múltiples destinos</h3>
-      <form className="search-form">
+      <h2 id="search-form-title">Crea una ruta con múltiples destinos</h2>
+      <form 
+        className="search-form"
+        aria-labelledby="search-form-title"
+      >
         <div className="form-row">
           <div className="form-group">
-            <label>Desde</label>
-            <input type="text" name="from" value={searchParams.from} onChange={onInputChange} />
+            <label htmlFor="from-input">Desde</label>
+            <input 
+              id="from-input"
+              type="text" 
+              name="from" 
+              value={searchParams.from} 
+              onChange={onInputChange}
+              aria-required="true"
+            />
           </div>
           <div className="form-group">
-            <label>A</label>
-            <input type="text" name="to" value={searchParams.to} onChange={onInputChange} />
+            <label htmlFor="to-input">A</label>
+            <input 
+              id="to-input"
+              type="text" 
+              name="to" 
+              value={searchParams.to} 
+              onChange={onInputChange}
+              aria-required="true"
+            />
           </div>
           <div className="form-group">
-            <label>Ida</label>
-            <input type="date" name="departure" value={searchParams.departure} onChange={onInputChange} />
+            <label htmlFor="departure-input">Ida</label>
+            <input 
+              id="departure-input"
+              type="date" 
+              name="departure" 
+              value={searchParams.departure} 
+              onChange={onInputChange}
+              aria-required="true"
+            />
           </div>
           <div className="form-group">
-            <label>Vuelta</label>
-            <input type="date" name="return" value={searchParams.return} onChange={onInputChange} />
+            <label htmlFor="return-input">Vuelta</label>
+            <input 
+              id="return-input"
+              type="date" 
+              name="return" 
+              value={searchParams.return} 
+              onChange={onInputChange}
+            />
           </div>
           <div className="form-group">
-            <label>Viajeros y clase de cabina</label>
-            <select name="passengers" value={searchParams.passengers} onChange={onInputChange}>
-              <option>1 Adulto, Turista</option>
-              <option>2 Adultos, Turista</option>
-              <option>1 Adulto, Business</option>
-              <option>Familia (2 Adultos + 2 Niños)</option>
+            <label htmlFor="passengers-select">Viajeros y clase de cabina</label>
+            <select 
+              id="passengers-select"
+              name="passengers" 
+              value={searchParams.passengers} 
+              onChange={onInputChange}
+              aria-required="true"
+            >
+              <option value="1 Adulto, Turista">1 Adulto, Turista</option>
+              <option value="2 Adultos, Turista">2 Adultos, Turista</option>
+              <option value="1 Adulto, Business">1 Adulto, Business</option>
+              <option value="Familia (2 Adultos + 2 Niños)">Familia (2 Adultos + 2 Niños)</option>
             </select>
           </div>
         </div>
 
         <div className="form-row">
           <div className="checkbox-group">
-            <input type="checkbox" id="nearby-from" name="nearbyFrom" checked={searchParams.nearbyFrom} onChange={onInputChange} />
+            <input 
+              type="checkbox" 
+              id="nearby-from" 
+              name="nearbyFrom" 
+              checked={searchParams.nearbyFrom} 
+              onChange={onInputChange}
+            />
             <label htmlFor="nearby-from">Añade aeropuertos cercanos</label>
           </div>
           <div className="checkbox-group">
-            <input type="checkbox" id="nearby-to" name="nearbyTo" checked={searchParams.nearbyTo} onChange={onInputChange} />
+            <input 
+              type="checkbox" 
+              id="nearby-to" 
+              name="nearbyTo" 
+              checked={searchParams.nearbyTo} 
+              onChange={onInputChange}
+            />
             <label htmlFor="nearby-to">Añade aeropuertos cercanos</label>
           </div>
           <div className="checkbox-group">
-            <input type="checkbox" id="direct-only" name="directOnly" checked={searchParams.directOnly} onChange={onInputChange} />
+            <input 
+              type="checkbox" 
+              id="direct-only" 
+              name="directOnly" 
+              checked={searchParams.directOnly} 
+              onChange={onInputChange}
+            />
             <label htmlFor="direct-only">Vuelos directos</label>
           </div>
 
           <div style={{ flexGrow: 1, justifyContent: 'right', display: 'flex', gap: '10px' }}>
-            <button type="button" disabled={loading} className="my-bookings-button" onClick={handleGoToBookings}>
+            <button 
+              type="button" 
+              disabled={loading} 
+              className="my-bookings-button"
+              onClick={handleGoToBookings}
+            >
               Mis reservas
             </button>
-            <button type="button" disabled={loading} className="suggest-button" onClick={onSuggestTrip}>
+            <button 
+              type="button" 
+              disabled={loading} 
+              className="suggest-button"
+              onClick={onSuggestTrip}
+            >
               Sugerir viaje completo
             </button>
-            <button type="submit" disabled={loading} className="search-button" onClick={onSubmit}>
-              Buscar vuelos
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="search-button"
+              onClick={onSubmit}
+              aria-busy={loading}
+            >
+              {loading ? 'Buscando...' : 'Buscar vuelos'}
             </button>
           </div>
         </div>
@@ -292,13 +399,15 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip, load
 
 const ServicesSection = () => (
   <>
-    <hr className="divider" />
-    <div className="options-section">
-      <a href="#" className="option-link">Hoteles</a>
-      <a href="#" className="option-link">Alquiler de coches</a>
-      <a href="#" className="option-link">Explora cualquier lugar</a>
-    </div>
-    <hr className="divider" />
+    <hr className="divider" aria-hidden="true" />
+    <nav aria-label="Servicios adicionales">
+      <div className="options-section">
+        <Link to="/hotels" className="option-link">Hoteles</Link>
+        <Link to="/cars" className="option-link">Alquiler de coches</Link>
+        <Link to="/explore" className="option-link">Explora cualquier lugar</Link>
+      </div>
+    </nav>
+    <hr className="divider" aria-hidden="true" />
   </>
 );
 

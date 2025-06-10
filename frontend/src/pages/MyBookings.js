@@ -1,4 +1,3 @@
-// src/pages/MyBookings.jsx
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -85,27 +84,37 @@ function MyBookings() {
 
   return (
     <div className="app">
-      {loading && <LoadingSpinner message="Cargando tus reservas..." />}
+      {loading && <LoadingSpinner message="Cargando tus reservas..." aria-live="assertive" />}
 
       <Header />
 
       <main className="main-content">
-        <div className="mybookings-container">
-          <h2>Mis reservas</h2>
+        <div className="mybookings-container" role="region" aria-labelledby="mybookings-title">
+          <h2 id="mybookings-title">Mis reservas</h2>
           <br />
 
           {mensaje && (
-            <div className="mybookings-message">{mensaje}</div>
+            <div className="mybookings-message" role="alert">
+              {mensaje}
+            </div>
           )}
 
           {!loading && (
             reservations.length === 0 ? (
-              <p className="mybookings-no-reservations">No tienes reservas pendientes.</p>
+              <p className="mybookings-no-reservations" aria-live="polite">
+                No tienes reservas pendientes.
+              </p>
             ) : (
               <div className="mybookings-reservation-list">
                 {reservations.map(trip => (
-                  <div key={trip.id} className="mybookings-reservation-card">
-                    <h3>{trip.origin} → {trip.destination}</h3>
+                  <div 
+                    key={trip.id} 
+                    className="mybookings-reservation-card"
+                    aria-labelledby={`reservation-${trip.id}-title`}
+                  >
+                    <h3 id={`reservation-${trip.id}-title`}>
+                      {trip.origin} → {trip.destination}
+                    </h3>
                     <p><strong>Fecha de salida:</strong> {trip.departure_date}</p>
                     <p><strong>Fecha de regreso:</strong> {trip.return_date || 'N/A'}</p>
                     <p><strong>Adultos:</strong> {trip.adults}</p>
@@ -133,24 +142,36 @@ function MyBookings() {
                     )}
 
                     <p><strong>Precio total:</strong> {formatCurrency(trip.total_price)}</p>
-                    <p><strong>Estado de la reserva:</strong> {formatStatus(trip.status)}</p>
+                    <p><strong>Estado de la reserva:</strong> <span aria-live="polite">{formatStatus(trip.status)}</span></p>
                     <p><strong>ID de reserva:</strong> {trip.id}</p>
 
                     <div className="mybookings-reservation-actions">
                       {trip.status === 'pendiente' ? (
                         <>
-                          <button className="suggest-button" onClick={() => handleConfirm(trip)}>
+                          <button 
+                            className="suggest-button" 
+                            onClick={() => handleConfirm(trip)}
+                            aria-label={`Confirmar reserva a ${trip.destination}`}
+                          >
                             Confirmar reserva
                           </button>
-                          <button className="suggest-button" onClick={() => handleReject(trip)}>
+                          <button 
+                            className="suggest-button" 
+                            onClick={() => handleReject(trip)}
+                            aria-label={`Rechazar reserva a ${trip.destination}`}
+                          >
                             Rechazar
                           </button>
-                          <button className="suggest-button" onClick={() => handleModify(trip)}>
+                          <button 
+                            className="suggest-button" 
+                            onClick={() => handleModify(trip)}
+                            aria-label={`Modificar reserva a ${trip.destination}`}
+                          >
                             Modificar reserva
                           </button>
                         </>
                       ) : (
-                        <p className="mybookings-status-message">
+                        <p className="mybookings-status-message" aria-live="polite">
                           No puedes modificar esta reserva porque ya está <strong>{formatStatus(trip.status)}</strong>.
                         </p>
                       )}

@@ -116,7 +116,6 @@ function FlightResults() {
         const hotelsList = data.data || [];
         setHotels(hotelsList);
 
-        // Ahora por cada hotel, pedimos la imagen
         for (const hotel of hotelsList) {
           const hotelQuery = `${hotel.name} hotel ${hotel.cityCode || ''}`.trim();
           try {
@@ -124,9 +123,7 @@ function FlightResults() {
             if (!response.ok) continue;
             const imgData = await response.json();
             setHotelImages(prev => ({ ...prev, [hotel.hotelId]: imgData.image_url }));
-          } catch {
-            // fallbacks silenciosos si falla la imagen
-          }
+          } catch {}
         }
 
       } catch (err) {
@@ -187,7 +184,7 @@ function FlightResults() {
 
   return (
     <div className="flight-results-app">
-      <Header /> {/* Header agregado */}
+      <Header />
 
       <main className="results-container">
         <div className="container">
@@ -204,145 +201,232 @@ function FlightResults() {
             </div>
           </div>
 
-          <div className="results-navigation">
-            <button className={`nav-link ${activeTab === 'flights' ? 'active' : ''}`} onClick={() => setActiveTab('flights')}>Vuelos</button>
-            <button className={`nav-link ${activeTab === 'hotels' ? 'active' : ''}`} onClick={() => setActiveTab('hotels')}>Hoteles</button>
-            <button className={`nav-link ${activeTab === 'vehicles' ? 'active' : ''}`} onClick={() => setActiveTab('vehicles')}>Vehículos</button>
+          <div role="tablist" aria-label="Resultados de búsqueda" className="results-navigation">
+            <button
+              role="tab"
+              aria-selected={activeTab === 'flights'}
+              aria-controls="flights-tab"
+              id="flights-tab-btn"
+              className={`nav-link ${activeTab === 'flights' ? 'active' : ''}`}
+              onClick={() => setActiveTab('flights')}
+            >
+              Vuelos
+            </button>
+            <button
+              role="tab"
+              aria-selected={activeTab === 'hotels'}
+              aria-controls="hotels-tab"
+              id="hotels-tab-btn"
+              className={`nav-link ${activeTab === 'hotels' ? 'active' : ''}`}
+              onClick={() => setActiveTab('hotels')}
+            >
+              Hoteles
+            </button>
+            <button
+              role="tab"
+              aria-selected={activeTab === 'vehicles'}
+              aria-controls="vehicles-tab"
+              id="vehicles-tab-btn"
+              className={`nav-link ${activeTab === 'vehicles' ? 'active' : ''}`}
+              onClick={() => setActiveTab('vehicles')}
+            >
+              Vehículos
+            </button>
           </div>
 
           <div className="search-summary">
-            <h2>{searchParams.from} → {searchParams.to}</h2>
+            <h1>{searchParams.from} → {searchParams.to}</h1>
             <p>{formatDate(searchParams.departure)} - {searchParams.return && ` ${formatDate(searchParams.return)}`} | {searchParams.passengers}</p>
           </div>
 
-          {error && <div className="error">{error}</div>}
+          {error && <div className="error" role="alert">{error}</div>}
 
           <div className="tab-content">
             {activeTab === 'flights' && (
-              <div className="flights-section">
-                {loading.flights ? <div className="loading">Cargando vuelos...</div> :
-                  flights.length === 0 ? <div className="no-results">No se encontraron vuelos</div> :
-                    <div className="flights-list">
-                      {flights.map((flight, index) => {
-                        const firstSegment = flight.itineraries[0].segments[0];
-                        const lastSegment = flight.itineraries[0].segments.at(-1);
-                        return (
-                          <div key={index} className="flight-card">
-                            <div className="flight-header">
-                              <span className="airline">{firstSegment.carrierCode}</span>
-                              <span className="price">{flight.price.total} {flight.price.currency}</span>
+              <div 
+                role="tabpanel"
+                id="flights-tab"
+                aria-labelledby="flights-tab-btn"
+                className="flights-section"
+              >
+                {loading.flights ? (
+                  <div className="loading" aria-live="polite" aria-busy="true">
+                    Cargando vuelos...
+                  </div>
+                ) : flights.length === 0 ? (
+                  <div className="no-results" aria-live="polite">
+                    No se encontraron vuelos
+                  </div>
+                ) : (
+                  <div className="flights-list">
+                    {flights.map((flight, index) => {
+                      const firstSegment = flight.itineraries[0].segments[0];
+                      const lastSegment = flight.itineraries[0].segments.at(-1);
+                      return (
+                        <article key={index} className="flight-card">
+                          <div className="flight-header">
+                            <span className="airline">{firstSegment.carrierCode}</span>
+                            <span className="price">
+                              <span className="visually-hidden">Precio: </span>
+                              {flight.price.total} {flight.price.currency}
+                            </span>
+                          </div>
+                          <div className="flight-details">
+                            <div className="time-block">
+                              <time dateTime={firstSegment.departureTime} className="time">
+                                {formatTime(firstSegment.departureTime)}
+                              </time>
+                              <span className="airport">{firstSegment.departureAirport}</span>
                             </div>
-                            <div className="flight-details">
-                              <div className="time-block">
-                                <span className="time">{formatTime(firstSegment.departureTime)}</span>
-                                <span className="airport">{firstSegment.departureAirport}</span>
+                            <div className="duration-block">
+                              <div className="duration-line">
+                                <span className="duration">
+                                  {formatDuration(flight.itineraries[0].duration)}
+                                </span>
                               </div>
-                              <div className="duration-block">
-                                <div className="duration-line"><span className="duration">{formatDuration(flight.itineraries[0].duration)}</span></div>
-                                <span className="stops">{flight.itineraries[0].segments.length === 1 ? 'Directo' : `${flight.itineraries[0].segments.length - 1} escala(s)`}</span>
-                              </div>
-                              <div className="time-block">
-                                <span className="time">{formatTime(lastSegment.arrivalTime)}</span>
-                                <span className="airport">{lastSegment.arrivalAirport}</span>
-                              </div>
+                              <span className="stops">
+                                {flight.itineraries[0].segments.length === 1 ? 'Directo' : `${flight.itineraries[0].segments.length - 1} escala(s)`}
+                              </span>
                             </div>
-                            <div className="flight-footer">
-                              <button 
-                                className="select-btn" 
-                                onClick={() => {
-                                  // Alert antes de agregar
-                                  alert(`¡Vuelo agregado al carrito!`);
-                                  
-                                  addToCart({
-                                    type: 'flight',
-                                    id: flight.id,
-                                    airline: firstSegment.carrierCode,
-                                    origin: searchParams.from,
-                                    destination: searchParams.to,
-                                    departure: searchParams.departure,
-                                    returnDate: searchParams.return,
-                                    price: flight.price.total,
-                                    currency: flight.price.currency,
-                                    duration: flight.itineraries[0].duration
-                                  });
-                                }}
-                              >
-                                Seleccionar
-                              </button>
+                            <div className="time-block">
+                              <time dateTime={lastSegment.arrivalTime} className="time">
+                                {formatTime(lastSegment.arrivalTime)}
+                              </time>
+                              <span className="airport">{lastSegment.arrivalAirport}</span>
                             </div>
                           </div>
-                        );
-                      })}
-                    </div>}
+                          <div className="flight-footer">
+                            <button 
+                              className="select-btn"
+                              onClick={() => {
+                                alert(`¡Vuelo agregado al carrito!`);
+                                addToCart({
+                                  type: 'flight',
+                                  id: flight.id,
+                                  airline: firstSegment.carrierCode,
+                                  origin: searchParams.from,
+                                  destination: searchParams.to,
+                                  departure: searchParams.departure,
+                                  returnDate: searchParams.return,
+                                  price: flight.price.total,
+                                  currency: flight.price.currency,
+                                  duration: flight.itineraries[0].duration
+                                });
+                              }}
+                            >
+                              Seleccionar
+                            </button>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
 
             {activeTab === 'hotels' && (
-              <div className="hotels-section">
-                {loading.hotels ? <div className="loading">Cargando hoteles...</div> :
-                  hotels.length === 0 ? <div className="no-results">No se encontraron hoteles</div> :
-                    <div className="hotels-list">
-                      {hotels.map((hotel) => (
-                        <div key={hotel.hotelId} className="hotel-card">
-                          <div className="hotel-image">
-                            <img src={hotelImages[hotel.hotelId] || `https://source.unsplash.com/300x200/?hotel,${hotel.cityCode}`} alt={hotel.name} />
-                          </div>
-                          <div className="hotel-info">
-                            <h3>{hotel.name}</h3>
-                            <p>{hotel.cityCode}</p>
-                            <p>Precio: {hotel.price} {hotel.currency}</p>
-                          </div>
-                          <button 
-                            className="select-btn" 
-                            onClick={() => {
-                              alert("¡Hotel agregado al carrito!");
-                              addToCart({
-                                type: 'hotel',
-                                id: hotel.hotelId,
-                                name: hotel.name,
-                                city: hotel.cityCode,
-                                price: hotel.price,
-                                currency: hotel.currency
-                              });
-                            }}
-                          >
-                            Reservar
-                          </button>
+              <div 
+                role="tabpanel"
+                id="hotels-tab"
+                aria-labelledby="hotels-tab-btn"
+                className="hotels-section"
+              >
+                {loading.hotels ? (
+                  <div className="loading" aria-live="polite" aria-busy="true">
+                    Cargando hoteles...
+                  </div>
+                ) : hotels.length === 0 ? (
+                  <div className="no-results" aria-live="polite">
+                    No se encontraron hoteles
+                  </div>
+                ) : (
+                  <div className="hotels-list">
+                    {hotels.map((hotel) => (
+                      <article key={hotel.hotelId} className="hotel-card">
+                        <div className="hotel-image">
+                          <img 
+                            src={hotelImages[hotel.hotelId] || `https://source.unsplash.com/300x200/?hotel,${hotel.cityCode}`} 
+                            alt={`Imagen del hotel ${hotel.name}`} 
+                          />
                         </div>
-                      ))}
-                    </div>}
+                        <div className="hotel-info">
+                          <h2>{hotel.name}</h2>
+                          <p>{hotel.cityCode}</p>
+                          <div>
+                            <span className="visually-hidden">Precio: </span>
+                            <strong>{hotel.price} {hotel.currency}</strong>
+                          </div>
+                        </div>
+                        <button 
+                          className="select-btn"
+                          onClick={() => {
+                            alert("¡Hotel agregado al carrito!");
+                            addToCart({
+                              type: 'hotel',
+                              id: hotel.hotelId,
+                              name: hotel.name,
+                              city: hotel.cityCode,
+                              price: hotel.price,
+                              currency: hotel.currency
+                            });
+                          }}
+                        >
+                          Reservar
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
             {activeTab === 'vehicles' && (
-              <div className="vehicles-section">
-                {loading.vehicles ? <div className="loading">Cargando vehículos...</div> :
-                  vehicles.length === 0 ? <div className="no-results">No se encontraron vehículos</div> :
-                    <div className="vehicles-list">
-                      {vehicles.map((vehicle) => (
-                        <div key={vehicle.vehicleId} className="vehicle-card">
-                          <div className="vehicle-image">
-                            <img
-                              src={vehicleImages[`${vehicle.brand}-${vehicle.model}`] || `https://source.unsplash.com/300x200/?car,${vehicle.brand}`}
-                              alt={vehicle.name}
-                            />
+              <div 
+                role="tabpanel"
+                id="vehicles-tab"
+                aria-labelledby="vehicles-tab-btn"
+                className="vehicles-section"
+              >
+                {loading.vehicles ? (
+                  <div className="loading" aria-live="polite" aria-busy="true">
+                    Cargando vehículos...
+                  </div>
+                ) : vehicles.length === 0 ? (
+                  <div className="no-results" aria-live="polite">
+                    No se encontraron vehículos
+                  </div>
+                ) : (
+                  <div className="vehicles-list">
+                    {vehicles.map((vehicle) => (
+                      <article key={vehicle.vehicleId} className="vehicle-card">
+                        <div className="vehicle-image">
+                          <img
+                            src={vehicleImages[`${vehicle.brand}-${vehicle.model}`] || `https://source.unsplash.com/300x200/?car,${vehicle.brand}`}
+                            alt={`Imagen del vehículo ${vehicle.brand} ${vehicle.model}`}
+                          />
+                        </div>
+                        <div className="vehicle-info">
+                          <h2>{vehicle.name} ({vehicle.year})</h2>
+                          <div className="type">{vehicle.vehicleType || 'Economy'}</div>
+                          <div>
+                            <span className="visually-hidden">Precio: </span>
+                            <strong>{vehicle.pricePerDay} {vehicle.currency} /día</strong>
                           </div>
-                          <div className="vehicle-info">
-                            <h3>{vehicle.name} ({vehicle.year})</h3>
-                            <div className="type">{vehicle.vehicleType || 'Economy'}</div>
-                            <div className="price">{vehicle.pricePerDay} {vehicle.currency} /día</div>
-                            <div className="features">
-                              <span>✔️ {vehicle.seats} asientos</span>
-                              <span>✔️ {vehicle.transmission}</span>
-                              <span>✔️ {vehicle.fuelType}</span>
-                              <span>✔️ {vehicle.doors} puertas</span>
-                            </div>
-                          </div>
-                          <button className="select-btn" onClick={() => {
+                          <ul className="features" aria-label="Características del vehículo">
+                            <li>{vehicle.seats} asientos</li>
+                            <li>{vehicle.transmission}</li>
+                            <li>{vehicle.fuelType}</li>
+                            <li>{vehicle.doors} puertas</li>
+                          </ul>
+                        </div>
+                        <button 
+                          className="select-btn"
+                          onClick={() => {
                             const pickUp = new Date(searchParams.departure);
                             const dropOff = new Date(searchParams.return || searchParams.departure);
                             const days = Math.ceil((dropOff - pickUp) / (1000 * 60 * 60 * 24));
-                            alert("Vehiculo agregado al carrito!");
+                            alert("Vehículo agregado al carrito!");
                             addToCart({
                               type: 'vehicle',
                               vehicleId: vehicle.vehicleId,
@@ -357,19 +441,21 @@ function FlightResults() {
                               pickUpDate: searchParams.departure,
                               dropOffDate: searchParams.return || searchParams.departure
                             });
-                          }}>
-                            Alquilar
-                          </button>
-                        </div>
-                      ))}
-                    </div>}
+                          }}
+                        >
+                          Alquilar
+                        </button>
+                      </article>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
       </main>
 
-      <Footer /> {/* Footer agregado */}
+      <Footer />
     </div>
   );
 }
