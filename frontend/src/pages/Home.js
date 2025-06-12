@@ -79,8 +79,8 @@ function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({
-    from: 'MAD',
-    to: 'NYC',
+    from: 'Madrid',
+    to: 'Barcelona',
     departure: '2025-06-15',
     return: '2025-06-25',
     passengers: '1 Adulto, Turista',
@@ -88,6 +88,12 @@ function App() {
     nearbyTo: false,
     directOnly: false
   });
+
+  const getCityCode = async (cityName) => {
+    const res = await fetch(`http://localhost:8000/location-search?keyword=${encodeURIComponent(cityName)}`);
+    const data = await res.json();
+    return data.locations?.[0]?.iataCode || null;
+  };
 
   useEffect(() => {
     fetch('http://localhost:8000/')
@@ -111,23 +117,33 @@ function App() {
   const handleSuggestTrip = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const originCode = await getCityCode(searchParams.from);
+    const destinationCode = await getCityCode(searchParams.to);
+
+    if (!originCode || !destinationCode) {
+      showToast("No se encontraron códigos IATA.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:8000/trip-search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          originLocationCode: searchParams.from,
-          destinationLocationCode: searchParams.to,
+          originLocationCode: originCode,
+          destinationLocationCode: destinationCode,
           departureDate: searchParams.departure,
           returnDate: searchParams.return || searchParams.departure,
           adults: 1,
           max: 1,
-          cityCode: searchParams.to,
+          cityCode: destinationCode,
           checkInDate: searchParams.departure,
           checkOutDate: searchParams.return || searchParams.departure,
           hotelLimit: 1,
           defaultHotelPrice: 100,
-          vehicleLocation: searchParams.to,
+          vehicleLocation: destinationCode,
           vehicleLimit: 1
         })
       });
@@ -135,8 +151,14 @@ function App() {
       if (!response.ok) throw new Error('Error al obtener sugerencia de viaje');
       const data = await response.json();
 
+      const updatedSearchParams = {
+        ...searchParams,
+        from: originCode,
+        to: destinationCode
+      };
+
       navigate('/TripSuggestion', {
-        state: { searchParams, tripData: data }
+        state: { searchParams: updatedSearchParams, tripData: data }
       });
 
     } catch (error) {
@@ -146,17 +168,28 @@ function App() {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    const originCode = await getCityCode(searchParams.from);
+    const destinationCode = await getCityCode(searchParams.to);
+
+    if (!originCode || !destinationCode) {
+      showToast("No se encontraron códigos IATA.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const [flightsResponse, hotelsResponse, vehiclesResponse] = await Promise.all([
         fetch("http://localhost:8000/flight-search", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            originLocationCode: searchParams.from,
-            destinationLocationCode: searchParams.to,
+            originLocationCode: originCode,
+            destinationLocationCode: destinationCode,
             departureDate: searchParams.departure,
             returnDate: searchParams.return,
             adults: 1,
@@ -167,7 +200,7 @@ function App() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            cityCode: searchParams.to,
+            cityCode: destinationCode,
             radius: 10,
             checkInDate: searchParams.departure,
             checkOutDate: searchParams.return || searchParams.departure,
@@ -179,7 +212,7 @@ function App() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            location: searchParams.to,
+            location: destinationCode,
             pickUpDate: searchParams.departure,
             dropOffDate: searchParams.return || searchParams.departure,
             vehicleType: "economy",
@@ -199,9 +232,15 @@ function App() {
         vehiclesResponse.json()
       ]);
 
+      const updatedSearchParams = {
+        ...searchParams,
+        from: originCode,
+        to: destinationCode
+      };
+
       navigate('/FlightResults', {
         state: {
-          searchParams,
+          searchParams: updatedSearchParams,
           flightResults: flightsData.offers || [],
           hotelResults: hotelsData.results || [],
           vehicleResults: vehiclesData.cars || []
@@ -327,22 +366,14 @@ const SearchForm = ({ searchParams, onInputChange, onSubmit, onSuggestTrip, load
               <option value="1 Adulto, Turista">1 Adulto, Turista</option>
               <option value="2 Adultos, Turista">2 Adultos, Turista</option>
               <option value="1 Adulto, Business">1 Adulto, Business</option>
-              <option value="Familia (2 Adultos + 2 Niños)">Familia (2 Adultos + 2 Niños)</option>
+              <option value="2 Adultos, Business">2 Adultos, Business</option>
+              <option value="2 Adultos y 2 Niños, Turista">2 Adultos y 2 Niños, Turista</option>
+              <option value="2 Adultos y 1 Niños, Turista">2 Adultos y 1 Niños, Turista</option>
             </select>
           </div>
         </div>
 
         <div className="form-row">
-          <div className="checkbox-group">
-            <input 
-              type="checkbox" 
-              id="nearby-from" 
-              name="nearbyFrom" 
-              checked={searchParams.nearbyFrom} 
-              onChange={onInputChange}
-            />
-            <label htmlFor="nearby-from">Añade aeropuertos cercanos</label>
-          </div>
           <div className="checkbox-group">
             <input 
               type="checkbox" 
@@ -402,9 +433,9 @@ const ServicesSection = () => (
     <hr className="divider" aria-hidden="true" />
     <nav aria-label="Servicios adicionales">
       <div className="options-section">
-        <Link to="/hotels" className="option-link">Hoteles</Link>
-        <Link to="/cars" className="option-link">Alquiler de coches</Link>
-        <Link to="/explore" className="option-link">Explora cualquier lugar</Link>
+        <Link to="/" className="option-link">Hoteles</Link>
+        <Link to="/" className="option-link">Alquiler de coches</Link>
+        <Link to="/" className="option-link">Explora cualquier lugar</Link>
       </div>
     </nav>
     <hr className="divider" aria-hidden="true" />

@@ -18,6 +18,8 @@ import StripeCheckout from './components/StripeCheckout';
 import PrivateRoute from './components/PrivateRoute';
 import MyBookings from './pages/MyBookings';
 import ModifyBooking from './pages/ModifyBooking';
+import OffersSectionPage from './pages/OffersSection';
+import ContactPage from './pages/Contact';
 
 function AppRoutes() {
   const { currentUser, loading } = useAuth();
@@ -39,6 +41,8 @@ function AppRoutes() {
       <Route path="/FlightResults" element={<FlightResultsPage />} />
       <Route path="/TripSuggestion" element={<TripSuggestionPage />} />
       <Route path="/Cart" element={<CartPage />} />
+      <Route path="/OffersSection" element={<OffersSectionPage />} />
+      <Route path="/Contact" element={<ContactPage />} />
 
       <Route
         path="/my-bookings"

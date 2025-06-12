@@ -8,11 +8,10 @@ import Footer from '../components/Footer';
 
 function FlightResults() {
   const { currentUser, logout } = useAuth();
-  const { addToCart } = useCart();
+  const { addToCart, cartItems } = useCart();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('flights');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const {
     searchParams = {
       from: 'MAD',
@@ -25,7 +24,6 @@ function FlightResults() {
     hotelResults = [],
     vehicleResults = []
   } = location.state || {};
-
   const [flights, setFlights] = useState(flightResults);
   const [hotels, setHotels] = useState(hotelResults.data || hotelResults);
   const [vehicles, setVehicles] = useState(vehicleResults.data || vehicleResults);
@@ -33,6 +31,29 @@ function FlightResults() {
   const [vehicleImages, setVehicleImages] = useState({});
   const [loading, setLoading] = useState({ flights: false, hotels: false, vehicles: false });
   const [error, setError] = useState(null);
+  const [originCityName, setOriginCityName] = useState(searchParams.from);
+  const [destinationCityName, setDestinationCityName] = useState(searchParams.to);
+
+  const hasPackageInCart = () => {
+    return cartItems.some(item => item.type === 'package');
+  };
+
+  useEffect(() => {
+    const fetchCityName = async (code, setName) => {
+      try {
+        const res = await fetch(`http://localhost:8000/location-search?keyword=${code}`);
+        const data = await res.json();
+        if (data.locations && data.locations[0]) {
+          setName(data.locations[0].address.cityName || code);
+        }
+      } catch {
+        setName(code);
+      }
+    };
+
+    fetchCityName(searchParams.from, setOriginCityName);
+    fetchCityName(searchParams.to, setDestinationCityName);
+  }, [searchParams.from, searchParams.to]);
 
   useEffect(() => {
     const fetchHotelImages = async () => {
@@ -182,6 +203,25 @@ function FlightResults() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
+  const getTotalPassengers = () => {
+    const passengers = searchParams.passengers;
+
+    const adultMatch = passengers.match(/(\d+)\s*Adulto[s]?/i);
+    const adults = adultMatch ? parseInt(adultMatch[1]) : 0;
+
+    const childMatch = passengers.match(/(\d+)\s*Niñ[oa]s?/i);
+    const children = childMatch ? parseInt(childMatch[1]) : 0;
+
+    return adults + children;
+  };
+
+  const getFlightClass = () => {
+    const parts = searchParams.passengers.split(',').map(s => s.trim().toLowerCase());
+    if (parts.some(p => p.includes('business'))) return 'business';
+    if (parts.some(p => p.includes('turista'))) return 'economy';
+    return 'economy';
+  };
+
   return (
     <div className="flight-results-app">
       <Header />
@@ -235,7 +275,7 @@ function FlightResults() {
           </div>
 
           <div className="search-summary">
-            <h1>{searchParams.from} → {searchParams.to}</h1>
+            <h1>{originCityName} → {destinationCityName}</h1>
             <p>{formatDate(searchParams.departure)} - {searchParams.return && ` ${formatDate(searchParams.return)}`} | {searchParams.passengers}</p>
           </div>
 
@@ -260,15 +300,26 @@ function FlightResults() {
                 ) : (
                   <div className="flights-list">
                     {flights.map((flight, index) => {
+                      const adultCount = getTotalPassengers();
+                      const flightClass = getFlightClass();
+
+                      let priceMultiplier = 1;
+                      if (flightClass === 'business') {
+                        priceMultiplier = 3;
+                      }
+
+                      const basePrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+                      const flightPrice = basePrice * adultCount * priceMultiplier;
+
                       const firstSegment = flight.itineraries[0].segments[0];
                       const lastSegment = flight.itineraries[0].segments.at(-1);
+
                       return (
                         <article key={index} className="flight-card">
                           <div className="flight-header">
                             <span className="airline">{firstSegment.carrierCode}</span>
                             <span className="price">
-                              <span className="visually-hidden">Precio: </span>
-                              {flight.price.total} {flight.price.currency}
+                              <span className="visually-hidden">{flightPrice.toFixed(2)} {flight.price.currency}</span>
                             </span>
                           </div>
                           <div className="flight-details">
@@ -299,6 +350,10 @@ function FlightResults() {
                             <button 
                               className="select-btn"
                               onClick={() => {
+                                if (hasPackageInCart()) {
+                                  alert('Ya tienes un paquete en el carrito. No puedes añadir un vuelo individual.');
+                                  return;
+                                }
                                 alert(`¡Vuelo agregado al carrito!`);
                                 addToCart({
                                   type: 'flight',
@@ -308,9 +363,10 @@ function FlightResults() {
                                   destination: searchParams.to,
                                   departure: searchParams.departure,
                                   returnDate: searchParams.return,
-                                  price: flight.price.total,
+                                  price: flightPrice.toFixed(2),
                                   currency: flight.price.currency,
-                                  duration: flight.itineraries[0].duration
+                                  duration: flight.itineraries[0].duration,
+                                  passengers: searchParams.passengers
                                 });
                               }}
                             >
@@ -361,6 +417,10 @@ function FlightResults() {
                         <button 
                           className="select-btn"
                           onClick={() => {
+                            if (hasPackageInCart()) {
+                              alert('Ya tienes un paquete en el carrito. No puedes añadir un hotel individual.');
+                              return;
+                            }
                             alert("¡Hotel agregado al carrito!");
                             addToCart({
                               type: 'hotel',
@@ -426,6 +486,10 @@ function FlightResults() {
                             const pickUp = new Date(searchParams.departure);
                             const dropOff = new Date(searchParams.return || searchParams.departure);
                             const days = Math.ceil((dropOff - pickUp) / (1000 * 60 * 60 * 24));
+                            if (hasPackageInCart()) {
+                              alert('Ya tienes un paquete en el carrito. No puedes añadir un vehículo individual.');
+                              return;
+                            }
                             alert("Vehículo agregado al carrito!");
                             addToCart({
                               type: 'vehicle',

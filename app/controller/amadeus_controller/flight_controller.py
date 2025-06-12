@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from amadeus import Client, ResponseError
+from fastapi import APIRouter, HTTPException, Query
 from app.models.amadeus_pydantic.flight import (
         FlightSearchQuery,
         FlightSearchResponse,
@@ -32,13 +33,19 @@ async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
             "departureDate": query.departureDate,
             "returnDate": query.returnDate,
             "adults": query.adults,
-            "max": query.max
+            "max": 50
         }
 
         response = amadeus.shopping.flight_offers_search.get(**params)
 
         results = []
+        seen_departure_times = set()
+
         for offer in response.data:
+            # Si ya tenemos la cantidad deseada, parar
+            if len(results) >= query.max:
+                break
+                
             itineraries = []
             for itinerary in offer['itineraries']:
                 segments = []
@@ -58,6 +65,12 @@ async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
                     segments=segments
                 ))
 
+            # Filtrar duplicados por hora de salida del primer segmento
+            first_departure_time = itineraries[0].segments[0].departureTime
+            if first_departure_time in seen_departure_times:
+                continue  # Omitir duplicado
+            seen_departure_times.add(first_departure_time)
+
             price = FlightPrice(
                 total=offer['price']['total'],
                 currency=offer['price']['currency']
@@ -69,6 +82,11 @@ async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
                 price=price,
                 itineraries=itineraries
             ))
+        
+        results = sorted(
+            results,
+            key=lambda offer: offer.itineraries[0].segments[0].departureTime
+        )
 
         return FlightSearchResponse(
             success=True,
@@ -87,3 +105,17 @@ async def search_flights(query: FlightSearchQuery) -> FlightSearchResponse:
             status_code=500,
             detail=f"Error interno al buscar vuelos: {str(error)}"
         )
+
+@router.get("/location-search")
+def location_search(
+    keyword: str,
+    subType: str = Query(default="CITY", regex="^(CITY|AIRPORT)$")
+):
+    try:
+        response = amadeus.reference_data.locations.get(
+            keyword=keyword,
+            subType=subType
+        )
+        return {"locations": response.data}
+    except ResponseError as error:
+        raise HTTPException(status_code=500, detail=str(error))
