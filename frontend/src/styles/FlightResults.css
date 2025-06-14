@@ -314,22 +314,6 @@
   color: #0066cc;
 }
 
-.select-btn {
-  padding: 6px 15px;
-  background: #ff5722;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 14px;
-  transition: background 0.3s;
-}
-
-.select-btn:hover {
-  background: #e64a19;
-}
-
 /* Listado de hoteles */
 .hotels-list {
   display: grid;
@@ -393,19 +377,6 @@
 
 .location i {
   color: #0066cc;
-}
-
-.price {
-  margin-top: auto;
-  font-size: 20px;
-  font-weight: bold;
-  color: #ff5722;
-}
-
-.price span {
-  font-size: 14px;
-  color: #666;
-  font-weight: normal;
 }
 
 .hotel-card .select-btn {
@@ -573,20 +544,20 @@
   max-width: 400px;
 }
 
-.newsletter-form input {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 4px 0 0 4px;
-}
 
 .newsletter-form button {
+  font-size: 16px;
   padding: 10px 15px;
   background-color: #0071c2;
   color: white;
   border: none;
-  border-radius: 0 4px 4px 0;
+  border-radius: 4px;
   cursor: pointer;
+  transition: 0.5s;
+}
+
+.newsletter-form button:hover{
+  background-color: #005694;
 }
 
 .social-links {

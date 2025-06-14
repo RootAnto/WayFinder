@@ -9,7 +9,6 @@ import '../styles/Login.css';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, setCurrentUser } = useAuth();
@@ -52,12 +51,6 @@ const Login = () => {
     try {
       const user = await login(email, password);
 
-      if (rememberMe) {
-        localStorage.setItem('rememberMe', 'true');
-      } else {
-        localStorage.removeItem('rememberMe');
-      }
-
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.detail || 'Correo o contraseña incorrectos');
@@ -97,19 +90,6 @@ const Login = () => {
                 placeholder="••••••••"
                 required
               />
-            </div>
-            <div className="login-options">
-              <div className="login-remember">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="login-checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <label htmlFor="remember">Recordarme</label>
-              </div>
-              <Link to="/ForgotPassword" className="login-link">¿Olvidaste tu contraseña?</Link>
             </div>
             <button type="submit" className="login-button" disabled={loading}>
               {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}

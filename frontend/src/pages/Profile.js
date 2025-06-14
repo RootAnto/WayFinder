@@ -60,12 +60,11 @@ function Profile() {
           </div>
         </div>
         <div className="profile-actions">
-          <button className="action-btn primary" aria-label="Buscar vuelos">
-            <i className="fas fa-ticket-alt" aria-hidden="true"></i> Buscar vuelos
-          </button>
-          <button className="action-btn secondary" aria-label="Configuración">
-            <i className="fas fa-cog" aria-hidden="true"></i> Configuración
-          </button>
+          <Link to="/">
+            <button className="action-btn primary" aria-label="Buscar vuelos">
+              <i className="fas fa-ticket-alt" aria-hidden="true"></i> Buscar vuelos
+            </button>
+          </Link>
         </div>
       </header>
 
@@ -87,20 +86,6 @@ function Profile() {
           >
             <i className="fas fa-plane" aria-hidden="true"></i> Mis viajes
           </button>
-          <button
-            className={`nav-item ${activeTab === 'preferences' ? 'active' : ''}`}
-            onClick={() => setActiveTab('preferences')}
-            aria-label="Ver preferencias"
-          >
-            <i className="fas fa-sliders-h" aria-hidden="true"></i> Preferencias
-          </button>
-          <button
-            className={`nav-item ${activeTab === 'payments' ? 'active' : ''}`}
-            onClick={() => setActiveTab('payments')}
-            aria-label="Ver métodos de pago"
-          >
-            <i className="fas fa-credit-card" aria-hidden="true"></i> Pagos
-          </button>
         </nav>
 
         {/* Tab Content */}
@@ -109,17 +94,6 @@ function Profile() {
             <section className="overview-section" role="region" aria-label="Sección de información personal">
               <div className="section-header">
                 <h2>Información personal</h2>
-                <button
-                  className="edit-toggle"
-                  onClick={() => setEditMode(!editMode)}
-                  aria-label={editMode ? 'Guardar cambios' : 'Editar información'}
-                >
-                  {editMode ? (
-                    <><i className="fas fa-check" aria-hidden="true"></i> Guardar</>
-                  ) : (
-                    <><i className="fas fa-pen" aria-hidden="true"></i> Editar</>
-                  )}
-                </button>
               </div>
 
               <div className="info-grid">
@@ -127,8 +101,6 @@ function Profile() {
                   { label: 'Nombre completo', name: 'name', type: 'text' },
                   { label: 'Correo electrónico', name: 'email', type: 'email' },
                   { label: 'Teléfono', name: 'phone', type: 'tel' },
-                  { label: 'Pasaporte', name: 'passport', type: 'text' },
-                  { label: 'Nacionalidad', name: 'nationality', type: 'text' },
                 ].map(({ label, name, type }) => (
                   <div className="info-field" key={name}>
                     <label htmlFor={name}>{label}</label>
@@ -153,11 +125,6 @@ function Profile() {
             <section className="travel-section" role="region" aria-label="Historial de viajes">
               <div className="section-header">
                 <h2>Historial de viajes</h2>
-                <div className="travel-filters" role="group" aria-label="Filtros de viajes">
-                  <button className="filter-btn active" aria-pressed="true">Todos</button>
-                  <button className="filter-btn" aria-pressed="false">Próximos</button>
-                  <button className="filter-btn" aria-pressed="false">Pasados</button>
-                </div>
               </div>
 
               <div className="travel-list">

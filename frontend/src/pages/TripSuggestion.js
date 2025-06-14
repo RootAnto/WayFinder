@@ -11,10 +11,39 @@ function TripSuggestion() {
   const { addToCart, cartItems } = useCart();
   const location = useLocation();
   const navigate = useNavigate();
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');  
+  const {
+    searchParams = {
+      from: 'MAD',
+      to: 'NYC',
+      departure: '2025-06-15',
+      return: '2025-06-25',
+      passengers: '1 Adulto, Turista'
+    },
+    tripData
+  } = location.state || {};
+  const [originCityName, setOriginCityName] = useState(searchParams.from);
+  const [destinationCityName, setDestinationCityName] = useState(searchParams.to);
+
+  useEffect(() => {
+    const fetchCityName = async (code, setName) => {
+      try {
+        const res = await fetch(`http://localhost:8000/location-search?keyword=${code}`);
+        const data = await res.json();
+        if (data.locations && data.locations[0]) {
+          setName(data.locations[0].address.cityName || code);
+        }
+      } catch {
+        setName(code); // fallback
+      }
+    };
+
+    fetchCityName(searchParams.from, setOriginCityName);
+    fetchCityName(searchParams.to, setDestinationCityName);
+  }, [searchParams.from, searchParams.to]);
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -26,16 +55,6 @@ function TripSuggestion() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isMenuOpen]);
 
-  const {
-    searchParams = {
-      from: 'MAD',
-      to: 'NYC',
-      departure: '2025-06-15',
-      return: '2025-06-25',
-      passengers: '1 Adulto, Turista'
-    },
-    tripData
-  } = location.state || {};
 
   const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -61,9 +80,9 @@ function TripSuggestion() {
       return;
     }
 
-    const existingPackage = cartItems?.find(item => item.isPackage);
-    if (existingPackage) {
-      setErrorMessage("Ya tienes un paquete en el carrito.");
+    const hasIndividualItems = cartItems?.some(item => !item.isPackage);
+    if (hasIndividualItems) {
+      setErrorMessage("No puedes añadir un paquete si ya tienes vuelos, hoteles o coches individuales en el carrito.");
       return;
     }
 
@@ -84,12 +103,18 @@ function TripSuggestion() {
 
       const vehicleDays = hotelNights;
 
-      const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+      const adultCount = getTotalPassengers();
+      const flightClass = getFlightClass();
+
+      let priceMultiplier = 1;
+      if (flightClass === 'business') {
+        priceMultiplier = 3;
+      }
+
+      const basePrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+      const flightPrice = basePrice * adultCount * priceMultiplier;
       const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
-      const vehiclePrice =
-        typeof vehicle?.pricePerDay === "number" && vehicleDays
-          ? parseFloat((vehicle.pricePerDay * vehicleDays).toFixed(2))
-          : 0;
+      const vehiclePrice = typeof vehicle?.pricePerDay === "number" && vehicleDays ? parseFloat((vehicle.pricePerDay * vehicleDays).toFixed(2)) : 0;
 
       const packageItem = {
         id: `package-${Date.now()}`,
@@ -97,6 +122,7 @@ function TripSuggestion() {
         name: `Paquete Completo: ${searchParams.from} → ${searchParams.to}`,
         price: parseFloat((flightPrice + hotelPrice + vehiclePrice).toFixed(2)),
         currency: flight?.price?.currency || hotel?.currency || vehicle?.currency || "EUR",
+        passengers: searchParams.passengers,
         details: {
           flight: {
             id: flight?.id,
@@ -158,6 +184,25 @@ function TripSuggestion() {
     );
   }
 
+  const getTotalPassengers = () => {
+    const passengers = searchParams.passengers;
+
+    const adultMatch = passengers.match(/(\d+)\s*Adulto[s]?/i);
+    const adults = adultMatch ? parseInt(adultMatch[1]) : 0;
+
+    const childMatch = passengers.match(/(\d+)\s*Niñ[oa]s?/i);
+    const children = childMatch ? parseInt(childMatch[1]) : 0;
+
+    return adults + children;
+  };
+
+  const getFlightClass = () => {
+    const parts = searchParams.passengers.split(',').map(s => s.trim().toLowerCase());
+    if (parts.some(p => p.includes('business'))) return 'business';
+    if (parts.some(p => p.includes('turista'))) return 'economy';
+    return 'economy';
+  };
+
   const flight = tripData.flights?.[0];
   const hotel = tripData.hotels?.[0];
   const vehicle = tripData.vehicles?.[0];
@@ -168,7 +213,16 @@ function TripSuggestion() {
   const hotelNights = hotel?.nights || (returnDate ? Math.ceil((returnDate - departure) / (1000 * 60 * 60 * 24)) : 1);
   const vehicleDays = hotelNights;
 
-  const flightPrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+  const adultCount = getTotalPassengers();
+  const flightClass = getFlightClass();
+
+  let priceMultiplier = 1;
+  if (flightClass === 'business') {
+    priceMultiplier = 3;
+  }
+
+  const basePrice = flight?.price?.total ? parseFloat(flight.price.total) : 0;
+  const flightPrice = basePrice * adultCount * priceMultiplier;
   const hotelPrice = typeof hotel?.price === "number" ? hotel.price : 0;
   const vehiclePrice = vehicle?.pricePerDay ? vehicle.pricePerDay * vehicleDays : 0;
 
@@ -208,7 +262,7 @@ function TripSuggestion() {
           </div>
 
           <div className="search-summary">
-            <h1>{searchParams.from} → {searchParams.to}</h1>
+            <h1>{originCityName} → {destinationCityName}</h1>
             <p>
               <time dateTime={searchParams.departure}>{formatDate(searchParams.departure)}</time> -
               {searchParams.return && (
@@ -227,7 +281,7 @@ function TripSuggestion() {
                 <div className="flight-header">
                   <span className="airline">{flight.itineraries[0].segments[0].carrierCode}</span>
                   <span className="price">
-                    {flight.price.total} {flight.price.currency}
+                    {flightPrice} {flight.price.currency}
                   </span>
                 </div>
                 <div className="flight-details">
@@ -319,10 +373,10 @@ function TripSuggestion() {
           {errorMessage && (
             <div className="error-message" role="alert">
               <strong>{errorMessage}</strong>
-              {cartItems?.find(item => item.isPackage) && (
+              {cartItems?.some(item => !item.isPackage) && (
                 <div className="package-warning">
                   <p style={{ marginTop: '10px' }}>
-                    Ya tienes un viaje en el carrito. Para seleccionar uno nuevo, primero <strong>reserva</strong> o <strong>elimina</strong> el viaje actual.
+                    Ya tienes elementos individuales (vuelo, hotel o coche) en el carrito. Elimina esos elementos antes de añadir un paquete.
                   </p>
                   <Link to="/cart" className="go-to-cart-link">
                     <button className="go-to-cart-btn">Ir al carrito</button>

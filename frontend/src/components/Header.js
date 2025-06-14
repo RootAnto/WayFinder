@@ -23,10 +23,8 @@ const Header = () => {
         <div className="logo">WayFinder</div>
         <nav className="nav">
           <Link to="/" className="nav-link">Inicio</Link>
-          <Link to="/flights" className="nav-link">Vuelos</Link>
-          <Link to="/hotels" className="nav-link">Hoteles</Link>
-          <Link to="/offers" className="nav-link">Ofertas</Link>
-          <Link to="/contact" className="nav-link">Contacto</Link>
+          <Link to="/OffersSection" className="nav-link">Ofertas</Link>
+          <Link to="/Contact" className="nav-link">Contacto</Link>
         </nav>
         <div className="auth-buttons">
           {currentUser ? (

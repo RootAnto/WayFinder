@@ -122,14 +122,14 @@ function MyBookings() {
 
                     {trip.hotel_price > 0 && (
                       <>
-                        <p><strong>Noches de hotel:</strong> {trip.total_days || 'N/A'}</p>
+                        <p><strong>Noches de hotel:</strong> {trip.hotel_nights || 'N/A'}</p>
                         <p><strong>Precio hotel:</strong> {formatCurrency(trip.hotel_price)}</p>
                       </>
                     )}
 
                     {trip.vehicle_price > 0 && (
                       <>
-                        <p><strong>Días de alquiler:</strong> {trip.total_days || 'N/A'}</p>
+                        <p><strong>Días de alquiler:</strong> {trip.vehicle_days || 'N/A'}</p>
                         <p><strong>Precio vehículo:</strong> {formatCurrency(trip.vehicle_price)}</p>
                       </>
                     )}
