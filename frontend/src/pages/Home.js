@@ -25,12 +25,40 @@ const Toast = ({ message, onClose }) => (
 
 const ChatBotWidget = () => {
   const [open, setOpen] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+  const { currentUser } = useAuth();
+
+  // Función para llamar al backend
+  const iniciarChat = () => {
+    if (!currentUser) return;
+    const payload = {
+      email: currentUser.email,
+      nombre: currentUser.displayName || currentUser.name || "Usuario"
+    };
+    fetch('http://localhost:8000/abrir-chat-multifase', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(data => setMensaje(data.status))
+    .catch(err => console.error("Error en fetch:", err));
+  };
+
+  // Sólo para abrir o cerrar el chat
+  const toggleChat = () => {
+    if (!open) {
+      // Solo cuando se abre
+      iniciarChat();
+    }
+    setOpen(!open);
+  };
 
   return (
     <>
-      <button 
-        className="chatbot-button" 
-        onClick={() => setOpen(!open)} 
+      <button
+        className="chatbot-button"
+        onClick={toggleChat}
         aria-label="Abrir asistente virtual"
         aria-expanded={open}
         aria-haspopup="dialog"
@@ -38,37 +66,8 @@ const ChatBotWidget = () => {
       >
         💬
       </button>
-      {open && (
-        <div 
-          className="chatbot-window"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="chatbot-header-title"
-        >
-          <div className="chatbot-header">
-            <span id="chatbot-header-title">Asistente Virtual</span>
-            <button 
-              onClick={() => setOpen(false)}
-              aria-label="Cerrar asistente virtual"
-            >
-              ✖
-            </button>
-          </div>
-          <div className="chatbot-content">
-            <div className="chatbot-body">
-              <p>¡Hola! ¿En qué puedo ayudarte?</p>
-            </div>
-            <div className="chatbot-input">
-              <input 
-                type="text" 
-                placeholder="Escribe tu mensaje..." 
-                aria-label="Escribe tu mensaje"
-              />
-              <button aria-label="Enviar mensaje">Enviar</button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Si quieres mostrar mensaje del backend */}
+      {open && <div>{mensaje}</div>}
     </>
   );
 };

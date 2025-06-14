@@ -59,6 +59,11 @@ async def search_hotels(query: HotelSearchQuery) -> HotelSearchResponse:
         response = amadeus.reference_data.locations.hotels.by_city.get(
             cityCode=query.cityCode
         )
+        historial = "a"
+        mensaje_usuario = "a"
+        respuesta = "respuesta"
+
+        historial += f"\nUsuario: {mensaje_usuario}\nAsistente: {respuesta}"
 
         hotels = []
         max_results = query.limit or 10

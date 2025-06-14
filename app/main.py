@@ -7,6 +7,7 @@ from app.controller.amadeus_controller.flight_controller import router as fligth
 from app.controller.amadeus_controller.hotel_controller import router as hotel_router
 from app.controller.amadeus_controller.vehicle_controller import router as vehicle_router
 from app.controller.amadeus_controller.trip_suggested_controller import router as automatic_travel_router
+from app.controller.chatbot.app import router as chatbot_router
 from app.controller.trips_tickets import router as trips_tickets_route
 from app.controller.firebase_controller import router as auth_router
 from app.controller.payments.payments import router as paymetn_route
@@ -45,6 +46,7 @@ app.include_router(vehicle_router)
 app.include_router(automatic_travel_router)
 app.include_router(trips_tickets_route)
 app.include_router(paymetn_route)
+app.include_router(chatbot_router)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=True)
