@@ -16,54 +16,44 @@ chain = prompt | model
 
 
 def procesar_mensaje_hotel(mensaje: str, datos_actuales: dict, contexto: str):
-    """
-    Procesa un mensaje para el chatbot de hoteles.
-
-    Args:
-        mensaje (str): mensaje del usuario
-        datos_actuales (dict): datos acumulados de la conversación (ciudad, fechas, etc)
-        contexto (str): historial o contexto conversacional
-
-    Returns:
-        tuple:
-            respuesta (str): respuesta generada
-            nuevos_datos (dict): datos extraídos del mensaje
-            nuevo_contexto (str): contexto actualizado
-            hoteles (str|None): resultados de búsqueda hoteles si disponibles
-            reservar (bool): si el usuario confirma reserva
-    """
     nuevos_datos = extraer_datos_hotel(mensaje)
 
-    datos_actualizados = datos_actuales.copy()
-    for campo, valor in nuevos_datos.items():
-        if valor:
-            datos_actualizados[campo] = valor
+    for k, v in nuevos_datos.items():
+        if v:
+            datos_actuales[k] = v
 
     prompt_input = {
         "bussiness_info": info,
         "context": contexto,
         "question": mensaje,
-        "ciudad": datos_actualizados.get("ciudad", "no definido"),
-        "fecha_entrada": datos_actualizados.get("fecha_checkin", "no definida"),
-        "fecha_salida": datos_actualizados.get("fecha_checkout", "no definida"),
-        "personas": str(datos_actualizados.get("personas", "1")),
-        "tipo_habitacion": datos_actualizados.get("tipo_habitacion", "estándar")
+        "ciudad":         datos_actuales.get("ciudad", "no definido"),
+        "fecha_entrada":  datos_actuales.get("fecha_checkin", "no definida"),
+        "fecha_salida":   datos_actuales.get("fecha_checkout", "no definida"),
+        "personas":       str(datos_actuales.get("personas", "1")),
+        "tipo_habitacion": datos_actuales.get("tipo_habitacion", "estándar"),
     }
 
-    result = chain.invoke(prompt_input)
-    respuesta = result.content if hasattr(result, "content") else str(result)
-
+    respuesta_llm = chain.invoke(prompt_input)
+    respuesta = respuesta_llm.content if hasattr(respuesta_llm, "content") else str(respuesta_llm)
     nuevo_contexto = contexto + f"Tú: {mensaje}\nBot: {respuesta}\n"
 
-    hoteles = None
+    hoteles_msg = None
     reservar = False
 
-    if datos_actualizados.get("ciudad") and datos_actualizados.get("fecha_checkin") and datos_actualizados.get("fecha_checkout"):
-        hoteles = buscar_hoteles(
-            ciudad_codigo=datos_actualizados["ciudad"],
-            fecha_checkin=datos_actualizados["fecha_checkin"],
-            fecha_checkout=datos_actualizados["fecha_checkout"],
-        )
-        nuevo_contexto += f"Bot: {hoteles}\n"
+    if all([datos_actuales.get("ciudad"),
+            datos_actuales.get("fecha_checkin"),
+            datos_actuales.get("fecha_checkout")]):
 
-    return respuesta, nuevos_datos, nuevo_contexto, hoteles, reservar
+        resultado = buscar_hoteles(
+            ciudad_codigo = datos_actuales["ciudad"],
+            fecha_checkin = datos_actuales["fecha_checkin"],
+            fecha_checkout= datos_actuales["fecha_checkout"],
+        )
+        hoteles_msg = resultado["mensaje"]
+        datos_actuales.update(resultado["datos"])
+        nuevo_contexto += f"Bot: {hoteles_msg}\n"
+
+    if es_afirmacion(mensaje):
+        reservar = True
+
+    return respuesta, nuevos_datos, nuevo_contexto, hoteles_msg, reservar

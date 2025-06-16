@@ -15,11 +15,11 @@ def buscar_vuelos(origen, destino, fecha_salida, fecha_regreso, pasajeros, tipo_
 
     fecha_salida_iso = convertir_fecha(fecha_salida)
     if not fecha_salida_iso:
-        return "❌ Formato de fecha de salida inválido. Use 'dd/mm' o 'yyyy-mm-dd'."
+        return {"mensaje": "❌ Formato de fecha de salida inválido.", "datos": {}}
 
     fecha_regreso_iso = convertir_fecha(fecha_regreso) if fecha_regreso else None
     if fecha_regreso and not fecha_regreso_iso:
-        return "❌ Formato de fecha de regreso inválido. Use 'dd/mm' o 'yyyy-mm-dd'."
+        return {"mensaje": "❌ Formato de fecha de regreso inválido.", "datos": {}}
 
     url = "http://localhost:8000/flight-search"
 
@@ -40,39 +40,58 @@ def buscar_vuelos(origen, destino, fecha_salida, fecha_regreso, pasajeros, tipo_
             response.raise_for_status()
             data = response.json()
 
-            if data.get("success"):
-                mensaje = f"✈️ Se encontraron {data['count']} vuelos:\n"
-                for i, offer in enumerate(data["offers"], start=1):
-                    precio = offer['price']['total']
-                    moneda = offer['price']['currency']
-                    duracion = offer['itineraries'][0]['duration']
-                    mensaje += f"- Vuelo {i}: {precio} {moneda}, duración: {duracion}\n"
-                return mensaje
+            if data.get("success") and data["offers"]:
+                offer = data["offers"][0]
+                precio = offer['price']['total']
+                moneda = offer['price']['currency']
+                duracion = offer['itineraries'][0]['duration']
+                aerolinea = offer.get('validatingAirlineCodes', ["Desconocida"])[0]
+                numero_vuelo = offer.get("number", "No disponible")
+
+                mensaje = (
+                    f"✈️ Vuelo encontrado:\n"
+                    f"- Precio: {precio} {moneda}\n"
+                    f"- Duración: {duracion}\n"
+                    f"- Aerolínea: {aerolinea}\n"
+                    f"- Número de vuelo: {numero_vuelo}"
+                )
+
+                datos = {
+                    "precio": precio,
+                    "moneda": moneda,
+                    "duracion": duracion,
+                    "aerolinea": aerolinea,
+                    "numero_vuelo": numero_vuelo,
+                }
+
+                return {"mensaje": mensaje, "datos": datos}
             else:
-                return "❌ No se encontraron vuelos disponibles."
+                return {"mensaje": "❌ No se encontraron vuelos disponibles.", "datos": {}}
 
     except httpx.HTTPStatusError as e:
-        return f"❌ Error al buscar vuelos: {e.response.text}"
+        return {"mensaje": f"❌ Error al buscar vuelos: {e.response.text}", "datos": {}}
     except Exception as e:
-        return f"❌ Error interno: {str(e)}"
+        return {"mensaje": f"❌ Error interno: {str(e)}", "datos": {}}
 
-
-def buscar_hoteles(ciudad_codigo, fecha_checkin=None, fecha_checkout=None, limite=5, precio_defecto=100.0):
+def buscar_hoteles(ciudad_codigo,
+                   fecha_checkin=None,
+                   fecha_checkout=None,
+                   limite=5,
+                   precio_defecto=100.0):
     print("📡 Función 'buscar_hoteles' llamada con los siguientes datos:")
     print(f"Ciudad código (IATA): {ciudad_codigo}")
-    print(f"Fecha check-in: {fecha_checkin}")
-    print(f"Fecha check-out: {fecha_checkout}")
+    print(f"Fecha check‑in: {fecha_checkin}")
+    print(f"Fecha check‑out: {fecha_checkout}")
     print(f"Límite de resultados: {limite}")
     print(f"Precio por defecto: {precio_defecto} EUR")
 
-    url = "http://localhost:8000/hotel-search"  
+    url = "http://localhost:8000/hotel-search"
     payload = {
         "cityCode": ciudad_codigo.upper(),
         "checkInDate": convertir_fecha(fecha_checkin) if fecha_checkin else None,
         "checkOutDate": convertir_fecha(fecha_checkout) if fecha_checkout else None,
         "limit": 1,
     }
-
     payload = {k: v for k, v in payload.items() if v is not None}
 
     try:
@@ -81,34 +100,52 @@ def buscar_hoteles(ciudad_codigo, fecha_checkin=None, fecha_checkout=None, limit
             response.raise_for_status()
             data = response.json()
 
-            if data.get("count", 0) > 0:
-                mensaje = f"Se encontraron {data['count']} hoteles:\n"
-                for i, hotel in enumerate(data.get("data", []), start=1):
-                    nombre = hotel.get('name', 'Desconocido')
-                    precio = hotel.get('price', precio_defecto)
-                    noches = hotel.get('nights', 'N/A')
-                    mensaje += f"- Hotel {i}: {nombre}, Precio aprox: {precio} EUR, Noches: {noches}\n"
-                return mensaje
-            else:
-                return "❌ No se encontraron hoteles disponibles."
+            if data.get("count", 0) > 0 and data["data"]:
+                hotel = data["data"][0]
+                nombre   = hotel.get("name", "Desconocido")
+                precio   = float(hotel.get("price", precio_defecto))
+                noches   = int(hotel.get("nights", 1))
+
+                mensaje = (
+                    f"🏨 Hotel encontrado:\n"
+                    f"- Nombre: {nombre}\n"
+                    f"- Precio total aprox: {precio:.2f} EUR\n"
+                    f"- Noches: {noches}"
+                )
+                datos = {
+                    "nombre_hotel": nombre,
+                    "precio_hotel": precio,
+                    "noches": noches,
+                }
+                return {"mensaje": mensaje, "datos": datos}
+
+            return {"mensaje": "❌ No se encontraron hoteles disponibles.", "datos": {}}
 
     except httpx.HTTPStatusError as e:
-        return f"❌ Error al buscar hoteles: {e.response.text}"
+        return {"mensaje": f"❌ Error al buscar hoteles: {e.response.text}", "datos": {}}
     except Exception as e:
-        return f"❌ Error interno: {str(e)}"
+        return {"mensaje": f"❌ Error interno: {str(e)}", "datos": {}}
 
-
-def buscar_coches(ciudad_codigo, tipo_vehiculo=None, limite=5):
+def buscar_coches(ciudad_codigo: str,
+                  tipo_vehiculo: str | None = None,
+                  limite: int = 5):
+    """
+    Consulta la API local /vehicle-search y devuelve un dict:
+    {
+        "mensaje": str   -> texto listo para el chat
+        "datos":   dict  -> detalles (precio, modelo, días, …)
+    }
+    """
     print("📡 Función 'buscar_coches' llamada con los siguientes datos:")
     print(f"Ciudad código (IATA): {ciudad_codigo}")
     print(f"Tipo de vehículo: {tipo_vehiculo}")
     print(f"Límite de resultados: {limite}")
 
-    url = "http://localhost:8000/vehicle-search" 
+    url = "http://localhost:8000/vehicle-search"
     payload = {
         "location": ciudad_codigo.upper(),
         "vehicleType": tipo_vehiculo if tipo_vehiculo else "car",
-        "limit": limite
+        "limit": limite,
     }
 
     try:
@@ -117,27 +154,40 @@ def buscar_coches(ciudad_codigo, tipo_vehiculo=None, limite=5):
             response.raise_for_status()
             data = response.json()
 
-            if data.get("count", 0) > 0:
-                mensaje = f"Se encontraron {data['count']} coches disponibles:\n"
-                for i, vehicle in enumerate(data.get("data", []), start=1):
-                    nombre = vehicle.get('name', 'Desconocido')
-                    precio = vehicle.get('pricePerDay', 'N/A')
-                    moneda = vehicle.get('currency', 'EUR')
-                    ano = vehicle.get('year', 'N/A')
-                    transmision = vehicle.get('transmission', 'N/A')
-                    combustible = vehicle.get('fuelType', 'N/A')
-                    mensaje += (f"- Coche {i}: {nombre}, Precio/día: {precio} {moneda}, Año: {ano}, "
-                                f"Transmisión: {transmision}, Combustible: {combustible}\n")
-                return mensaje
-            else:
-                return "❌ No se encontraron coches disponibles."
+            if data.get("count", 0) > 0 and data["data"]:
+                vehicle = data["data"][0]
+                nombre       = vehicle.get("name", "Desconocido")
+                precio_dia   = float(vehicle.get("pricePerDay", 0.0))
+                moneda       = vehicle.get("currency", "EUR")
+                transmision  = vehicle.get("transmission", "N/A")
+                combustible  = vehicle.get("fuelType", "N/A")
+                año          = vehicle.get("year", "N/A")
+
+                mensaje = (
+                    f"🚘 Coche encontrado:\n"
+                    f"- Modelo: {nombre}\n"
+                    f"- Precio por día: {precio_dia:.2f} {moneda}\n"
+                    f"- Año: {año}\n"
+                    f"- Transmisión: {transmision}\n"
+                    f"- Combustible: {combustible}"
+                )
+                datos = {
+                    "nombre_coche": nombre,
+                    "precio_coche": precio_dia,
+                    "moneda": moneda,
+                    "transmision": transmision,
+                    "combustible": combustible,
+                    "anio": año,
+                }
+                return {"mensaje": mensaje, "datos": datos}
+
+            return {"mensaje": "❌ No se encontraron coches disponibles.", "datos": {}}
 
     except httpx.HTTPStatusError as e:
-        return f"❌ Error al buscar coches: {e.response.text}"
+        return {"mensaje": f"❌ Error al buscar coches: {e.response.text}", "datos": {}}
     except Exception as e:
-        return f"❌ Error interno: {str(e)}"
-
-
+        return {"mensaje": f"❌ Error interno: {str(e)}", "datos": {}}
+    
 def convertir_fecha(fecha_str: Optional[Union[str, date]]) -> Optional[str]:
     if not fecha_str:
         return None
@@ -179,56 +229,88 @@ Mensaje: "{mensaje}"
     return response.content.strip().lower() in ["sí", "si"]
 
 
-def enviar_reserva_backend(datos_vuelo, datos_hotel, datos_coche, user):
+
+def enviar_reserva_backend(datos_vuelo: dict,
+                            datos_hotel: dict,
+                            datos_coche: dict,
+                            user) -> Optional[dict]:
+    """Envía la reserva al endpoint /trips/ y devuelve la respuesta JSON."""
     url = "http://localhost:8000/trips/"
 
-    def parse_date(d):
-        if isinstance(d, str):
-            return d  
-        if isinstance(d, datetime):
-            return d.date().isoformat()
-        if hasattr(d, "isoformat"):
-            return d.isoformat()
-        return None
+    def to_iso(d):
+        if d is None:
+            return None
+        if isinstance(d, (date, datetime)):
+            return d.isoformat()[:10]
+        return str(d)
+
+    aerolinea = datos_vuelo.get("aerolinea")
+    num_vuelo = datos_vuelo.get("numero_vuelo")
+    flight_name = None
+    if aerolinea and num_vuelo and aerolinea != "Desconocida" and num_vuelo != "No disponible":
+        flight_name = f"{aerolinea} {num_vuelo}"
+
+    flight_price = float(datos_vuelo["precio"]) if datos_vuelo.get("precio") else None
+
+    hotel_name  = datos_hotel.get("nombre_hotel")
+    hotel_price = float(datos_hotel["precio_hotel"]) if datos_hotel.get("precio_hotel") else None
+    hotel_nights = datos_hotel.get("noches")
+
+    vehicle_model  = datos_coche.get("nombre_coche")
+    vehicle_price  = float(datos_coche["precio_coche"]) if datos_coche.get("precio_coche") else None
+    vehicle_days   = datos_coche.get("dias")
+
+    total_price = sum(p for p in [flight_price, hotel_price, vehicle_price] if p)
 
     payload = {
-        # Datos usuario
-        "user_id":user.nombre,  
+        "user_id": user.nombre,
         "user_email": user.email,
-        # Datos vuelo
+
         "origin": datos_vuelo.get("origen"),
         "destination": datos_vuelo.get("destino"),
-        "departure_date": parse_date(datos_vuelo.get("fecha_salida")),
-        "return_date": parse_date(datos_vuelo.get("fecha_regreso")),
-        "adults": 1,  
-        "children": 0, 
+        "departure_date": to_iso(datos_vuelo.get("fecha_salida")),
+        "return_date":    to_iso(datos_vuelo.get("fecha_regreso")),
+        "adults": 1,
+        "children": 0,
         "hotel_limit": 5,
         "vehicle_limit": 5,
         "max_price": None,
         "user_name": None,
+
         "flight_id": None,
         "hotel_id": None,
         "vehicle_id": None,
-        # Detalles vuelo
-        "flight_name": datos_vuelo.get("nombre_vuelo"),  
-        "flight_price": datos_vuelo.get("precio_vuelo"),
-        # Detalles hotel
-        "hotel_name": datos_hotel.get("nombre_hotel"),
-        "hotel_price": datos_hotel.get("precio_hotel"),
-        "hotel_nights": datos_hotel.get("noches"),
-        # Detalles vehículo
-        "vehicle_model": datos_coche.get("modelo"),
-        "vehicle_price": datos_coche.get("precio_coche"),
-        "vehicle_days": datos_coche.get("dias"),
-        # Precio total 
-        "total_price": 0.0,
-        "currency": "EUR"
+
+        "flight_name":  flight_name,
+        "flight_price": flight_price,
+
+        "hotel_name":   hotel_name,
+        "hotel_price":  hotel_price,
+        "hotel_nights": hotel_nights,
+
+        "vehicle_model": vehicle_model,
+        "vehicle_price": vehicle_price,
+        "vehicle_days":  vehicle_days,
+
+        "total_price": total_price,
+        "currency": datos_vuelo.get("moneda", "EUR"),
     }
 
+    payload = {k: v for k, v in payload.items() if v is not None}
+
+    print("Payload que se enviará a /trips/:")
+    print(json.dumps(payload, indent=2, ensure_ascii=False))
+
     try:
-        response = requests.post(url,user.email, json=payload)
-        response.raise_for_status()
-        return response.json()
+        resp = requests.post(
+            url,
+            params={"user_email": user.email},   
+            json=payload,                      
+            timeout=10
+        )
+        resp.raise_for_status()
+        return resp.json()
+
     except requests.RequestException as e:
         print("Error al enviar la reserva:", e)
         return None

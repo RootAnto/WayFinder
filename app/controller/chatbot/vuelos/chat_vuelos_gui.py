@@ -47,11 +47,17 @@ class ChatVuelosWindow(tk.Toplevel):
             "fecha_salida": None,
             "fecha_regreso": None,
             "tipo_pasajero": None,
+            "precio": None,
+            "moneda": None,
+            "duracion": None,
+            "aerolinea": None,
+            "numero_vuelo": None,
         }
         self.context = ""
         self.esperando_confirmacion_reserva = False
 
         self.resultado = {}
+        self.vuelos = None        
 
         self.escribir_chat("🛫 Bot: ¡Hola! Soy tu asistente de vuelos. ¿En qué puedo ayudarte?")
 
@@ -70,11 +76,13 @@ class ChatVuelosWindow(tk.Toplevel):
 
         if self.esperando_confirmacion_reserva:
             if es_afirmacion(user_msg):
-                self.escribir_chat("✅ Vuelo reservado. Gracias por usar el planificador.")
+                self.escribir_chat("Vuelo reservado. Gracias por usar el planificador.")
                 self.resultado = self.datos_vuelo.copy()
+                self.vuelos = self.datos_vuelo.copy()   
             else:
-                self.escribir_chat("❌ Reserva cancelada.")
+                self.escribir_chat("Reserva cancelada.")
                 self.resultado = {}
+                self.vuelos = None
             self.esperando_confirmacion_reserva = False
             self.after(1500, self.destroy)
             return
@@ -82,27 +90,30 @@ class ChatVuelosWindow(tk.Toplevel):
         if user_msg.lower() in {"stop", "salir"}:
             self.escribir_chat("Bot: Terminando la fase de vuelos. ¡Hasta luego!")
             self.resultado = {}
+            self.vuelos = None
             self.after(1500, self.destroy)
             return
 
-        respuesta, nuevos_datos, nuevo_ctx, vuelos, reserva = procesar_mensaje_vuelo(
+        respuesta, nuevos_datos, nuevo_ctx, vuelos_msg, reserva = procesar_mensaje_vuelo(
             user_msg, self.datos_vuelo, self.context
         )
         self.datos_vuelo.update({k: v for k, v in nuevos_datos.items() if v})
         self.context = nuevo_ctx
         self.escribir_chat(f"🤖 Bot: {respuesta}")
 
-        if vuelos and "Error" not in vuelos:
-            self.escribir_chat(f"🛩️ Bot: {vuelos}")
-            self.escribir_chat("Bot: ¿Quieres reservar el vuelo? (sí/no)")
+        if vuelos_msg and "Error" not in vuelos_msg:
+            self.escribir_chat(f"🛩️ Bot: {vuelos_msg}")
+            self.escribir_chat("Bot: ¿Quieres reservar el vuelo?")
             self.esperando_confirmacion_reserva = True
+            self.vuelos = self.datos_vuelo.copy()
             return
-        elif vuelos:
-            self.escribir_chat(f"🛩️ Bot: {vuelos}")
+        elif vuelos_msg:
+            self.escribir_chat(f"🛩️ Bot: {vuelos_msg}")
 
         if reserva:
-            self.escribir_chat("✅ Vuelo reservado. Gracias por usar el planificador.")
+            self.escribir_chat("Vuelo reservado. Gracias por usar el planificador.")
             self.resultado = self.datos_vuelo.copy()
+            self.vuelos = self.datos_vuelo.copy()
             self.after(1500, self.destroy)
 
     def cerrar_ventana(self):

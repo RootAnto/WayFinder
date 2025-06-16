@@ -42,15 +42,21 @@ class ChatHotelesWindow(tk.Toplevel):
 
         self.datos_hotel = {
             "ciudad": None,
-            "fecha_entrada": None,
-            "fecha_salida": None,
-            "num_personas": None,
+            "fecha_checkin": None,
+            "fecha_checkout": None,
+            "personas": None,
+            "nombre_hotel": None,
+            "precio_hotel": None,
+            "noches": None,
         }
         self.context = ""
-        self.esperando_confirmacion_inicial = True   
+        self.esperando_confirmacion_inicial = True
         self.esperando_confirmacion_reserva = False
-        
-        self.escribir_chat("🏨 Bot: ¿Te gustaría reservar un hotel? (sí/no)")
+
+        self.resultado = {}
+        self.hoteles = None
+
+        self.escribir_chat("🏨 Bot: ¿Te gustaría reservar un hotel?")
 
     def escribir_chat(self, texto: str):
         self.chat_log.config(state="normal")
@@ -68,47 +74,54 @@ class ChatHotelesWindow(tk.Toplevel):
         if self.esperando_confirmacion_inicial:
             if es_afirmacion(user_msg):
                 self.esperando_confirmacion_inicial = False
-                self.escribir_chat("🏨 Bot: ¡Genial! Dime. ¿En qué ciudad tienes pensado alquilar el hotel?")
+                self.escribir_chat("🏨 Bot: ¡Genial! ¿En qué ciudad necesitas hotel?")
             else:
                 self.escribir_chat("🏨 Bot: Entendido. ¡Hasta la próxima!")
+                self.hoteles = None
                 self.after(1500, self.destroy)
             return
 
-        if user_msg.lower() in ["stop", "salir"]:
+        if user_msg.lower() in {"stop", "salir"}:
             self.escribir_chat("Bot: Terminando la fase de hoteles. ¡Hasta luego!")
+            self.resultado = {}
+            self.hoteles = None
             self.after(1500, self.destroy)
             return
 
         if self.esperando_confirmacion_reserva:
             self.esperando_confirmacion_reserva = False
             if es_afirmacion(user_msg):
-                self.escribir_chat("✅ Hotel reservado. Gracias por usar el planificador.")
+                self.escribir_chat("Hotel reservado. Gracias por usar el planificador.")
                 self.resultado = self.datos_hotel.copy()
+                self.hoteles  = {**self.datos_hotel, "reservado": True}
             else:
-                self.escribir_chat("❌ Reserva cancelada.")
+                self.escribir_chat("Reserva cancelada.")
                 self.resultado = {}
+                self.hoteles = {**self.datos_hotel, "reservado": False}
             self.after(1500, self.destroy)
             return
 
-        respuesta, nuevos_datos, nuevo_context, hoteles, reserva = procesar_mensaje_hotel(
+        respuesta, nuevos, nuevo_ctx, hoteles_msg, reserva = procesar_mensaje_hotel(
             user_msg, self.datos_hotel, self.context
         )
-        self.datos_hotel.update({k: v for k, v in nuevos_datos.items() if v})
-        self.context = nuevo_context
-
+        self.datos_hotel.update({k: v for k, v in nuevos.items() if v})
+        self.context = nuevo_ctx
         self.escribir_chat(f"🤖 Bot: {respuesta}")
 
-        if hoteles:
-            self.escribir_chat(f"🏩 Bot: {hoteles}")
-            self.escribir_chat("Bot: ¿Quieres reservar el hotel? (sí/no)")
+        if hoteles_msg:
+            self.escribir_chat(f"🏩 Bot: {hoteles_msg}")
+            self.escribir_chat("Bot: ¿Quieres reservar el hotel?")
+            self.hoteles = self.datos_hotel.copy()  
             self.esperando_confirmacion_reserva = True
 
         if reserva:
-            self.escribir_chat("✅ Hotel reservado. Gracias por usar el planificador.")
+            self.escribir_chat("Hotel reservado. Gracias por usar el planificador.")
             self.resultado = self.datos_hotel.copy()
+            self.hoteles  = {**self.datos_hotel, "reservado": True}
             self.after(1500, self.destroy)
 
     def cerrar_ventana(self):
-        if self.resultado is None:
-            self.resultado = {}  
+        if not self.resultado:
+            self.resultado = {}
+            self.hoteles = None
         self.destroy()

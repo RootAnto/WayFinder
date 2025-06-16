@@ -49,7 +49,7 @@ class ChatCochesWindow(tk.Toplevel):
 
         self.resultado = {}
 
-        self.escribir_chat("🚗 Bot: ¿Te gustaría reservar un coche? (sí/no)")
+        self.escribir_chat("🚗 Bot: ¿Te gustaría reservar un coche?")
 
     def escribir_chat(self, texto: str):
         self.chat_log.config(state="normal")
@@ -82,10 +82,10 @@ class ChatCochesWindow(tk.Toplevel):
 
         if self.esperando_confirmacion_reserva:
             if es_afirmacion(user_msg):
-                self.escribir_chat("✅ Coche reservado. Gracias por usar el planificador.")
+                self.escribir_chat("Coche reservado. Gracias por usar el planificador.")
                 self.resultado = self.datos_coche.copy()
             else:
-                self.escribir_chat("❌ Reserva cancelada.")
+                self.escribir_chat("Reserva cancelada.")
                 self.resultado = {}
             self.esperando_confirmacion_reserva = False
             self.after(1500, self.destroy)
@@ -101,11 +101,11 @@ class ChatCochesWindow(tk.Toplevel):
 
         if coches:
             self.escribir_chat(f"🚘 Bot: {coches}")
-            self.escribir_chat("Bot: ¿Quieres reservar este coche? (sí/no)")
+            self.escribir_chat("Bot: ¿Quieres reservar este coche?")
             self.esperando_confirmacion_reserva = True
 
         if reserva:
-            self.escribir_chat("✅ Coche reservado. Gracias por usar el planificador.")
+            self.escribir_chat("Coche reservado. Gracias por usar el planificador.")
             self.resultado = self.datos_coche.copy()
             self.after(1500, self.destroy)
 

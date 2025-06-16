@@ -19,16 +19,15 @@ def iniciar_chat_multifase(user: User):
     # FASE 1 
     v_vuelos = ChatVuelosWindow(root)
     v_vuelos.wait_window()                  
-    datos_vuelo = v_vuelos.resultado         
+    datos_vuelo = v_vuelos.vuelos
     print("DATOS VUELO =", datos_vuelo)
 
 
 
     # FASE 2  
-    h_hoteles = ChatHotelesWindow(root)
-    h_hoteles.datos_previos_vuelo = datos_vuelo
-    h_hoteles.wait_window()
-    datos_hotel = h_hoteles.resultado
+    ventana_hoteles = ChatHotelesWindow(root)
+    ventana_hoteles.wait_window()
+    datos_hotel = ventana_hoteles.hoteles 
     print("DATOS HOTEL =", datos_hotel)
 
     # FASE 3 

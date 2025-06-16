@@ -29,7 +29,7 @@ Para ejecutar la aplicacion por el lado del frontend seguir los siguientes pasos
 
 
 Para ejecutar la aplicacion por el lado del backend seguir los siguientes pasos.
-1- Ejecutar el comnado "python -m venv venv" para crear un entorno virtual.
+1- Ejecutar el comnado "python -m venv venv" para cvenv\Scripts\activaterear un entorno virtual.
 2- Ejecutar el comando "venv\Scripts\activate" para activar el entorno virtual.  
 3- Ejecutar el comando "pip install -r requirements.txt" para las dependencias necesarias.
 4- Ejecutar el comando "python -m uvicorn app.main:app --reload" para iniciar la aplicación.

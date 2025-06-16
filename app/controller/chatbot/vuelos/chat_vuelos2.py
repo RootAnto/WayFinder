@@ -79,7 +79,7 @@ def procesar_mensaje_vuelo(question, datos_vuelo, context):
     reserva = False
 
     if datos_vuelo.get("origen") and datos_vuelo.get("destino") and datos_vuelo.get("fecha_salida") and datos_vuelo.get("tipo_pasajero"):
-        vuelos = buscar_vuelos(
+        resultado = buscar_vuelos(
             origen=datos_vuelo["origen"],
             destino=datos_vuelo["destino"],
             fecha_salida=fecha_salida_str,
@@ -87,6 +87,8 @@ def procesar_mensaje_vuelo(question, datos_vuelo, context):
             pasajeros=1,
             tipo_pasajero=datos_vuelo["tipo_pasajero"],
         )
+        vuelos = resultado["mensaje"]
+        datos_vuelo.update(resultado["datos"])
         if es_afirmacion(question):
             reserva = True
 
